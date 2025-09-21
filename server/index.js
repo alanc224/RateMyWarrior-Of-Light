@@ -17,7 +17,7 @@ mongoose.connect(mongoURI)
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../client', 'index.html')));
 const cache = new Map();
-const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cahce is just set to 15 minutes for now, can be changed later if need be
+const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cache is just set to 15 minutes for now, can be changed later if need be
 
 // API for webscraping
 app.get('/api/characters', async (req, res) => {
@@ -25,7 +25,7 @@ app.get('/api/characters', async (req, res) => {
     if (!characterName) {
         return res.status(400).send('Missing character name');
     }
-    // Using chace to reduce API calls to prevent rate limit and possible ip blocks
+    // Using cache to reduce API calls to prevent rate limit and possible ip blocks
     const cacheKey = characterName.toLowerCase();
     const cachedData = cache.get(cacheKey);
 
