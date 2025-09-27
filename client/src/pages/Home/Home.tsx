@@ -14,9 +14,9 @@ function Home () {
         if (event.key === 'Enter') {
             // When Enter is pressed, navigate to the path
             if (toggleSearch){
-                navigate(`/results/server/${inputValue}`);
+                navigate(`/results/server/`);
             } else {
-                navigate(`/results/player/${inputValue}`);
+                navigate(`/results/player/`);
             }
         }
     };
