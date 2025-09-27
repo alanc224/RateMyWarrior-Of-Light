@@ -3,8 +3,6 @@ export interface PlayerInfo {
     id: string;
     characterName: string;
     serverName: string;
-    level: number;
-    job: string;
     freeCompany?: string;
     portrait?: string;
 
