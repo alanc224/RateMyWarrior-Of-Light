@@ -31,14 +31,31 @@
 
 
 .home-body {
-    background-color: rgb(35, 35, 35);
-    height: 400px;
+    background-image: url("../../assets/homepage/ctp-wol-background.png");
+    background-size: cover;
+    /* height: 400px; */
     text-align: center;
     padding: 3rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    position: relative;
+    z-index: 0;
+}
+.home-body::before {
+    content: ""; /* Required for pseudo-elements */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45); /* 0.5 is 50% opacity */
+    z-index: -1; 
+}
+
+.home-body > * {
+    padding: 1.8rem;
 }
 
 .home-body > input {
@@ -53,11 +70,93 @@
     color: white;
     border: none;
     font-weight: bold;
+    cursor: pointer;
 }
 
 
 .home-body > h1 {
     color: white;
     font-weight: 100;
-    font-family:  Helvetica, sans-serif
+    font-family:  Helvetica, sans-serif;
+    margin-bottom: 2rem;
+}
+
+.home-body > .logo {
+    width: 500px;
+}
+
+.home-more-info {
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-more-info > * {
+    padding: .25rem;
+    margin: .25rem;
+}
+.home-more-info > h1 {
+    font-weight: 1000;
+}
+.home-more-info > h2 {
+    font-weight: 0;
+}
+
+.icon-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 1080px;
+    padding: 2rem;
+}
+.icon-container > * {
+    width: 300px;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+    font-family: 'HelveticaNeue', arial;
+}
+.icon {
+    display: flex;
+    flex-direction: column;
+}
+
+.black-rounded-btn {
+    background-color: black;
+    color: white;
+    border-radius: 1.5rem;
+
+    font-family:  Helvetica, sans-serif;
+    padding: .75rem 3rem;
+    border: 0.5px solid rgb(98, 0, 255);
+    font-size: 1rem;
+    font-weight: 600;
+    float: right;
+    cursor: pointer;
+    margin: 3rem 0 4rem;
+}
+
+.footer {
+    height: 75px;
+    width: 100%;
+    background-color: black;
+}
+
+.blue-span {
+    color: blue;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bolded-text {
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+}
+
+.account-fields {
+    padding: .5rem 1rem;
+    font-size: 1rem;
 }
