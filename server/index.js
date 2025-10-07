@@ -76,6 +76,7 @@ app.get('/api/characters', async (req, res) => {
                     const id = link ? link.split('/')[3] : null;
                     const name = $(el).find('.entry__name').text().trim();
                     const worldText = $(el).find('.entry__world').text().trim();
+                    const img = "test" // will edit to get img
 
                     let world = null;
                     let dataCenter = null;
