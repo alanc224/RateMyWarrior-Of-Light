@@ -2,44 +2,22 @@ import "./Home.css"
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import Login from "../../components/Login/Login"
-import Signup from "../../components/Signup/Signup"
 import Logo from "../../assets/homepage/logo.png"
 import Icon1 from "../../assets/homepage/ctp-icon1.png"
 import Icon2 from "../../assets/homepage/ctp-icon2.png"
 import Icon3 from "../../assets/homepage/ctp-icon3.png"
 
 
-const MODAL_VIEWS = {
-  LOGIN: 'LOGIN',
-  SIGN_UP: 'SIGN_UP',
-  NONE: null,
-};
+interface HomeProps {
+  onLoginClick: () => void;
+  onSignUpClick: () => void;
+}
 
-type ModalView = 'LOGIN' | 'SIGN_UP' | null;
-
-function Home () {
+function Home ({onLoginClick, onSignUpClick}: HomeProps) {
     const navigate = useNavigate();
     
     const [toggleSearch, setToggleSearch] = useState(true);
     const [inputValue, setInputValue] = useState('');
-
-    const [activeModalView, setActiveModalView] = useState<ModalView>(null); 
-    const openLoginModal = () => setActiveModalView('LOGIN')
-    const openSignUpModal = () => setActiveModalView('SIGN_UP');
-
-    const closeModal = () => setActiveModalView(MODAL_VIEWS.NONE);
-    const renderModal = () => {
-        if (activeModalView === MODAL_VIEWS.LOGIN) {
-            // Pass closeModal to the LoginScreen
-            return <Login onClose={closeModal} onSwitchToSignUp={openSignUpModal}/>; 
-        }
-        if (activeModalView === MODAL_VIEWS.SIGN_UP) {
-            // Pass closeModal to the SignUpScreen
-            return <Signup onClose={closeModal} onSwitchToLogin={openLoginModal} />; 
-        }
-        return null;
-    };
 
     const toggleSearchParam = () => {
         setToggleSearch(!toggleSearch);
@@ -48,20 +26,18 @@ function Home () {
         if (event.key === 'Enter') {
             // When Enter is pressed, navigate to the path
             if (toggleSearch){
-                navigate(`/results/server/`);
+                navigate(`/results/server/${inputValue}`);
             } else {
-                navigate(`/results/player/`);
+                navigate(`/results/player/${inputValue}`);
             }
         }
     };
     return (
         <>
-            {renderModal()}
-
             <section className="home-header">
                 <div className="account-buttons">
-                    <button className="sign-up" onClick={openSignUpModal}>Sign Up</button>
-                    <button className="log-in" onClick={openLoginModal}>Log In</button>
+                    <button className="sign-up" onClick={onSignUpClick}>Sign Up</button>
+                    <button className="log-in" onClick={onLoginClick}>Log In</button>
                 </div>
             </section>
             <section className="home-body">
@@ -91,7 +67,7 @@ function Home () {
 
                     
                 </div>
-                <button className='black-rounded-btn'>Sign up now!</button>
+                <button className='black-rounded-btn' onClick={onSignUpClick}>Sign up now!</button>
             </section>
             <section className='footer'>
 

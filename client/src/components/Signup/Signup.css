@@ -42,3 +42,10 @@
     border: none;
     cursor: pointer;
 }
+
+.signup-end-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20%;
+    align-items: center;
+}

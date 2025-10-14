@@ -41,3 +41,7 @@
     border: none;
     cursor: pointer;
 }
+.login-title {
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+}

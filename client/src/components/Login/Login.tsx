@@ -13,8 +13,8 @@ const Login: React.FC<LoginProps> = ({ onClose, onSwitchToSignUp}) => {
             <div className="login-container">
                 <button className='close-btn' onClick={onClose}>X</button>
                 <div className="login-content">
-                    <h1 className="bolded-text">Login</h1>
-                    <input type="text" className="account-fields" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value) }/>
+                    <h1 className="login-title bolded-text">Login</h1>
+                    <input type="text" className="account-fields" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value) }/>
                     <input type="password" className="account-fields"  placeholder="Password"  value={password} onChange={(e) => setPassword(e.target.value)}/>
                     <button className='black-rounded-btn'>Continue</button>
 
