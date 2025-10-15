@@ -30,19 +30,19 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
     setLoading(true);
     
     // Simulate API delay
-    setTimeout(() => {
-      setResults(getMockResults());
-      setLoading(false);
-    }, 1000);
+    // setTimeout(() => {
+    //   setResults(getMockResults());
+    //   setLoading(false);
+    // }, 1000);
 
     //Fetch from backend
-    // const fetchData = async () => {
-    //   const response = await fetch(`http://localhost:5001/api/characters?name=${query}`);
-    //   const data = await response.json();
-    //   setResults(data.slice(0, 10));
-    // }
-    // fetchData()
-    // setLoading(false)
+    const fetchData = async () => {
+      const response = await fetch(`http://localhost:5001/api/characters?name=${query}`);
+      const data = await response.json();
+      setResults(data.slice(0, 10));
+    }
+    fetchData()
+    setLoading(false)
   }, [category, query]); // Re-run when URL params change
 
   function handleCardClick(player: PlayerInfo) {

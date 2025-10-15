@@ -6,9 +6,11 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, '../client')));
 const axios = require('axios');
 const cheerio = require('cheerio');
-
+const cors = require('cors');
 
 const mongoURI = process.env.MONGO_URI;
+
+app.use(cors());
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));
