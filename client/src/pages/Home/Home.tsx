@@ -1,7 +1,19 @@
 import "./Home.css"
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-function Home () {
+
+import Logo from "../../assets/homepage/logo.png"
+import Icon1 from "../../assets/homepage/ctp-icon1.png"
+import Icon2 from "../../assets/homepage/ctp-icon2.png"
+import Icon3 from "../../assets/homepage/ctp-icon3.png"
+
+
+interface HomeProps {
+  onLoginClick: () => void;
+  onSignUpClick: () => void;
+}
+
+function Home ({onLoginClick, onSignUpClick}: HomeProps) {
     const navigate = useNavigate();
     
     const [toggleSearch, setToggleSearch] = useState(true);
@@ -14,9 +26,9 @@ function Home () {
         if (event.key === 'Enter') {
             // When Enter is pressed, navigate to the path
             if (toggleSearch){
-                navigate(`/results/server/`);
+                navigate(`/results/server/${inputValue}`);
             } else {
-                navigate(`/results/player/`);
+                navigate(`/results/player/${inputValue}`);
             }
         }
     };
@@ -24,16 +36,41 @@ function Home () {
         <>
             <section className="home-header">
                 <div className="account-buttons">
-                    <button className="sign-up">Sign Up</button>
-                    <button className="log-in">Log In</button>
+                    <button className="sign-up" onClick={onSignUpClick}>Sign Up</button>
+                    <button className="log-in" onClick={onLoginClick}>Log In</button>
                 </div>
             </section>
             <section className="home-body">
-                <i>Replace with Logo</i>
+                <img className="logo" src={Logo} />
 
                 {toggleSearch ? <h1>Enter your <strong>server</strong> to get started</h1> : <h1>Find a player</h1>}
                 {toggleSearch ? <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyPress} placeholder="Your server" /> : <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyPress} placeholder="Player name" /> }
-                {toggleSearch ? <button onClick={toggleSearchParam}>I want to find a player in a server</button> : <button onClick={toggleSearchParam}>I'd like to look up a player by name</button>}
+                {toggleSearch ? <button onClick={toggleSearchParam}>I'd like to look up a player by name</button> : <button onClick={toggleSearchParam}>I want to find a player in a server</button>}
+            </section>
+            <section className="home-more-info">
+                <h1>Join the Family</h1>
+                <h3>Love Rate My Warrior-Of-Light? Become a user.</h3>
+                <div className='icon-container'>
+                    <div className='icon'>
+                        <img src={Icon1}/>
+                        <p>Manage and edit your ratings</p>
+                    </div>
+                    <div className='icon'>
+                        <img src={Icon2}/>
+                        <p>Your ratings are always anonymous</p>
+
+                    </div>
+                    <div className='icon'>
+                        <img src={Icon3}/>
+                        <p>Like or dislike ratings</p>
+                    </div>
+
+                    
+                </div>
+                <button className='black-rounded-btn' onClick={onSignUpClick}>Sign up now!</button>
+            </section>
+            <section className='footer'>
+
             </section>
         </>
     )

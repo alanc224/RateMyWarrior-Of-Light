@@ -1,0 +1,41 @@
+.header {
+    background-color: black;
+    display: flex;
+    height: 75px;
+    align-items: center;
+    padding: 0 15%;
+    gap: 3rem;
+}
+
+.header-input {
+    padding: .75rem 1rem; 
+    border-radius: 2rem;
+    border: none;
+    width: 50%;
+}
+
+.header-img {
+    height: 50%;
+    cursor: pointer;
+}
+
+.header-account-btns {
+    color: white;
+    font-family: "Poppins", sans-serif;
+    background-color: black;
+    border: none;
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    margin: 0 0.5rem;
+}
+.header-account-outline {
+    border: 1px solid white;
+}
+.header-account-btns:hover {
+    background-color: rgb(42, 42, 42);
+}
+.header-buttons-container {
+    margin-left: auto;
+}
