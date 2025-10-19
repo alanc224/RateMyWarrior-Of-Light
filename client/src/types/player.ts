@@ -3,7 +3,7 @@ export interface PlayerInfo {
     id: string;
     characterName: string;
     serverName: string;
-    freeCompany?: string;
+    worldName?: string;
     portrait?: string;
 
     // Attributes from our end
