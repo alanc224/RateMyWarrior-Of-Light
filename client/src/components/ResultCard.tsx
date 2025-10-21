@@ -20,10 +20,6 @@ function ResultCard({ player, onClick }: ResultCardProps) {
 
       {/* Basic Info */}
       <div className="result-card__info">
-        {/* Level */}
-        <p className="result-card__level">
-          Level {player.level}
-        </p>
 
         {/* Server */}
         <p className="result-card__server">

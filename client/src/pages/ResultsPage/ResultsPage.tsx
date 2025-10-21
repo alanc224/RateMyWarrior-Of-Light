@@ -1,13 +1,10 @@
-//import "./ResultsPage.css"
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import type { PlayerInfo } from '../../types/player'; 
 import ResultCard from '../../components/ResultCard';
-import { getMockResults } from '../../testing/mockData';
-import { useParams, useNavigate } from 'react-router-dom';
-import './ResultsPage.css'
-
+import { searchCharacters } from '../../services/api';
 import Header from '../../components/Header/Header';
-
+import './ResultsPage.css';
 
 interface ResultsPageProps {
   onLoginClick: () => void;
@@ -15,108 +12,127 @@ interface ResultsPageProps {
 }
 
 function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
-  const { category, query  } = useParams<{ 
+  const { category, query } = useParams<{ 
     category?: string; 
     query?: string; 
   }>();
+  
   const [results, setResults] = useState<PlayerInfo[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const[newQuery, setNewQuery] = useState(query)
+  const [error, setError] = useState<string | null>(null);
+  const [newQuery, setNewQuery] = useState(query);
   const navigate = useNavigate();
 
-  // Load players when component mounts or params change
   useEffect(() => {
-    setLoading(true);
-    
-    // Simulate API delay
-    // setTimeout(() => {
-    //   setResults(getMockResults());
-    //   setLoading(false);
-    // }, 1000);
-
-    //Fetch from backend
-    const fetchData = async () => {
-      const response = await fetch(`http://localhost:5001/api/characters?name=${query}`);
-      const data = await response.json();
-      setResults(data.slice(0, 10));
+    async function fetchData() {
+      if (!query) {
+        setLoading(false);
+        return;
+      }
+      
+      setLoading(true);
+      setError(null);
+      
+      try {
+        console.log(`Fetching characters for query: ${query}`);
+        const data = await searchCharacters(query);
+        console.log(`Received ${data.length} characters`);
+        setResults(data);
+      } catch (err) {
+        console.error('Error fetching characters:', err);
+        setError('Failed to load characters. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
-    fetchData()
-    setLoading(false)
-  }, [category, query]); // Re-run when URL params change
+    
+    fetchData();
+  }, [category, query]);
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
-    // Handle navigation to player profile page
+    navigate(`/player/${player.id}`);
   }
 
-  // Determine what type of search this is
-  const isPlayerSearch = category === 'player';
-  const isServerSearch = category === 'server';
-  
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter' && newQuery) {
-      navigate(`/results/${category}/${newQuery}`);
+      navigate(`/results/${category}/${encodeURIComponent(newQuery)}`);
     }
   }
 
-if (loading) {
+  const isPlayerSearch = category === 'player';
+  const isServerSearch = category === 'server';
+
+  if (loading) {
     return (
       <div className="results-page__loading">
         <div className="results-page__spinner"></div>
+        <p className="results-page__loading-message">
+          Searching Lodestone...
+        </p>
+        <p className="results-page__loading-tip">
+          This may take 30-60 seconds for common names.
+        </p>
       </div>
     );
   }
 
   return (
     <>
-    {(isPlayerSearch || isServerSearch) &&  <Header playerName={newQuery ?? ''}  onChange={(e) => {setNewQuery(e.target.value)}} handleKeyPress={handleKeyPress} onLoginClick={onLoginClick} onSignUpClick={onSignUpClick}/>}
-    {/* {isPlayerSearch &&  <Header playerName={newQuery ?? ''}  onChange={(e) => {setNewQuery(e.target.value)}} handleKeyPress={handleKeyPress} onLoginClick={onLoginClick} onSignUpClick={onSignUpClick}/>} */}
-    <div className="results-page">
-      <div className="results-page__container">
-        {/* Header */}
-        <div className="results-page__header">
-          <h1 className="results-page__title">
-            {isPlayerSearch && `Player Search: "${query}"`}
-            {isServerSearch && `Server Search: "${query}"`}
-            {!isPlayerSearch && !isServerSearch && 'players of Light'}
-          </h1>
-          <p className="results-page__count">
-            Found {results.length} player{results.length !== 1 ? 's' : ''}
-            {isPlayerSearch && ` matching "${query}"`}
-            {isServerSearch && ` from server "${query}"`}
-          </p>
-        </div>
-
-        {/* Results Grid */}
-        <div className="results-page__grid">
-          {results.map((player) => (
-            <ResultCard
-            key={player.id}
-            player={player}
-            onClick={handleCardClick}
-            />
-          ))}
-        </div>
-
-        {/* No Results */}
-        {results.length === 0 && (
-          <div className="results-page__no-results">
-            <p className="results-page__no-results-title">No players found.</p>
-            {isPlayerSearch && (
-              <p className="results-page__no-results-subtitle">
-                No players found matching "{query}"
-              </p>
-            )}
-            {isServerSearch && (
-              <p className="results-page__no-results-subtitle">
-                No players found on server "{query}"
-              </p>
-            )}
+      {(isPlayerSearch || isServerSearch) && (
+        <Header 
+          playerName={newQuery ?? ''}  
+          onChange={(e) => setNewQuery(e.target.value)} 
+          handleKeyPress={handleKeyPress} 
+          onLoginClick={onLoginClick} 
+          onSignUpClick={onSignUpClick}
+        />
+      )}
+      
+      <div className="results-page">
+        <div className="results-page__container">
+          <div className="results-page__header">
+            <h1 className="results-page__title">
+              {isPlayerSearch && `Player Search: "${query}"`}
+              {isServerSearch && `Server Search: "${query}"`}
+              {!isPlayerSearch && !isServerSearch && 'Players of Light'}
+            </h1>
+            <p className="results-page__count">
+              Found {results.length} player{results.length !== 1 ? 's' : ''}
+            </p>
           </div>
-        )}
+
+          {error && (
+            <div className="results-page__error">
+              <p>{error}</p>
+              <button onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          )}
+
+          {!error && results.length > 0 && (
+            <div className="results-page__grid">
+              {results.map((player) => (
+                <ResultCard
+                  key={player.id}
+                  player={player}
+                  onClick={handleCardClick}
+                />
+              ))}
+            </div>
+          )}
+
+          {!error && results.length === 0 && !loading && (
+            <div className="results-page__no-results">
+              <p className="results-page__no-results-title">No players found.</p>
+              {isPlayerSearch && (
+                <p className="results-page__no-results-subtitle">
+                  No players found matching "{query}"
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 }
