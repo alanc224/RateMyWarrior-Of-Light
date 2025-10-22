@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const SECRET_KEY = process.env.SECRET_KEY;
 
-router.post("/login", async(requestAnimationFrame,res) => {
+router.post("/login", async(req,res) => {
 
     try {
         const { username, password } = req.body;
@@ -40,11 +40,26 @@ router.post("/login", async(requestAnimationFrame,res) => {
                 return res.status(500).json({ error: "Server error" })
             }
             try {
-                res.cookies('authToken', token, {}) 
+                res.cookie('authToken', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', 
+                    sameSite: 'Lax',
+                    maxAge: 2 * 60 * 60 * 1000,
+                    path: '/',
+                }); 
+            } catch (cookieError) {
+                return res.status(500).json({ error: "Server Error"})
             }
+            res.json({
+                message: "Login successful",
+                user: {
+                    username: user.username,
+                }
+            });
         }
+    } catch (err) {
+        res.status(500).json({ error: "Server Error."});
     }
+});
 
-
-
-})
+module.exports = router;
