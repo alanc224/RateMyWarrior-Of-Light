@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Days+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+.detail-page {
+    margin: 8rem 14rem;
+    width: 1000px;
+    font-family: Helvetica, sans-serif;
+}
+.detailpage-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+}
+.player-details {
+    width: 45%;
+}
+.player-name {
+    font-size: 2.7rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    padding: 0;
+    margin: 0;
+}
+.player-blurb {
+    font-size: .85rem;
+    padding: .25rem 0;
+}
+.rating-container {
+    display: inline-flex;
+    gap: 8px;
+}
+.player-rating-score {
+    font-family: "Poppins", sans-serif;
+    font-size: 4.75rem;
+    font-weight: 900;
+    line-height: 3rem;
+    /* padding:; */
+}
+.player-rating-max-score {
+    color: grey;
+    font-weight: bolder;
+}
+
+.bar-graph-container {
+    background-color: rgb(247, 247, 247);
+    padding: 1rem;
+}
+
+.player-overall-quality {
+    padding: 1rem 0;
+    font-size: .85rem;
+    font-weight: bold;
+}
+.rate-btn {
+    background-color: #0055fd;
+    padding: .75rem 3rem;
+    border-radius: 2rem;
+    border: none;
+    color: white;
+    font-weight: bold;
+    margin: 3rem 0;
+    cursor: pointer;
+}
+.rate-btn:hover {
+    background-color: #1100fd;
+}
+.reviews-container {
+    margin: 3rem 0;
+}
+.reviews-container > * {
+    margin-bottom: 1rem;
+}
+.load-more-ratings-btn {
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,49 @@
+.review-container {
+    position: relative;
+    display: flex;
+    gap: 2rem;
+    background-color: #f9f9f9;
+    padding: 2rem;
+}
+
+.review-rating-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding: 20px; */
+}
+.review-rating-container > p {
+    font-weight: bold;
+    font-size: .85rem;
+}
+.review-rating-container > div {
+    padding: .5rem .75rem;
+    font-family: "Poppins", sans-serif;
+    margin: .25rem;
+    font-size: 2rem;
+    font-weight: 900;
+}
+.red {
+    background-color: #ff9c9c;
+}
+.yellow {
+    background-color: #fff170;
+}
+.green {
+    background-color: #7ff6c3;
+}
+.review-player-id {
+    font-weight: 900;
+    font-family: "Poppins", sans-serif;
+}
+.review-date {
+    position: absolute;
+    right: 1.25rem;
+    top: 2rem;
+    font-weight: 600;
+    font-size: .85rem;
+}
+
+.review-upvotes {
+    padding: 1rem 0;
+}

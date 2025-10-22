@@ -6,6 +6,7 @@ import Home from './pages/Home/Home'
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
+import DetailedPage from './pages/DetailedPage/DetailedPage';
 
 type ModalView = 'LOGIN' | 'SIGN_UP' | null;
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
         <Route path="/results/:category/:query" element={<ResultsPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
+        <Route path="/detailpage/:id" element={<DetailedPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
       </Routes>
     </>
   )
