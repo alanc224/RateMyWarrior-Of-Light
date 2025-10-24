@@ -66,7 +66,7 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
     
       function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === 'Enter' && newQuery) {
-          navigate(`/results/players/${newQuery}`);
+          navigate(`/results/player/${newQuery}`);
         }
       }
     return (
