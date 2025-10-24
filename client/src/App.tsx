@@ -22,7 +22,7 @@ function App() {
       {modalView === 'SIGN_UP' && <Signup onClose={closeModal} onSwitchToLogin={openLoginModal} />}
       <Routes>
         <Route path="/" element={<Home onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
-        <Route path="/results/:category/:query" element={<ResultsPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
+        <Route path="/results/player/:query" element={<ResultsPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
         <Route path="/detailpage/:id" element={<DetailedPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
       </Routes>
     </>

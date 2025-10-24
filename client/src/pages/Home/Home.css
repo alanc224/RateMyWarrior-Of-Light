@@ -82,7 +82,8 @@
 }
 
 .home-body > .logo {
-    width: 500px;
+    /* width: 500px; */
+    height: 13.5em;
 }
 
 .home-more-info {
