@@ -28,7 +28,7 @@ mongoose.connect(mongoURI)
     .catch(err => console.log('MongoDB connection error:', err));
 
 app.use('/signup', signupRoutes);
-app.use('/', loginRoutes);
+app.use('/login', loginRoutes);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../client', 'index.html')));
 const cache = new Map();
 const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cache is just set to 15 minutes for now, can be changed later if need be
