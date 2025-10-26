@@ -8,6 +8,8 @@ const reviewSchema = new Schema({
     server: { type: String, required: true },   
     rating: { type: Number },
     comment: { type: String },
+    // Need created by date
+    // need the boolean questions
 });
 reviewSchema.index({ hash_user: 1, character_id: 1 }, { unique: true });
 

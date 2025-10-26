@@ -7,16 +7,28 @@ app.use(express.static(path.join(__dirname, '../client')));
 const axios = require('axios');
 const cheerio = require('cheerio');
 const cors = require('cors');
+const signupRoutes = require('./Routes/signup');
+const loginRoutes = require('./Routes/login');
+const authenticateToken = require('./middleware/authMiddleware');
+const redirectIfLoggedIn = require('./middleware/redirectIfLoggedIn');
+const cookieParser = require('cookie-parser');
+
 
 const mongoURI = process.env.MONGO_URI;
 
 app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../client')));
+
+
+
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));
 
-
-
+app.use('/signup', signupRoutes);
+app.use('/', loginRoutes);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../client', 'index.html')));
 const cache = new Map();
 const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cache is just set to 15 minutes for now, can be changed later if need be
@@ -107,6 +119,27 @@ app.get('/api/characters', async (req, res) => {
         res.status(500).json({ error: 'An Error Occured' });
     }
 });
+
+app.get('/login', authenticateToken, redirectIfLoggedIn, (req, res) => {
+    if (req.user) {
+        return res.redirect('/');
+    }
+    res.sendFile(path.join(__dirname, 'public/html', 'login.html'));
+});
+
+app.get('/signup', authenticateToken, redirectIfLoggedIn, (req, res) => {
+
+    if (req.user) {
+        return res.redirect('/');
+    }
+    res.sendFile(path.join(__dirname, 'public/html', 'signup.html'));
+});
+
+app.post('/api/auth/logout', authenticateToken,  (req, res) => {
+    res.clearCookie('authToken', { path: '/' });
+    res.json({ message: 'Logout successful' });
+});
+
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

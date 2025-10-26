@@ -2,4 +2,5 @@
 server/node_modules/
 server/.env
 server/test_reviews.js
+server/test_signup.js
 server/testserver.js
