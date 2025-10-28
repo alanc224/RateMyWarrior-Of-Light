@@ -51,7 +51,7 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
-    navigate(`/player/${player.id}`);
+    navigate(`/detailpage/${player.id}`);
   }
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {

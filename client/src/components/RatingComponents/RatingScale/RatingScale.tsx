@@ -49,9 +49,9 @@ const RatingScale = ({value, onChange}: RatingScaleProps) => {
     return (
         <div className='rating-component'>
             <div className='rating-question'>
-                <p>What do you rate your player??</p>
+                <p className='rating-subtitle'>Rate this player</p>
             </div>
-            <p>Value is {value}</p>
+            {/* <p>Value is {value}</p> */}
             <div className="rating-boxes">
                 <div
                     className={`rating-1 ${getBoxColor(1)}`}
