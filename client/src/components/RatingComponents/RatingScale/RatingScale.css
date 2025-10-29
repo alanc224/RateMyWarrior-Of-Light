@@ -1,0 +1,59 @@
+
+.rating-boxes {
+    display: flex;
+}
+
+.rating-boxes > * {
+    height: 2.5rem;
+    width: 3.75rem;
+    background-color: #f1f1f1; /* Default color for all boxes */
+    margin: 1px;
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
+}
+
+.rating-question { 
+    width: 100%;
+}
+
+.rating-1 {
+    border-radius: 2rem 0 0 2rem;
+}
+.rating-5 {
+    border-radius:  0 2rem 2rem 0;
+}
+/* Colors */
+.rating-hover-1 {
+    background-color: #f4a6a6;
+}
+.rating-hover-2 {
+    background-color: #f8c99f;
+}
+.rating-hover-3 {
+    background-color:#f8e2a0;
+}
+.rating-hover-4 {
+    background-color: #c3e6b3;
+}
+.rating-hover-5 {
+    background-color: #97cdae;
+}
+.rating-selected-1 {
+    background-color: #eb5757;
+}
+.rating-selected-2 {
+    background-color: #f2994a;
+}
+.rating-selected-3 {
+    background-color: #f2c94c;
+}
+.rating-selected-4 {
+    background-color: #8ecf6f;
+}
+.rating-selected-5 {
+    background-color: #219653;
+}
+
+.rating-boxes:first-child {
+    border-radius: 100px;
+    background-color: red;
+}

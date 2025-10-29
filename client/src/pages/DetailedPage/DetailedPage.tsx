@@ -66,7 +66,7 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
     
       function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === 'Enter' && newQuery) {
-          navigate(`/results/players/${newQuery}`);
+          navigate(`/results/player/${newQuery}`);
         }
       }
     return (
@@ -81,7 +81,7 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
                         <p className='player-overall-quality'>Overall Quality Based on <span style={{ textDecoration: 'underline' }}>{totalVotes} ratings</span></p>
                         <p className='player-name'>John Doe</p>
                         <p className='player-blurb'>Player in the Faerie server</p>
-                        <button className='rate-btn'>Rate!</button>
+                        <button className='rate-btn' onClick={() => navigate(`/rating/${id}`)}>Rate!</button>
                     </div>
                     <div className='bar-graph-container'>
                         <h3>Rating Distribution</h3>

@@ -51,7 +51,7 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
-    navigate(`/player/${player.id}`);
+    navigate(`/detailpage/${player.id}`);
   }
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -79,15 +79,15 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   return (
     <>
-      {(isPlayerSearch || isServerSearch) && (
-        <Header 
-          playerName={newQuery ?? ''}  
-          onChange={(e) => setNewQuery(e.target.value)} 
-          handleKeyPress={handleKeyPress} 
-          onLoginClick={onLoginClick} 
-          onSignUpClick={onSignUpClick}
-        />
-      )}
+      
+      <Header 
+        playerName={newQuery ?? ''}  
+        onChange={(e) => setNewQuery(e.target.value)} 
+        handleKeyPress={handleKeyPress} 
+        onLoginClick={onLoginClick} 
+        onSignUpClick={onSignUpClick}
+      />
+      
       
       <div className="results-page">
         <div className="results-page__container">
