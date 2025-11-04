@@ -17,11 +17,20 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
     query?: string; 
   }>();
   
-  const [results, setResults] = useState<PlayerInfo[]>([]);
+  const [allResults, setAllResults] = useState<PlayerInfo[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newQuery, setNewQuery] = useState(query);
   const navigate = useNavigate();
+
+  const RESULTS_PER_PAGE = 10;
+
+  // Calculate pagination
+  const totalPages = Math.ceil(allResults.length / RESULTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+  const endIndex = startIndex + RESULTS_PER_PAGE;
+  const currentResults = allResults.slice(startIndex, endIndex);
 
   useEffect(() => {
     async function fetchData() {
@@ -32,12 +41,13 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
       
       setLoading(true);
       setError(null);
+      setCurrentPage(1); // Reset to page 1 on new search
       
       try {
         console.log(`Fetching characters for query: ${query}`);
         const data = await searchCharacters(query);
         console.log(`Received ${data.length} characters`);
-        setResults(data);
+        setAllResults(data);
       } catch (err) {
         console.error('Error fetching characters:', err);
         setError('Failed to load characters. Please try again.');
@@ -57,6 +67,23 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter' && newQuery) {
       navigate(`/results/${category}/${encodeURIComponent(newQuery)}`);
+    }
+  }
+
+  function goToPage(page: number) {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  }
+
+  function previousPage() {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
     }
   }
 
@@ -98,7 +125,10 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
               {!isPlayerSearch && !isServerSearch && 'Players of Light'}
             </h1>
             <p className="results-page__count">
-              Found {results.length} player{results.length !== 1 ? 's' : ''}
+              Found {allResults.length} player{allResults.length !== 1 ? 's' : ''}
+              {allResults.length > RESULTS_PER_PAGE && (
+                <span> (Showing {startIndex + 1}-{Math.min(endIndex, allResults.length)})</span>
+              )}
             </p>
           </div>
 
@@ -109,19 +139,95 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
             </div>
           )}
 
-          {!error && results.length > 0 && (
-            <div className="results-page__grid">
-              {results.map((player) => (
-                <ResultCard
-                  key={player.id}
-                  player={player}
-                  onClick={handleCardClick}
-                />
-              ))}
-            </div>
+          {!error && currentResults.length > 0 && (
+            <>
+              <div className="results-page__grid">
+                {currentResults.map((player) => (
+                  <ResultCard
+                    key={player.id}
+                    player={player}
+                    onClick={handleCardClick}
+                  />
+                ))}
+              </div>
+
+              {/* Smart Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="pagination">
+                  {/* Previous Button */}
+                  <button 
+                    onClick={previousPage} 
+                    disabled={currentPage === 1}
+                    className="pagination__button"
+                  >
+                    ← Previous
+                  </button>
+                  
+                  {/* Smart Page Numbers */}
+                  <div className="pagination__pages">
+                    {/* Always show first page */}
+                    <button
+                      onClick={() => goToPage(1)}
+                      className={`pagination__page ${currentPage === 1 ? 'pagination__page--active' : ''}`}
+                    >
+                      1
+                    </button>
+                    
+                    {/* Show dots if there's a gap after first page */}
+                    {currentPage > 3 && (
+                      <span className="pagination__dots">...</span>
+                    )}
+                    
+                    {/* Show pages around current page */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(page => {
+                        // Show current page and 1 page on each side
+                        return page !== 1 && 
+                               page !== totalPages && 
+                               page >= currentPage - 1 && 
+                               page <= currentPage + 1;
+                      })
+                      .map(page => (
+                        <button
+                          key={page}
+                          onClick={() => goToPage(page)}
+                          className={`pagination__page ${page === currentPage ? 'pagination__page--active' : ''}`}
+                        >
+                          {page}
+                        </button>
+                      ))
+                    }
+                    
+                    {/* Show dots if there's a gap before last page */}
+                    {currentPage < totalPages - 2 && (
+                      <span className="pagination__dots">...</span>
+                    )}
+                    
+                    {/* Always show last page if there's more than 1 page */}
+                    {totalPages > 1 && (
+                      <button
+                        onClick={() => goToPage(totalPages)}
+                        className={`pagination__page ${currentPage === totalPages ? 'pagination__page--active' : ''}`}
+                      >
+                        {totalPages}
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Next Button */}
+                  <button 
+                    onClick={nextPage} 
+                    disabled={currentPage === totalPages}
+                    className="pagination__button"
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
-          {!error && results.length === 0 && !loading && (
+          {!error && allResults.length === 0 && !loading && (
             <div className="results-page__no-results">
               <p className="results-page__no-results-title">No players found.</p>
               {isPlayerSearch && (
