@@ -1,7 +1,7 @@
 import RatingScale from "../../components/RatingComponents/RatingScale/RatingScale";
 import RatingYesNo from "../../components/RatingComponents/RatingYesNo/RatingYesNo";
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Header from "../../components/Header/Header";
 import "./RatingPage.css"
 interface RatingPageProps {
@@ -18,6 +18,9 @@ const RatingPage = ({onLoginClick, onSignUpClick} : RatingPageProps) => {
     const [yesNo2, setYesNo2] = useState<"" | "yes" | "no">("");
     const [review, setReview] = useState("")
     const navigate = useNavigate();
+    const location = useLocation();
+    const state = location.state
+
     const[newQuery, setNewQuery] = useState("")
   
     function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -30,7 +33,7 @@ const RatingPage = ({onLoginClick, onSignUpClick} : RatingPageProps) => {
         
           <Header playerName={newQuery ?? ''}  onChange={(e) => {setNewQuery(e.target.value)}} handleKeyPress={handleKeyPress} onLoginClick={onLoginClick} onSignUpClick={onSignUpClick}/>
           <div className='rating-page-container'>
-            <p className='rating-name'>John Doe</p>
+            <p className='rating-name'>{state.name}</p>
             <p className='rating-add-rating'>Add Rating</p>
             <div className='rating-elements'>
               <RatingScale value={rating} onChange={(newValue) => setRating(newValue ?? 0)} />

@@ -37,6 +37,7 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
         console.log(`Fetching characters for query: ${query}`);
         const data = await searchCharacters(query);
         console.log(`Received ${data.length} characters`);
+        console.log(data[0])
         setResults(data);
       } catch (err) {
         console.error('Error fetching characters:', err);
@@ -51,7 +52,15 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
-    navigate(`/detailpage/${player.id}`);
+    navigate(`/detailpage/${player.id}`, {
+      state: {
+        id: player.id,
+        name: player.characterName,
+        portrait: player.portrait,
+        server: player.serverName,
+        world: player.worldName
+      }
+    });
   }
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
