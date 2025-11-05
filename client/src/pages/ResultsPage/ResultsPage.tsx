@@ -61,7 +61,15 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
-    navigate(`/detailpage/${player.id}`);
+    navigate(`/detailpage/${player.id}`, {
+      state: {
+        id: player.id,
+        name: player.characterName,
+        portrait: player.portrait,
+        server: player.serverName,
+        world: player.worldName
+      }
+    });
   }
 
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {

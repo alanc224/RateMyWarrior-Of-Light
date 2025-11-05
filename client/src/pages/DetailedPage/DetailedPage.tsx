@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import BarChart from "../../components/Barchart/BarChart";
 import "./DetailedPage.css"
 import Header from '../../components/Header/Header';
@@ -17,7 +17,20 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
     const { id } = useParams<{ 
         id?: string; 
     }>();
+    const location = useLocation();
+    const state = location.state
 
+    const redirectRate = () => {
+        navigate(`/rating/${id}`, {
+            state: {
+                id: state.id,
+                name: state.name,
+                portrait: state.portrait,
+                server: state.server,
+                world: state.world
+            }
+        })
+    }
     // Temp** fetch for ratings
     let ratings = [12, 4, 1, 3, 1];
     const totalVotes = ratings.reduce((sum, count) => sum + count, 0);
@@ -79,9 +92,9 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
                             <span className='player-rating-score'>{roundedAverage}</span><span className='player-rating-max-score'>/ 5</span>
                         </div>
                         <p className='player-overall-quality'>Overall Quality Based on <span style={{ textDecoration: 'underline' }}>{totalVotes} ratings</span></p>
-                        <p className='player-name'>John Doe</p>
-                        <p className='player-blurb'>Player in the Faerie server</p>
-                        <button className='rate-btn' onClick={() => navigate(`/rating/${id}`)}>Rate!</button>
+                        <p className='player-name'>{state.name}</p>
+                        <p className='player-blurb'>Player in the {state.server} server</p>
+                        <button className='rate-btn' onClick={redirectRate}>Rate!</button>
                     </div>
                     <div className='bar-graph-container'>
                         <h3>Rating Distribution</h3>
