@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import BarChart from "../../components/Barchart/BarChart";
 import "./DetailedPage.css"
@@ -32,15 +32,27 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
         })
     }
     // Temp** fetch for ratings
-    let ratings = [12, 4, 1, 3, 1];
+    const [ratings, setRatings] = useState([0,0,0,0,0])
+    const [average, setAverage] = useState(0);
+    useEffect(() => {
+        const getReviews = async () => {
+            const response = await fetch(`http://localhost:5001/review/character/${id}`);
+            const data = await response.json()
+            setRatings(data.ratings)
+            setAverage(data.average)
+        }
+        getReviews()
+
+    },[])
+    // let ratings = [12, 4, 1, 3, 1];
     const totalVotes = ratings.reduce((sum, count) => sum + count, 0);
 
-    const weightedSum = ratings.reduce((sum, count, index) => {
-        const weight = 5 - index;
-        return sum + count * weight;
-    }, 0);
+    // const weightedSum = ratings.reduce((sum, count, index) => {
+    //     const weight = 5 - index;
+    //     return sum + count * weight;
+    // }, 0);
 
-    const average = totalVotes === 0 ? 0 : weightedSum / totalVotes;
+    // const average = totalVotes === 0 ? 0 : weightedSum / totalVotes;
     const roundedAverage = Math.round(average * 10) / 10;
 
     const [visibleCount, setVisibleCount] = useState(3);
@@ -89,9 +101,9 @@ const DetailedPage = ({onLoginClick, onSignUpClick}: DetailedPageProps) => {
                 <div className='detailpage-container'>
                     <div className='player-details'>
                         <div className='rating-container'>
-                            <span className='player-rating-score'>{roundedAverage}</span><span className='player-rating-max-score'>/ 5</span>
+                            <span className='player-rating-score'>{totalVotes != 0 ? roundedAverage : "N/A"}</span><span className='player-rating-max-score'>/ 5</span>
                         </div>
-                        <p className='player-overall-quality'>Overall Quality Based on <span style={{ textDecoration: 'underline' }}>{totalVotes} ratings</span></p>
+                        <p className='player-overall-quality'>{totalVotes != 0 ? "Overall Quality Based on" : "No ratings yet."} <span style={{ textDecoration: 'underline' }}>{totalVotes != 0 ? "ratings" : "Add a rating."}</span></p>
                         <p className='player-name'>{state.name}</p>
                         <p className='player-blurb'>Player in the {state.server} server</p>
                         <button className='rate-btn' onClick={redirectRate}>Rate!</button>
