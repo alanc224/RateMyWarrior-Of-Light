@@ -9,6 +9,7 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const signupRoutes = require('./Routes/signup');
 const loginRoutes = require('./Routes/login');
+const reviewRoute = require('./Routes/review');
 const authenticateToken = require('./middleware/authMiddleware');
 const redirectIfLoggedIn = require('./middleware/redirectIfLoggedIn');
 const cookieParser = require('cookie-parser');
@@ -26,10 +27,12 @@ app.use(express.static(path.join(__dirname, '../client')));
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));
-
+app.use(authenticateToken);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
+app.use('/api/reviews', reviewRoute);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../client', 'index.html')));
+
 const cache = new Map();
 const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cache is just set to 15 minutes for now, can be changed later if need be
 

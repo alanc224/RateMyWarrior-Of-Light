@@ -4,9 +4,9 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 const authenticateToken = async (req, res, next) => {
     const token = req.cookies.authToken;
-    const publicRoutes = ['/', '/signin', '/signup', '/logout', '/api/auth/status', '/character_page', '/character_results'];  
+    const publicRoutes = ['/', '/signin', '/login', '/logout', '/api/auth/status', '/character_page', '/character_results'];  
     const publicApiRoutePatterns = [
-    /^\/[^\/]+\/reviews$/
+        /\/[^\/]+\/reviews$/ 
     ];
 
     let isAuthenticated = false;
@@ -34,7 +34,8 @@ const authenticateToken = async (req, res, next) => {
         return next();
     }
     if (!isAuthenticated) {
-        if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        const acceptsJson = req.headers.accept && req.headers.accept.indexOf('json') > -1;  
+        if (req.xhr || acceptsJson) {
             return res.status(401).json({ error: 'Unauthorized - Please sign in.' });
         }
         return res.redirect('/signin');

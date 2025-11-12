@@ -1,6 +1,7 @@
 .env
 server/node_modules/
 server/.env
+server/ffxivapi
 server/test_reviews.js
 server/test_signup.js
 server/test_login.js
