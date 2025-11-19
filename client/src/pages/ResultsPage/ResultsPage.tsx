@@ -6,12 +6,7 @@ import { searchCharacters } from '../../services/api';
 import Header from '../../components/Header/Header';
 import './ResultsPage.css';
 
-interface ResultsPageProps {
-  onLoginClick: () => void;
-  onSignUpClick: () => void;
-}
-
-function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
+function ResultsPage() {
   const { category, query } = useParams<{ 
     category?: string; 
     query?: string; 
@@ -114,15 +109,7 @@ function ResultsPage({ onLoginClick, onSignUpClick }: ResultsPageProps) {
 
   return (
     <>
-      
-      <Header 
-        playerName={newQuery ?? ''}  
-        onChange={(e) => setNewQuery(e.target.value)} 
-        handleKeyPress={handleKeyPress} 
-        onLoginClick={onLoginClick} 
-        onSignUpClick={onSignUpClick}
-      />
-      
+      <Header />
       
       <div className="results-page">
         <div className="results-page__container">
