@@ -87,7 +87,7 @@ const DetailedPage = () => {
     const hasMore = visibleCount < reviews.length;
 
     const navigate = useNavigate();
-    const [newQuery, setNewQuery] = useState("");
+    // const [newQuery, setNewQuery] = useState("");
 
     // What are these functions for? commenting out until used
     /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
