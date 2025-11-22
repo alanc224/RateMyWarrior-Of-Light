@@ -16,7 +16,7 @@ function ResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newQuery, setNewQuery] = useState(query);
+  // const [newQuery, setNewQuery] = useState(query);
   const navigate = useNavigate();
 
   const RESULTS_PER_PAGE = 10;
@@ -67,11 +67,11 @@ function ResultsPage() {
     });
   }
 
-  function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+ /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter' && newQuery) {
       navigate(`/results/${category}/${encodeURIComponent(newQuery)}`);
     }
-  }
+  } */
 
   function goToPage(page: number) {
     setCurrentPage(page);

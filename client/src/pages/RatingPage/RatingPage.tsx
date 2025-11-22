@@ -14,13 +14,13 @@ const RatingPage = () => {
     const location = useLocation();
     const state = location.state;
 
-    const [newQuery, setNewQuery] = useState("");
+    // const [newQuery, setNewQuery] = useState("");
 
-    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+    /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) { commented this out until used
         if (event.key === 'Enter' && newQuery) {
             navigate(`/results/player/${newQuery}`);
         }
-    }
+    }*/
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -107,8 +107,13 @@ const RatingPage = () => {
 
                         </div>
                     </div>
+                    {error && (
+                        <div className="error-message" style={{ color: 'red', marginBottom: '15px' }}>
+                            {error}
+                        </div>
+                    )}
                     <div className="rating-component">
-                        <button className='rating-submit-btn' onClick={handleSubmitReview}>Submit Rating</button>
+                        <button className='rating-submit-btn' onClick={handleSubmitReview} disabled={loading}> {loading ? 'Submitting...' : 'Submit Rating'}</button>
                     </div>
                 </div>
             </div>

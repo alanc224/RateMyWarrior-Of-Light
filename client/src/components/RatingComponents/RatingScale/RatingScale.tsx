@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react' // removed import React since it wasnt used 
 import "./RatingScale.css"
 interface RatingScaleProps {
   value: number;
   onChange?: (newValue: number | null) => void;
 }
-const RatingScale = ({value, onChange}: RatingScaleProps) => {
+const RatingScale = ({/*value,*/ onChange}: RatingScaleProps) => { // What is value used for?
     const [hovered, setHovered] = useState<number | null>(null);
     const [selected, setSelected] = useState<number | null>(null); 
     const [isHovering, setIsHovering] = useState<boolean>(false);

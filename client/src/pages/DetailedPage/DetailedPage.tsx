@@ -89,14 +89,16 @@ const DetailedPage = () => {
     const navigate = useNavigate();
     const [newQuery, setNewQuery] = useState("");
 
-    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+    // What are these functions for? commenting out until used
+    /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === 'Enter' && newQuery) {
             navigate(`/results/player/${newQuery}`);
         }
     }
      function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         setNewQuery(event.target.value);
-    }
+    } */ 
+
     return (
         <>
             <Header />
