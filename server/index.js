@@ -17,7 +17,12 @@ const cookieParser = require('cookie-parser');
 
 const mongoURI = process.env.MONGO_URI;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../client')));
@@ -27,7 +32,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));
-app.use(authenticateToken);
+// app.use(authenticateToken);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
 app.use('/api/reviews', reviewRoute);
@@ -123,14 +128,14 @@ app.get('/api/characters', async (req, res) => {
     }
 });
 
-app.get('/login', authenticateToken, redirectIfLoggedIn, (req, res) => {
+app.get('/login', redirectIfLoggedIn, (req, res) => {
     if (req.user) {
         return res.redirect('/');
     }
     res.sendFile(path.join(__dirname, 'public/html', 'login.html'));
 });
 
-app.get('/signup', authenticateToken, redirectIfLoggedIn, (req, res) => {
+app.get('/signup', redirectIfLoggedIn, (req, res) => {
 
     if (req.user) {
         return res.redirect('/');
@@ -142,7 +147,12 @@ app.post('/api/auth/logout', authenticateToken,  (req, res) => {
     res.clearCookie('authToken', { path: '/' });
     res.json({ message: 'Logout successful' });
 });
-
+app.get('/api/auth/check', authenticateToken, (req, res) => {
+  res.json({
+    isAuthenticated: true,
+    username: req.user.username,
+  });
+});
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
