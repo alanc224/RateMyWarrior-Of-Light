@@ -10,7 +10,7 @@ import "./Home.css"
 function Home() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
-  const { isAuthenticated, playerName, setModalView, logout } = useAuth();
+  const { isAuthenticated, setModalView, logout } = useAuth(); // removed playerName since it wasnt used add back if need be
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {

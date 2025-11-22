@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react"; leave commented out until used
 import Checkmark from "../../../assets/rate/checkmark.png";
 import Xmark from "../../../assets/rate/xmark.png";
 import "./RatingYesNo.css"

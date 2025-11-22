@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react'; Commented out for now since its not used
 import type { PlayerInfo } from '../types/player';
 import './ResultCard.css';
 
