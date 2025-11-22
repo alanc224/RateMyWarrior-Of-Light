@@ -27,8 +27,8 @@ const Review = ({rating, comment, date, id} : ReviewProps) => {
             <div className='review-information-container'>
                 <p className='review-player-id'>{id}</p>
                 <br></br>
-                <span>Test</span> <span>test 2</span>
-                <br></br><br></br>
+                {/* <span>Test</span> <span>test 2</span> */}
+                {/* <br></br><br></br> */}
                 <p className='review-description'>
                     {comment}
                     {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error natus corporis soluta. Tempora tenetur nobis a iure neque sunt, voluptatum ipsa officia veritatis magni iste? Saepe deleniti deserunt ipsa repellendus. */}

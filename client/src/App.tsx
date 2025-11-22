@@ -1,34 +1,31 @@
-import { useState } from 'react'
-import { Routes, Route, Link } from 'react-router-dom';
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import './App.css';
+import { useAuth } from './services/AuthContext';
 
-import Home from './pages/Home/Home'
+import Home from './pages/Home/Home';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import DetailedPage from './pages/DetailedPage/DetailedPage';
 import RatingPage from './pages/RatingPage/RatingPage';
 
-type ModalView = 'LOGIN' | 'SIGN_UP' | null;
 function App() {
-  const [modalView, setModalView] = useState<ModalView>(null);
+    const { modalView, setModalView } = useAuth()
+    const closeModal = () => setModalView(null);
 
-  const openLoginModal = () => setModalView('LOGIN');
-  const openSignUpModal = () => setModalView('SIGN_UP');
-  const closeModal = () => setModalView(null);
+    return (
+        <>
+            {modalView === 'LOGIN' && <Login onClose={closeModal} />}
+            {modalView === 'SIGN_UP' && <Signup onClose={closeModal} />}
 
-  return (
-    <>
-      {modalView === 'LOGIN' && <Login onClose={closeModal} onSwitchToSignUp={openSignUpModal} />}
-      {modalView === 'SIGN_UP' && <Signup onClose={closeModal} onSwitchToLogin={openLoginModal} />}
-      <Routes>
-        <Route path="/" element={<Home onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
-        <Route path="/results/player/:query" element={<ResultsPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
-        <Route path="/detailpage/:id" element={<DetailedPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal}/>} />
-        <Route path="/rating/:id" element={<RatingPage onLoginClick={openLoginModal} onSignUpClick={openSignUpModal} />} />
-      </Routes>
-    </>
-  )
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/results/player/:query" element={<ResultsPage />} />
+                <Route path="/detailpage/:id" element={<DetailedPage />} />
+                <Route path="/rating/:id" element={<RatingPage />} />
+            </Routes>
+        </>
+    );
 }
 
-export default App
+export default App;
