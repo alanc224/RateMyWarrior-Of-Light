@@ -5,11 +5,13 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const authenticateToken = async (req, res, next) => {
     const token = req.cookies.authToken;
     const publicRoutes = ['/', '/signup', '/login', '/logout', '/api/auth/status', '/character_page', '/character_results'];  
+    const isPublicApiEndpoint = req.path.startsWith('/api/characters'); 
     const publicApiRoutePatterns = [
         /\/[^\/]+\/reviews$/ 
     ];
 
     let isAuthenticated = false;
+
 
    if (token) {
         try {
@@ -19,14 +21,14 @@ const authenticateToken = async (req, res, next) => {
             if (user) {
                 req.user = { id: user._id, username: user.username };
                 isAuthenticated = true;
-                console.log("Authenticated user:", req.user);  // Check req.user
+                // console.log("Authenticated user:", req.user);  // Check req.user
 
             } else {
                 res.clearCookie('authToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/' });
             }
         } catch (error) {
             res.clearCookie('authToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/' });
-            console.log("Error verifying token:", error);
+            // console.log("Error verifying token:", error);
 
         }
     }
@@ -38,11 +40,11 @@ const authenticateToken = async (req, res, next) => {
         return next();
     }
     if (!isAuthenticated) {
-        const acceptsJson = req.headers.accept && req.headers.accept.indexOf('json') > -1;  
-        if (req.xhr || acceptsJson) {
+        // const acceptsJson = req.headers.accept && req.headers.accept.indexOf('json') > -1;  
+        return res.status(401).json({ error: 'Unauthorized' });
+        /*if (req.xhr || acceptsJson) {
             return res.status(401).json({ error: 'Unauthorized - Please sign in.' });
-        }
-        return res.redirect('/login');
+        }*/
     }
     next();
 };
