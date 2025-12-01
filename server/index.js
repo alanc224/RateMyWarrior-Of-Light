@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
-app.use(express.static(path.join(__dirname, '../client')));
 const axios = require('axios');
 const cheerio = require('cheerio');
 const cors = require('cors');
@@ -18,14 +17,16 @@ const cookieParser = require('cookie-parser');
 const mongoURI = process.env.MONGO_URI;
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173', 
+        'https://ratemywarrioroflight.onrender.com/'
+    ],
     credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../client')));
 
 
 
@@ -36,7 +37,6 @@ mongoose.connect(mongoURI)
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
 app.use('/api/reviews', reviewRoute);
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../client', 'index.html')));
 
 const cache = new Map();
 const CACHE_EXPIRATION_TIME = 15 * 60 * 1000; // Note: cache is just set to 15 minutes for now, can be changed later if need be
@@ -127,7 +127,7 @@ app.get('/api/characters', async (req, res) => {
         res.status(500).json({ error: 'An Error Occured' });
     }
 });
-
+/*
 app.get('/login', redirectIfLoggedIn, (req, res) => {
     if (req.user) {
         return res.redirect('/');
@@ -141,7 +141,7 @@ app.get('/signup', redirectIfLoggedIn, (req, res) => {
         return res.redirect('/');
     }
     res.sendFile(path.join(__dirname, 'public/html', 'signup.html'));
-});
+});*/
 
 app.post('/api/auth/logout', authenticateToken,  (req, res) => {
     res.clearCookie('authToken', { path: '/' });
