@@ -37,7 +37,7 @@ const DetailedPage = () => {
             if (!id) return;
 
             try {
-                const response = await fetch(`http://localhost:5001/api/reviews/${id}/reviews`);
+                const response = await fetch(/*`http://localhost:5001/api/reviews/${id}/reviews`*/`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`);
                 if (!response.ok) {
                     console.error("Failed to fetch reviews:", response.statusText);
                     return;
