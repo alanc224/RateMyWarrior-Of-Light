@@ -19,7 +19,7 @@ const mongoURI = process.env.MONGO_URI;
 const corsOptions = {
     origin: [
         'http://localhost:5173', 
-        'https://ratemywarrioroflight.onrender.com/'
+        'https://ratemywarrioroflight.onrender.com'
     ],
     credentials: true,
 };
@@ -27,6 +27,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+app.options('*', cors(corsOptions));
 
 
 
