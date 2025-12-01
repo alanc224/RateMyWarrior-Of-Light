@@ -52,7 +52,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = () => setIsAuthenticated(true);
-  const logout = () => {};
+  const logout = async () => {
+      try {
+        await fetch("http://localhost:5001/api/auth/logout", {
+          method: "POST",
+          credentials: "include"
+        });
+
+        setIsAuthenticated(false);
+        setPlayerName('');
+      } catch (err) {
+        console.error("Logout failed", err);
+      }
+  };
 
   if (loading) {
     return null;
