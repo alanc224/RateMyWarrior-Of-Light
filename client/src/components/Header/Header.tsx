@@ -5,12 +5,13 @@ import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, setModalView } = useAuth(); // playerName isn't used so it was removed, if needed just add it back
+  const { isAuthenticated, setModalView, logout } = useAuth(); // playerName isn't used so it was removed, if needed just add it back
 
   const handleLoginClick = () => setModalView('LOGIN');
   const handleSignUpClick = () => setModalView('SIGN_UP');
 
   const handleLogout = () => {
+    logout()
     navigate('/');
   };
 
