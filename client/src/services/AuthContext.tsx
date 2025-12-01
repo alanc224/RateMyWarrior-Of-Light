@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/auth/check', {
+        const response = await fetch( 'https://ratemywarrioroflight-api.onrender.com/api/auth/check'/*'http://localhost:5001/api/auth/check' */, {
           method: 'GET',
           credentials: 'include',
         });
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = () => setIsAuthenticated(true);
   const logout = async () => {
       try {
-        await fetch("http://localhost:5001/api/auth/logout", {
+        await fetch(/*"http://localhost:5001/api/auth/logout"*/ "https://ratemywarrioroflight-api.onrender.com/api/auth/logout", {
           method: "POST",
           credentials: "include"
         });

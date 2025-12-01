@@ -44,7 +44,7 @@ const RatingPage = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:5001/api/reviews', {
+            const response = await fetch(/*'http://localhost:5001/api/reviews'*/ 'https://ratemywarrioroflight-api.onrender.com/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
