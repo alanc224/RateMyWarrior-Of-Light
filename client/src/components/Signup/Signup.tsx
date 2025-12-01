@@ -19,7 +19,7 @@ const Signup: React.FC<SignupProps> = ({ onClose }) => {
 
         try {
             setLoading(true);
-            const response = await fetch(/*"http://localhost:5001/signup"*/ "https://ratemywarrioroflight-api.onrender.com", {
+            const response = await fetch(/*"http://localhost:5001/signup"*/ "https://ratemywarrioroflight-api.onrender.com/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

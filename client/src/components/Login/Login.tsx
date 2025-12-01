@@ -15,7 +15,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
     const handleLogin = async () => {
         try {
             setLoading(true);
-            const response = await fetch(/*"http://localhost:5001/login"*/ "https://ratemywarrioroflight-api.onrender.com", {
+            const response = await fetch(/*"http://localhost:5001/login"*/ "https://ratemywarrioroflight-api.onrender.com/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
