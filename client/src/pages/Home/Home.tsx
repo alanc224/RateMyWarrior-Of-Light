@@ -106,7 +106,7 @@ function Home() {
 
       <section className="home-more-info">
         <h1>Join the Family</h1>
-        <h3>Love Rate My Warrior-Of-Light? Become a user.</h3>
+        <h3>Love Rate My Warrior Of Light? Become a user.</h3>
         <div className="icon-container">
           <div className="icon">
             <img src={Icon1} alt="icon 1" />

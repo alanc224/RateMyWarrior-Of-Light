@@ -118,7 +118,7 @@ function ResultsPage() {
                   {world && <span className="results-page__world"> on {world}</span>}
                 </>
               )}
-              {!isPlayerSearch && 'Players of Light'}
+              {!isPlayerSearch && 'Warriors of Light'}
             </h1>
             <p className="results-page__count">
               Found {allResults.length} player{allResults.length !== 1 ? 's' : ''}
