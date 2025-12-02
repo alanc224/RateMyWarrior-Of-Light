@@ -1,4 +1,3 @@
-// import React from 'react'; Commented out for now since its not used
 import type { PlayerInfo } from '../types/player';
 import './ResultCard.css';
 
@@ -13,6 +12,32 @@ function ResultCard({ player, onClick }: ResultCardProps) {
       className="result-card"
       onClick={() => onClick?.(player)}
     >
+      {/* Character Portrait */}
+      <div className="result-card__portrait-container">
+        {player.portrait ? (
+          <img 
+            src={player.portrait} 
+            alt={`${player.characterName}'s portrait`}
+            className="result-card__portrait"
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.currentTarget.style.display = 'none';
+              if (e.currentTarget.nextElementSibling) {
+                (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+              }
+            }}
+          />
+        ) : null}
+        <div 
+          className="result-card__portrait-fallback" 
+          style={{ display: player.portrait ? 'none' : 'flex' }}
+        >
+          <span className="result-card__portrait-initial">
+            {player.characterName.charAt(0).toUpperCase()}
+          </span>
+        </div>
+      </div>
+
       {/* Character Name */}
       <h3 className="result-card__name">
         {player.characterName}
@@ -20,7 +45,6 @@ function ResultCard({ player, onClick }: ResultCardProps) {
 
       {/* Basic Info */}
       <div className="result-card__info">
-
         {/* Server */}
         <p className="result-card__server">
           {player.worldName}
