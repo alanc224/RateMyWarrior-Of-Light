@@ -5,19 +5,19 @@ import type { PlayerInfo } from '../types/player';
  * Search for characters by name
  * Calls your backend which scrapes Lodestone
  */
-export async function searchCharacters(name: string): Promise<PlayerInfo[]> {
+export async function searchCharacters(name: string, world: string = 'Faerie'): Promise<PlayerInfo[]> {
   try {
     const { data } = await apiClient.get('/characters', {
-      params: { name }
+      params: { name, world }
     });
     
     // Transform backend format to match PlayerInfo interface
     return data.map((char: any) => ({
-      id: char.id,
-      characterName: char.name,
-      serverName: char.world,
-      worldName: char.world,
-      portrait: 'https://via.placeholder.com/150/4A90E2/FFFFFF?text=FFXIV', // Simple placeholder
+      id: char.ID,
+      characterName: char.Name,
+      serverName: char.World,
+      worldName: char.World,
+      portrait: char.Avatar,
       rating: undefined,
       reviewCount: undefined,
     }));
