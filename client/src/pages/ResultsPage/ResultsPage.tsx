@@ -7,8 +7,9 @@ import Header from '../../components/Header/Header';
 import './ResultsPage.css';
 
 function ResultsPage() {
-  const { category, query } = useParams<{ 
-    category?: string; 
+  const { category, world, query } = useParams<{ 
+    category?: string;
+    world?: string;
     query?: string; 
   }>();
   
@@ -16,7 +17,6 @@ function ResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // const [newQuery, setNewQuery] = useState(query);
   const navigate = useNavigate();
 
   const RESULTS_PER_PAGE = 10;
@@ -39,8 +39,11 @@ function ResultsPage() {
       setCurrentPage(1); // Reset to page 1 on new search
       
       try {
-        console.log(`Fetching characters for query: ${query}`);
-        let data = await searchCharacters(query);
+        console.log(`Fetching characters: ${query} on world: ${world || 'all'}`);
+        
+        // Call API with character name and world
+        const data = await searchCharacters(query, world || '');
+        
         console.log(`Received ${data.length} characters`);
         console.log(data)
         setAllResults(data);
@@ -53,7 +56,7 @@ function ResultsPage() {
     }
     
     fetchData();
-  }, [category, query]);
+  }, [category, world, query]);
 
   function handleCardClick(player: PlayerInfo) {
     console.log('Navigate to player profile:', player.id);
@@ -67,12 +70,6 @@ function ResultsPage() {
       }
     });
   }
-
- /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter' && newQuery) {
-      navigate(`/results/${category}/${encodeURIComponent(newQuery)}`);
-    }
-  } */
 
   function goToPage(page: number) {
     setCurrentPage(page);
@@ -92,7 +89,6 @@ function ResultsPage() {
   }
 
   const isPlayerSearch = category === 'player';
-  const isServerSearch = category === 'server';
 
   if (loading) {
     return (
@@ -116,9 +112,13 @@ function ResultsPage() {
         <div className="results-page__container">
           <div className="results-page__header">
             <h1 className="results-page__title">
-              {isPlayerSearch && `Player Search: "${query}"`}
-              {isServerSearch && `Server Search: "${query}"`}
-              {!isPlayerSearch && !isServerSearch && 'Players of Light'}
+              {isPlayerSearch && (
+                <>
+                  Player: "{query}"
+                  {world && <span className="results-page__world"> on {world}</span>}
+                </>
+              )}
+              {!isPlayerSearch && 'Players of Light'}
             </h1>
             <p className="results-page__count">
               Found {allResults.length} player{allResults.length !== 1 ? 's' : ''}
@@ -228,7 +228,7 @@ function ResultsPage() {
               <p className="results-page__no-results-title">No players found.</p>
               {isPlayerSearch && (
                 <p className="results-page__no-results-subtitle">
-                  No players found matching "{query}"
+                  No players found matching "{query}"{world && ` on ${world}`}
                 </p>
               )}
             </div>
