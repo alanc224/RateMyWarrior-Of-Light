@@ -39,12 +39,10 @@ function ResultsPage() {
       setCurrentPage(1); // Reset to page 1 on new search
       
       try {
-        console.log(`Fetching characters: ${query} on world: ${world || 'all'}`);
-        
-        // Call API with character name and world
-        const data = await searchCharacters(query);
-        
+        console.log(`Fetching characters for query: ${query}`);
+        let data = await searchCharacters(query);
         console.log(`Received ${data.length} characters`);
+        console.log(data)
         setAllResults(data);
       } catch (err) {
         console.error('Error fetching characters:', err);
