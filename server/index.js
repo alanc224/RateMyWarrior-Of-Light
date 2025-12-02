@@ -89,8 +89,9 @@ app.post('/api/auth/logout', authenticateToken,  (req, res) => {
     res.clearCookie('authToken', { 
         httpOnly: true, 
         secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'Lax', 
-        path: '/' 
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        path: '/',
+        expires: new Date(0), 
     });
     res.json({ message: 'Logout successful' });
 });
