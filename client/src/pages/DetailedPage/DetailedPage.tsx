@@ -62,7 +62,7 @@ const DetailedPage = () => {
                     let count = 0;
                     data.reviews.forEach((r: any) => {
                         if (r.rating >= 1 && r.rating <= 5) {
-                            counts[r.rating - 1]++;
+                            counts[5 - r.rating]++;
                             total += r.rating;
                             count++;
                         }
