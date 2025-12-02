@@ -5,7 +5,7 @@ import type { PlayerInfo } from '../types/player';
  * Search for characters by name
  * Calls your backend which scrapes Lodestone
  */
-export async function searchCharacters(name: string, world: string = 'Faerie'): Promise<PlayerInfo[]> {
+export async function searchCharacters(name: string, world: string): Promise<PlayerInfo[]> {
   try {
     const { data } = await apiClient.get('/characters', {
       params: { name, world }

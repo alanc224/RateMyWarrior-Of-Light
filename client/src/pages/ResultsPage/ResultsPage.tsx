@@ -42,7 +42,7 @@ function ResultsPage() {
         console.log(`Fetching characters: ${query} on world: ${world || 'all'}`);
         
         // Call API with character name and world
-        const data = await searchCharacters(query);
+        const data = await searchCharacters(query, world || '');
         
         console.log(`Received ${data.length} characters`);
         console.log(data)
