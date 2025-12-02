@@ -86,8 +86,13 @@ app.get('/signup', redirectIfLoggedIn, (req, res) => {
 });*/
 
 app.post('/api/auth/logout', authenticateToken,  (req, res) => {
-    res.clearCookie('authToken', { path: '/' });
-    res.json({ message: 'Logout successful' });
+    res.clearCookie('authToken', { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'Lax', 
+        path: '/' 
+    });
+    res.json({ message: 'Logout successful' });
 });
 app.get('/api/auth/check', authenticateToken, (req, res) => {
   res.json({
