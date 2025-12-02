@@ -23,7 +23,7 @@ function ResultCard({ player, onClick }: ResultCardProps) {
 
         {/* Server */}
         <p className="result-card__server">
-          {player.serverName}
+          {player.worldName}
         </p>
 
         {/* Rating */}

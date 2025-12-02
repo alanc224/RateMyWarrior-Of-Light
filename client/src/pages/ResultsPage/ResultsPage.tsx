@@ -40,8 +40,9 @@ function ResultsPage() {
       
       try {
         console.log(`Fetching characters for query: ${query}`);
-        const data = await searchCharacters(query);
+        let data = await searchCharacters(query);
         console.log(`Received ${data.length} characters`);
+        console.log(data)
         setAllResults(data);
       } catch (err) {
         console.error('Error fetching characters:', err);
