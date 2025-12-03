@@ -1,59 +1,90 @@
-
 .rating-boxes {
     display: flex;
+    gap: 2px;
 }
 
 .rating-boxes > * {
-    height: 2.5rem;
-    width: 3.75rem;
-    background-color: #f1f1f1; /* Default color for all boxes */
-    margin: 1px;
-    transition: background-color 0.3s ease; /* Smooth transition for hover */
+    height: 3rem;
+    width: 4.5rem;
+    background-color: #1a1a2e; /* Dark background matching theme */
+    border: 2px solid #0f3460;
+    margin: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.rating-boxes > *:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .rating-question { 
     width: 100%;
+    margin-bottom: 1rem;
+}
+
+.rating-subtitle {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 .rating-1 {
-    border-radius: 2rem 0 0 2rem;
+    border-radius: 0.5rem 0 0 0.5rem;
 }
 .rating-5 {
-    border-radius:  0 2rem 2rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
 }
-/* Colors */
+
+/* Hover Colors - Slightly muted versions */
 .rating-hover-1 {
-    background-color: #f4a6a6;
+    background-color: #ff6b6b;
+    border-color: #ff6b6b;
 }
 .rating-hover-2 {
-    background-color: #f8c99f;
+    background-color: #ffa94d;
+    border-color: #ffa94d;
 }
 .rating-hover-3 {
-    background-color:#f8e2a0;
+    background-color: #ffd93d;
+    border-color: #ffd93d;
 }
 .rating-hover-4 {
-    background-color: #c3e6b3;
+    background-color: #95d5a7;
+    border-color: #95d5a7;
 }
 .rating-hover-5 {
-    background-color: #97cdae;
+    background-color: #6bcf9f;
+    border-color: #6bcf9f;
 }
+
+/* Selected Colors - Bright and vibrant */
 .rating-selected-1 {
     background-color: #eb5757;
+    border-color: #eb5757;
+    box-shadow: 0 0 15px rgba(235, 87, 87, 0.5);
 }
 .rating-selected-2 {
     background-color: #f2994a;
+    border-color: #f2994a;
+    box-shadow: 0 0 15px rgba(242, 153, 74, 0.5);
 }
 .rating-selected-3 {
     background-color: #f2c94c;
+    border-color: #f2c94c;
+    box-shadow: 0 0 15px rgba(242, 201, 76, 0.5);
 }
 .rating-selected-4 {
     background-color: #8ecf6f;
+    border-color: #8ecf6f;
+    box-shadow: 0 0 15px rgba(142, 207, 111, 0.5);
 }
 .rating-selected-5 {
     background-color: #219653;
+    border-color: #219653;
+    box-shadow: 0 0 15px rgba(33, 150, 83, 0.5);
 }
 
-.rating-boxes:first-child {
-    border-radius: 100px;
-    background-color: red;
+.rating-component {
+    padding: 1rem 0;
 }

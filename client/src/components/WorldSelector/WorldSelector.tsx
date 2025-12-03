@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { dataCenters } from '../../data/worlds';
-import './WorldSelector.css';
+import '../WorldSelector/WorldSelector';
 
 interface WorldSelectorProps {
   value: string;
