@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { PlayerInfo } from '../../types/player'; 
 import ResultCard from '../../components/ResultCard';
-import { searchCharacters } from '../../services/api';
+import { searchCharacters, getCharacterRatings } from '../../services/api';
 import Header from '../../components/Header/Header';
 import './ResultsPage.css';
 
@@ -41,12 +41,24 @@ function ResultsPage() {
       try {
         console.log(`Fetching characters: ${query} on world: ${world || 'all'}`);
         
-        // Call API with character name and world
+        // Step 1: Get characters from Lodestone
         const data = await searchCharacters(query, world || '');
-        
         console.log(`Received ${data.length} characters`);
-        console.log(data)
-        setAllResults(data);
+        
+        // Step 2: Fetch ratings for each character from MongoDB
+        const charactersWithRatings = await Promise.all(
+          data.map(async (character) => {
+            const ratings = await getCharacterRatings(character.id);
+            return {
+              ...character,
+              rating: ratings?.rating,
+              reviewCount: ratings?.reviewCount
+            };
+          })
+        );
+        
+        console.log('Characters with ratings:', charactersWithRatings);
+        setAllResults(charactersWithRatings);
       } catch (err) {
         console.error('Error fetching characters:', err);
         setError('Failed to load characters. Please try again.');
@@ -118,7 +130,7 @@ function ResultsPage() {
                   {world && <span className="results-page__world"> on {world}</span>}
                 </>
               )}
-              {!isPlayerSearch && 'Warriors of Light'}
+              {!isPlayerSearch && 'Players of Light'}
             </h1>
             <p className="results-page__count">
               Found {allResults.length} player{allResults.length !== 1 ? 's' : ''}

@@ -1,8 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Days+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Global page background */
+body {
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+}
+
 .detail-page {
-    margin: 8rem 14rem;
-    width: 1000px;
-    font-family: Helvetica, sans-serif;
+    margin: 2rem auto;
+    max-width: 1000px;
+    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+    padding: 2rem;
 }
 .detailpage-container {
     display: flex;
@@ -14,61 +25,128 @@
 }
 .player-name {
     font-size: 2.7rem;
-    font-family: "Poppins", sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
     font-weight: 900;
     padding: 0;
     margin: 0;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(233, 69, 96, 0.3);
+    letter-spacing: 0.02em;
 }
+
 .player-blurb {
     font-size: .85rem;
     padding: .25rem 0;
+    color: #a0c1d1;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 .rating-container {
     display: inline-flex;
     gap: 8px;
+    align-items: baseline;
 }
+
 .player-rating-score {
-    font-family: "Poppins", sans-serif;
-    font-size: 4.75rem;
+    font-family: 'Impact', 'Arial Black', 'Helvetica', sans-serif;
+    font-size: 5.5rem;
     font-weight: 900;
-    line-height: 3rem;
-    /* padding:; */
+    line-height: 1;
+    background: linear-gradient(135deg, #e94560 0%, #fbbf24 50%, #e94560 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 12px rgba(233, 69, 96, 0.6));
+    margin-right: 0.25rem;
 }
+
 .player-rating-max-score {
-    color: grey;
+    color: #5f7a8a;
     font-weight: bolder;
+    font-size: 2rem;
 }
 
 .bar-graph-container {
-    background-color: rgb(247, 247, 247);
-    padding: 1rem;
+    background: #000000;
+    border: 2px solid #e94560;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.bar-graph-container h3 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
+    letter-spacing: 0.05em;
 }
 
 .player-overall-quality {
     padding: 1rem 0;
     font-size: .85rem;
     font-weight: bold;
+    color: #ffffff;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 .rate-btn {
-    background-color: #0055fd;
-    padding: .75rem 3rem;
-    border-radius: 2rem;
-    border: none;
+    background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
+    padding: 1rem 3.5rem;
+    border-radius: 0.5rem;
+    border: 2px solid #e94560;
     color: white;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 1.125rem;
     margin: 3rem 0;
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Trebuchet MS', 'Arial', sans-serif;
+    letter-spacing: 0.05em;
 }
+
 .rate-btn:hover {
-    background-color: #1100fd;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(233, 69, 96, 0.5);
+    border-color: #ff6b81;
 }
 .reviews-container {
     margin: 3rem 0;
 }
+
 .reviews-container > * {
     margin-bottom: 1rem;
 }
+
 .load-more-ratings-btn {
     display: flex;
     justify-content: center;
+}
+
+/* Divider styling */
+hr {
+    border: none;
+    border-top: 2px solid #0f3460;
+    margin: 3rem 0;
+}
+
+/* Load More button */
+.black-rounded-btn {
+    background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
+    color: white;
+    border-radius: 0.5rem;
+    font-family: 'Trebuchet MS', 'Arial', sans-serif;
+    padding: 1rem 3rem;
+    border: 2px solid #e94560;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.05em;
+}
+
+.black-rounded-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(233, 69, 96, 0.5);
+    border-color: #ff6b81;
 }

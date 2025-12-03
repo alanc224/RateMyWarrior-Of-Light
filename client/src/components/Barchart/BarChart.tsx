@@ -14,20 +14,26 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
   const data: ChartData<'bar'> = {
   labels: ['Awesome 5', 'Great 4', 'Good 3', 'OK 2', 'Awful 1'],
   datasets: [
-          // Foreground bar (actual value)
+      // Foreground bar (actual value) - FF XIV gradient colors
       {
         label: 'Ratings',
         data: ratings,
-        backgroundColor: '#0055fd',
+        backgroundColor: [
+          '#7ff6c3', // Awesome 5 - Green (keeping your existing green)
+          '#fbbf24', // Great 4 - Gold
+          '#fff170', // Good 3 - Yellow (keeping your existing yellow)
+          '#f2994a', // OK 2 - Orange
+          '#ff9c9c', // Awful 1 - Red (keeping your existing red)
+        ],
         barThickness: 35,
         grouped: false,
       },
       {
         label: 'Background',
         data: new Array(ratings.length).fill(maxVotes),
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#1a1a2e', // Dark background matching theme
         barThickness: 35,
-        hoverBackgroundColor: '#e0e0e0'
+        hoverBackgroundColor: '#1a1a2e'
       }
 
   ]};
@@ -45,7 +51,7 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
         display: (context) => context.datasetIndex === 0,
         align: 'end', 
         anchor: 'end',
-        color: '#000',
+        color: '#ffffff', // White text for visibility
         font: {
           size: 20,
           weight: 'bold',
@@ -60,6 +66,13 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
       y: {
         grid: {
           display: false
+        },
+        ticks: {
+          color: '#ffffff', // White labels
+          font: {
+            size: 14,
+            weight: 'bold'
+          }
         }
       }
     }
