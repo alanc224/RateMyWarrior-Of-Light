@@ -130,10 +130,10 @@ function ResultsPage() {
                   {world && <span className="results-page__world"> on {world}</span>}
                 </>
               )}
-              {!isPlayerSearch && 'Players of Light'}
+              {!isPlayerSearch && 'Warriors of Light'}
             </h1>
             <p className="results-page__count">
-              Found {allResults.length} player{allResults.length !== 1 ? 's' : ''}
+              Found {allResults.length} Player{allResults.length !== 1 ? 's' : ''}
               {allResults.length > RESULTS_PER_PAGE && (
                 <span> (Showing {startIndex + 1}-{Math.min(endIndex, allResults.length)})</span>
               )}
