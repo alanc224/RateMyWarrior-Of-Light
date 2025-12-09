@@ -105,8 +105,12 @@ function Home() {
       </section>
 
       <section className="home-more-info">
-        <h1>Join the Family</h1>
-        <h3>Love Rate My Warrior Of Light? Become a user.</h3>
+        <h1>
+        Rate Players.<br />
+        Build Community.<br />
+        Adventure Better.
+      </h1>
+        <h3>Running content in FFXIV is better with great teammates. < br /> Rate your fellow Warriors of Light, find reliable players for your next adventure, and help the community identify exceptional party members. < br />Share your experiences and discover players who'll make your journey through Eorzea unforgettable.</h3>
         <div className="icon-container">
           <div className="icon">
             <img src={Icon1} alt="icon 1" />
