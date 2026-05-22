@@ -2,13 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-const axios = require('axios');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const { clerkMiddleware } = require('@clerk/express');
-const reviewRoute = require('./Routes/review');
+const axios = require('axios');
 const clerkWebhookRoute = require('./Routes/clerkWebhook');
-
+const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 
 const corsOptions = {
@@ -20,17 +18,11 @@ const corsOptions = {
 };
 app.options(/.*/, cors(corsOptions), (req, res) => res.sendStatus(200));
 app.use(cors(corsOptions));
-app.use(express.json());
 app.use(cookieParser());
-app.use(clerkMiddleware());
 
-
-mongoose.connect(mongoURI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.log('MongoDB connection error:', err));
 
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
-app.use('/api/reviews', reviewRoute);
+app.use(express.json());
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 
@@ -63,6 +55,15 @@ app.get('/api/characters', async (req, res) => {
         res.status(status).json({ error: message });
     }
 });
+
+const { clerkMiddleware } = require('@clerk/express');
+app.use(clerkMiddleware());
+
+app.use('/api/reviews', reviewRoute);
+
+mongoose.connect(mongoURI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.log('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
