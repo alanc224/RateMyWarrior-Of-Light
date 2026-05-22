@@ -7,6 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { clerkMiddleware } = require('@clerk/express');
 const reviewRoute = require('./Routes/review');
+const clerkWebhookRoute = require('./Routes/clerkWebhook');
 
 const mongoURI = process.env.MONGO_URI;
 
@@ -27,7 +28,8 @@ app.use(clerkMiddleware());
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));
-// app.use(authenticateToken);
+
+app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/reviews', reviewRoute);
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
