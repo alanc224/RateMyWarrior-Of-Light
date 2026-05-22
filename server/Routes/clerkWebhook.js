@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { Webhook } = require('svix');
 const UserModel = require('../Models/users'); 
+const crypto = require('crypto');
+const ReviewModel = require('../Models/reviews');
 
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -55,8 +57,27 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
         case 'user.deleted':
             try {
+                const HASH_SALT = process.env.HASH_SALT;
+                const allReviews = await ReviewModel.find({}, 'character_id hash_user').lean();
+                
+                const reviewIdsToDelete = [];
+                for (const review of allReviews) {
+                    const secretCombination = `${id}_${review.character_id}_${HASH_SALT}`;
+                    const computedHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+                    
+                    if (review.hash_user === computedHash) {
+                        reviewIdsToDelete.push(review._id);
+                    }
+                }
+                if (reviewIdsToDelete.length > 0) {
+                    await ReviewModel.deleteMany({ _id: { $in: reviewIdsToDelete } });
+                    console.log(`[Webhook] Deleted ${reviewIdsToDelete.length} anonymous reviews for user: ${id}`);
+                }
                 await UserModel.findOneAndDelete({ clerkId: id });
+                console.log(`[Webhook] Successfully removed user profile for user: ${id}`);
+
             } catch (dbError) {
+                console.error("Error handling user deletion workflow:", dbError);
                 return res.status(500).json({ error: "Database delete failure" });
             }
             break;
