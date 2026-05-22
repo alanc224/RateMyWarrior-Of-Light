@@ -18,7 +18,8 @@ const submitReview = async (req, res) => {
             return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         }
 
-        const hashedUser = crypto.createHash('sha256').update(authenticatedUserId).digest('hex');
+        const secretCombination = `${authenticatedUserId}_${characterId}`;
+        const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
 
         const newReview = new ReviewModel({
             hash_user: hashedUser,
@@ -62,7 +63,7 @@ router.get('/:characterId/reviews', async (req, res) => {
                     character_id: review.character_id,
                     character_name: review.character_name,
                     comment: review.comment,
-                    date: review.date ? review.date.toISOString() : null, 
+                    date: review.createdAt ? review.createdAt.toISOString() : null, 
                     rating: review.rating,
                     server: review.server,
                 };
@@ -78,6 +79,7 @@ router.get('/:characterId/reviews', async (req, res) => {
 });
 
 router.post('/', requireAuth(), submitReview);
+
 router.get('/character/:id', async (req, res) => {
   try {
     const reviews = await ReviewModel.find({ character_id: req.params.id });
