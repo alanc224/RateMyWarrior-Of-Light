@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Webhook } = require('svix');
-const UserModel = require('../Models/user'); 
+const UserModel = require('../Models/users'); 
 
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
