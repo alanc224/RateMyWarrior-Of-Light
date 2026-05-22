@@ -4,6 +4,7 @@ const ReviewModel = require('../Models/reviews');
 require('dotenv').config();
 const crypto = require('crypto');
 const { requireAuth } = require('@clerk/express'); 
+const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
     try {
@@ -18,7 +19,7 @@ const submitReview = async (req, res) => {
             return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         }
 
-        const secretCombination = `${authenticatedUserId}_${characterId}`;
+        const secretCombination = `${authenticatedUserId}_${characterId}_${SALT}`;
         const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
 
         const newReview = new ReviewModel({
