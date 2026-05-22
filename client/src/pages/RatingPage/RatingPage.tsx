@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Header from "../../components/Header/Header"; // No need to pass props anymore
 import "./RatingPage.css";
+import { useAuth, useClerk } from '@clerk/clerk-react'
+
 
 const RatingPage = () => {
     const [rating, setRating] = useState(0);
@@ -13,20 +15,21 @@ const RatingPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state;
-
-    // const [newQuery, setNewQuery] = useState("");
-
-    /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) { commented this out until used
-        if (event.key === 'Enter' && newQuery) {
-            navigate(`/results/player/${newQuery}`);
-        }
-    }*/
+    const { isSignedIn, getToken } = useAuth();
+    const { openSignIn } = useClerk();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmitReview = async () => {
         // Make sure required fields are filled in
+
+        if (!isSignedIn) {
+            setError('You must be logged in to submit a rating.');
+            openSignIn(); 
+            return;
+        }
+
         if (!rating || !review) {
             setError('Please provide both a rating and a review.');
             return;
@@ -44,21 +47,21 @@ const RatingPage = () => {
         };
 
         try {
+            const token = await getToken();
             const response = await fetch(/*'http://localhost:5001/api/reviews'*/ 'https://ratemywarrioroflight-api.onrender.com/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(reviewData),
-                credentials: 'include',
+                // credentials: 'include',
             });
 
             if (!response.ok) {
                 throw new Error('Failed to submit review');
             }
 
-            // const data = await response.json();
-            // console.log(data);
             navigate(`/detailpage/${state.id}`, {
                 state: {
                     id: state.id,

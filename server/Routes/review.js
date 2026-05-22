@@ -1,32 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const ReviewModel = require('../Models/reviews'); 
-const authenticateToken = require('../middleware/authMiddleware'); 
 require('dotenv').config();
 const crypto = require('crypto');
+const { requireAuth } = require('@clerk/express'); 
 
 const submitReview = async (req, res) => {
     try {
         const { characterId, rating, reviewText, characterName, server } = req.body;
         const parsedRating = parseInt(rating, 10);
-
-        // authmiddleware should catch this but I was having some issues
-        if (!req.user || !req.user.username) {
-            return res.status(401).json({ error: 'Unauthorized: Missing user' });
-        }
+        const authenticatedUserId = req.auth.userId; 
         
-        const authenticatedUser = req.user.username; 
-        
-        if (!authenticatedUser) {
-            return res.status(401).json({ error: 'User not authenticated' });
-        }
         if (!characterId || !rating || !reviewText || !characterName || !server) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
         if (parsedRating < 1 || parsedRating > 5) {
             return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         }
-        const hashedUser = crypto.createHash('sha256').update(authenticatedUser).digest('hex');
+
+        const hashedUser = crypto.createHash('sha256').update(authenticatedUserId).digest('hex');
 
         const newReview = new ReviewModel({
             hash_user: hashedUser,
@@ -85,23 +77,10 @@ router.get('/:characterId/reviews', async (req, res) => {
     }
 });
 
-router.post('/', authenticateToken, submitReview);
-
-const mongoose = require('mongoose');
-
-async function connectDB() {
-    try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log('Connected to MongoDB');
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        process.exit(1);
-    }
-}
-connectDB()
+router.post('/', requireAuth(), submitReview);
 router.get('/character/:id', async (req, res) => {
   try {
-    const reviews = await Review.find({ character_id: req.params.id });
+    const reviews = await ReviewModel.find({ character_id: req.params.id });
     const counts = [0, 0, 0, 0, 0];
     let total = 0;
     let count = 0;
@@ -123,4 +102,5 @@ router.get('/character/:id', async (req, res) => {
     res.status(500).json({ message: "Error processing ratings" });
   }
 });
+
 module.exports = router;

@@ -1,34 +1,37 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from "../../services/AuthContext"; 
+import { SignedIn, SignedOut, UserButton, useClerk } from '@clerk/clerk-react';
 import Logo from "../../assets/homepage/logo.png";
 import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, setModalView, logout } = useAuth(); // playerName isn't used so it was removed, if needed just add it back
-
-  const handleLoginClick = () => setModalView('LOGIN');
-  const handleSignUpClick = () => setModalView('SIGN_UP');
-
-  const handleLogout = () => {
-    logout()
-    navigate('/');
-  };
+  const { openSignUp, openSignIn } = useClerk();
 
   return (
     <div className="header">
-      <img className="header-img" src={Logo} onClick={() => navigate('/')} alt="Logo" />
-      
-      {!isAuthenticated ? (
+      <img className="header-img" src={Logo} onClick={() => navigate('/')} alt="Logo" style={{ cursor: 'pointer' }} />
+    
+      <SignedOut>
         <div className="header-buttons-container">
-          <button className="header-account-btns header-account-outline" onClick={handleSignUpClick}>Sign Up</button>
-          <button className="header-account-btns" onClick={handleLoginClick}>Log In</button>
+          <button 
+            className="header-account-btns header-account-outline" 
+            onClick={() => openSignUp()}
+          >
+            Sign Up
+          </button>
+          <button 
+            className="header-account-btns" 
+            onClick={() => openSignIn()}
+          >
+            Log In
+          </button>
         </div>
-      ) : (
-        <div className="header-buttons-container">
-          <button className="header-account-btns header-account-outline" onClick={handleLogout}>Log Out</button>
+      </SignedOut>
+      <SignedIn>
+        <div className="header-buttons-container" style={{ display: 'flex', alignItems: 'center' }}>
+          <UserButton afterSignOutUrl="/" />
         </div>
-      )}
+      </SignedIn>
     </div>
   );
 };

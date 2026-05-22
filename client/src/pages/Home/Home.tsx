@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../services/AuthContext";
+import { SignedIn, SignedOut, UserButton, useClerk } from "@clerk/clerk-react"; 
 import WorldSelector from "../../components/WorldSelector/WorldSelector";
 import Logo from "../../assets/homepage/logo.png";
 import Icon1 from "../../assets/homepage/ctp-icon1.png";
@@ -12,7 +12,8 @@ function Home() {
   const navigate = useNavigate();
   const [selectedWorld, setSelectedWorld] = useState("");
   const [characterName, setCharacterName] = useState("");
-  const { isAuthenticated, setModalView, logout } = useAuth();
+
+  const { openSignUp, openSignIn } = useClerk();
 
   const handleSearch = () => {
     if (!selectedWorld) {
@@ -35,23 +36,20 @@ function Home() {
   return (
     <>
       <section className="home-header">
-        <div className="account-buttons">
-          {!isAuthenticated ? (
-            <>
-              <button className="sign-up" onClick={() => setModalView("SIGN_UP")}>
-                Sign Up
-              </button>
-              <button className="log-in" onClick={() => setModalView("LOGIN")}>
-                Log In
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="sign-up" onClick={logout}>
-                Log Out
-              </button>
-            </>
-          )}
+        <div className="account-buttons" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+
+          <SignedOut>
+            <button className="sign-up" onClick={() => openSignUp()}>
+              Sign Up
+            </button>
+            <button className="log-in" onClick={() => openSignIn()}>
+              Log In
+            </button>
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </div>
       </section>
 
@@ -60,7 +58,6 @@ function Home() {
 
         <h1>Search for a Player</h1>
 
-        {/* Step 1: Select World */}
         <div className="search-step">
           <label className="search-label">Select World</label>
           <WorldSelector
@@ -70,7 +67,6 @@ function Home() {
           />
         </div>
 
-        {/* Step 2: Enter Character Name */}
         <div className="search-step">
           <label className="search-label">Enter Character Name</label>
           <input
@@ -86,7 +82,6 @@ function Home() {
           />
         </div>
 
-        {/* Search Button */}
         <button
           className="search-button"
           onClick={handleSearch}
@@ -106,11 +101,11 @@ function Home() {
 
       <section className="home-more-info">
         <h1>
-        Rate Players.<br />
-        Build Community.<br />
-        Adventure Better.
-      </h1>
-        <h3>Running content in FFXIV is better with great teammates. < br /> Rate your fellow Warriors of Light, find reliable players for your next adventure, and help the community identify exceptional party members. < br />Share your experiences and discover players who'll make your journey through Eorzea unforgettable.</h3>
+          Rate Players.<br />
+          Build Community.<br />
+          Adventure Better.
+        </h1>
+        <h3>Running content in FFXIV is better with great teammates. <br /> Rate your fellow Warriors of Light, find reliable players for your next adventure, and help the community identify exceptional party members. <br />Share your experiences and discover players who'll make your journey through Eorzea unforgettable.</h3>
         <div className="icon-container">
           <div className="icon">
             <img src={Icon1} alt="icon 1" />
@@ -125,12 +120,15 @@ function Home() {
             <p>Like or dislike ratings</p>
           </div>
         </div>
-        <button
-          className="black-rounded-btn"
-          onClick={() => setModalView("SIGN_UP")}
-        >
-          Sign up now!
-        </button>
+
+        <SignedOut>
+          <button
+            className="black-rounded-btn"
+            onClick={() => openSignUp()}
+          >
+            Sign up now!
+          </button>
+        </SignedOut>
       </section>
 
       <section className="footer"></section>

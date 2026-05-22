@@ -8,10 +8,11 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const signupRoutes = require('./Routes/signup');
 const loginRoutes = require('./Routes/login');
-const reviewRoute = require('./Routes/review');
 const authenticateToken = require('./middleware/authMiddleware');
 const redirectIfLoggedIn = require('./middleware/redirectIfLoggedIn');
 const cookieParser = require('cookie-parser');
+const { clerkMiddleware } = require('@clerk/express');
+const reviewRoute = require('./Routes/review');
 
 
 const mongoURI = process.env.MONGO_URI;
@@ -27,6 +28,7 @@ app.options(/.*/, cors(corsOptions), (req, res) => res.sendStatus(200));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+app.use(clerkMiddleware());
 
 
 mongoose.connect(mongoURI)
