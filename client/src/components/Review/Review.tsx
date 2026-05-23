@@ -9,7 +9,7 @@ interface ReviewProps {
     recommend: boolean
     contentType: string;
 }
-const Review = ({rating, comment, date, id, playAgain, recommend, contentType} : ReviewProps) => {
+const Review = ({rating, comment, date, playAgain, recommend, contentType} : ReviewProps) => {
     // let rating = 5;
     const getBGColor = (rating : number) => {
         if (rating == 1 || rating == 2){
