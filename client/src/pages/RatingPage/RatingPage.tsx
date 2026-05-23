@@ -12,6 +12,7 @@ const RatingPage = () => {
     const [yesNo1, setYesNo1] = useState<"" | "yes" | "no">("");
     const [yesNo2, setYesNo2] = useState<"" | "yes" | "no">("");
     const [review, setReview] = useState("");
+    const [contentType, setContentType] = useState("Dungeon");
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state;
@@ -49,6 +50,7 @@ const RatingPage = () => {
             server: state.server,
             playAgain: yesNo1 === 'yes', 
             recommend: yesNo2 === 'yes',
+            contentType: contentType,
         };
 
         try {
@@ -102,20 +104,33 @@ const RatingPage = () => {
 
                     <div className='rating-component'>
                         <div className='rating-question'>
+                            <p className='rating-subtitle'>Content Type</p>
+                        </div>
+                        <div className='rating-dropdown-container'>
+                            <select 
+                                value={contentType} 
+                                onChange={(e) => setContentType(e.target.value)}
+                                className="rating-select"
+                            >
+                                <option value="Dungeon">Dungeon</option>
+                                <option value="Trial">Trial</option>
+                                <option value="Raid">Raid</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className='rating-component'>
+                        <div className='rating-question'>
                             <p className='rating-subtitle'>Write a Review</p>
                         </div>
                         <div className='rating-text-review-container'>
-                            <form>
-                                <label>
-                                    <textarea
-                                        className='rating-text-review'
-                                        value={review}
-                                        onChange={(e) => setReview(e.target.value)}
-                                        placeholder="What do you want to let other players know about this player?"
-                                    />
-                                </label>
-                            </form>
-
+                            <textarea
+                                className='rating-text-review'
+                                value={review}
+                                onChange={(e) => setReview(e.target.value)}
+                                placeholder="What do you want to let other players know about this player?"
+                            />
                         </div>
                     </div>
                     {error && (

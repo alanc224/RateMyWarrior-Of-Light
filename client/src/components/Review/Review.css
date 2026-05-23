@@ -147,3 +147,20 @@
 .review-information-container {
     flex: 1;
 }
+
+.review-meta-info {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #ffffff; 
+    font-family: 'Trebuchet MS', sans-serif;
+    font-weight: 400;
+}
+
+.review-meta-info strong {
+    color: #ffffff;
+    font-weight: 900;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}

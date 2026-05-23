@@ -10,7 +10,8 @@ const reviewSchema = new Schema({
     comment: { type: String, required: true },
     date: { type: Date, default: Date.now, required: true },
     playAgain: { type: Boolean, required: true },
-    recommend: { type: Boolean, required: true }
+    recommend: { type: Boolean, required: true },
+    contentType: { type: String, required: true, default: 'Other' }
 
 });
 

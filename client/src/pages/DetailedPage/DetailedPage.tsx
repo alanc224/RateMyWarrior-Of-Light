@@ -4,6 +4,9 @@ import BarChart from "../../components/Barchart/BarChart";
 import "./DetailedPage.css";
 import Header from '../../components/Header/Header';
 import Review from "../../components/Review/Review";
+import favicon1 from '../../assets/favicon1.png';
+import iconImg from '../../assets/icon.webp';
+import { allWorlds } from '../../data/worlds'; 
 
 interface ReviewItem {
     rating: number;
@@ -11,6 +14,8 @@ interface ReviewItem {
     date: string;
     playAgain: boolean;
     recommend: boolean;
+    contentType: string;
+
 }
 
 const DetailedPage = () => {
@@ -57,7 +62,8 @@ const DetailedPage = () => {
                                 year: "numeric",
                             }) : "N/A",
                             playAgain: r.playAgain,
-                            recommend: r.recommend
+                            recommend: r.recommend,
+                            contentType: r.contentType || "Other"
                         }))
                     );
 
@@ -91,17 +97,51 @@ const DetailedPage = () => {
     const hasMore = visibleCount < reviews.length;
 
     const navigate = useNavigate();
-    // const [newQuery, setNewQuery] = useState("");
+    const totalReviews = reviews.length;
+    const playAgainPercent = totalReviews > 0 
+    ? Math.round((reviews.filter(r => r.playAgain).length / totalReviews) * 100) 
+    : 0;
 
-    // What are these functions for? commenting out until used
-    /* function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (event.key === 'Enter' && newQuery) {
-            navigate(`/results/player/${newQuery}`);
+    const recommendPercent = totalReviews > 0 
+    ? Math.round((reviews.filter(r => r.recommend).length / totalReviews) * 100) 
+    : 0;   
+
+    const TombstoneURL = (baseUrl: string) => {
+        const formattedName = state.name.toLowerCase().replace(' ', '-');
+        const fullUrl = `${baseUrl}/${id}/${formattedName}`;
+        window.open(fullUrl, '_blank');
+    };
+    const FFlogsURL = () => {
+        try {
+            const cleanWorld = state.world.split(' ')[0].trim();
+            
+            const worldData = allWorlds.find(w => 
+                w.name.toLowerCase() === cleanWorld.toLowerCase()
+            );
+            
+            if (!worldData) {
+                console.error("World not found in allWorlds list!");
+                return;
+            }
+
+            const regionMap: Record<string, string> = {
+                'North America': 'na',
+                'Europe': 'eu',
+                'Japan': 'jp',
+                'Oceania': 'oc'
+            };
+
+            const regionCode = regionMap[worldData.region];
+            const formattedName = state.name.trim().replace(' ', '%20');
+            const url = `https://www.fflogs.com/character/${regionCode}/${worldData.name.toLowerCase()}/${formattedName}`;
+            
+            console.log("Opening FFLogs URL:", url);
+            window.open(url, '_blank');
+            
+        } catch (error) {
+            console.error("FFlogsURL Error:", error);
         }
-    }
-     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setNewQuery(event.target.value);
-    } */ 
+    };
 
     return (
         <>
@@ -113,11 +153,44 @@ const DetailedPage = () => {
                             <span className='player-rating-score'>{totalVotes !== 0 ? roundedAverage : "N/A"}</span>
                             <span className='player-rating-max-score'>/ 5</span>
                         </div>
-                        <p className='player-overall-quality'>{totalVotes !== 0 ? "Overall Quality Based on" : "No ratings yet."} <span style={{ textDecoration: 'underline' }}>{totalVotes !== 0 ? "ratings" : "Add a rating."}</span></p>
+                        
+                        <p className='player-overall-quality'>
+                            {totalVotes !== 0 ? `Overall Quality Based on ${totalVotes} ` : "No ratings yet. "} 
+                            <span style={{ textDecoration: 'underline' }}>
+                                {totalVotes !== 0 ? "rating(s)" : "Add a rating."}
+                            </span>
+                        </p>
+                        
                         <p className='player-name'>{state.name}</p>
                         <p className='player-blurb'>Player in the {state.server} server</p>
-                        <button className='rate-btn' onClick={redirectRate}>Rate!</button>
+                        
+                        {totalVotes > 0 && (
+                            <div className='stats-container'>
+                                <div className='stat-item'>
+                                    <span className='stat-value'>{playAgainPercent}%</span>
+                                    <span className='stat-label'>Would play again</span>
+                                </div>
+                                <div className='stat-item'>
+                                    <span className='stat-value'>{recommendPercent}%</span>
+                                    <span className='stat-label'>Recommend</span>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className='rate-and-actions-wrapper'>
+                            <button className='rate-btn' onClick={redirectRate}>Rate!</button>
+                            
+                            <div className='action-button-group'>
+                                <button className='image-btn' onClick={FFlogsURL}>
+                                    <img src={favicon1} alt="FFLOGS" />
+                                </button>
+                                <button className='image-btn' onClick={() => TombstoneURL('https://tomestone.gg/character')}>
+                                    <img src={iconImg} alt="Toombstone" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
                     <div className='bar-graph-container'>
                         <h3>Rating Distribution</h3>
                         <BarChart ratings={ratings} />
@@ -126,7 +199,7 @@ const DetailedPage = () => {
                 <hr />
                 <div className='reviews-container'>
                     {visibleReviews.map((e, i) => {
-                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} id={id!} playAgain={e.playAgain} recommend={e.recommend} />
+                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} id={id!} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} />
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>

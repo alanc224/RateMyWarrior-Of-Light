@@ -7,8 +7,9 @@ interface ReviewProps {
     id: string,
     playAgain: boolean,
     recommend: boolean
+    contentType: string;
 }
-const Review = ({rating, comment, date, id, playAgain, recommend} : ReviewProps) => {
+const Review = ({rating, comment, date, id, playAgain, recommend, contentType} : ReviewProps) => {
     // let rating = 5;
     const getBGColor = (rating : number) => {
         if (rating == 1 || rating == 2){
@@ -27,10 +28,10 @@ const Review = ({rating, comment, date, id, playAgain, recommend} : ReviewProps)
                 
             </div>
             <div className='review-information-container'>
-                <p className='review-player-id'>{id}</p>
-                <div className='review-meta-info' style={{ marginTop: '5px', fontSize: '0.9em', color: '#555' }}>
+                <p className='review-content-type'>{contentType}</p>
+                <div className='review-meta-info'>
                     <span>Play Again: <strong>{playAgain ? 'Yes' : 'No'}</strong></span>
-                    <span style={{ marginLeft: '10px' }}>Recommend: <strong>{recommend ? 'Yes' : 'No'}</strong></span>
+                    <span>Recommend: <strong>{recommend ? 'Yes' : 'No'}</strong></span>
                 </div>
                 <br></br>
                 {/* <span>Test</span> <span>test 2</span> */}
