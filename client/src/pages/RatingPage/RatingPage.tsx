@@ -22,8 +22,6 @@ const RatingPage = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmitReview = async () => {
-        // Make sure required fields are filled in
-
         if (!isSignedIn) {
             setError('You must be logged in to submit a rating.');
             openSignIn(); 
@@ -35,6 +33,11 @@ const RatingPage = () => {
             return;
         }
 
+        if (!yesNo1 || !yesNo2) {
+        setError('Please answer both "Play Again" and "Recommend" questions.');
+        return;
+    }
+
         setLoading(true);
         setError(null); // Reset error
 
@@ -44,6 +47,8 @@ const RatingPage = () => {
             reviewText: review,
             characterName: state.name,
             server: state.server,
+            playAgain: yesNo1 === 'yes', 
+            recommend: yesNo2 === 'yes',
         };
 
         try {
@@ -57,6 +62,11 @@ const RatingPage = () => {
                 body: JSON.stringify(reviewData),
                 // credentials: 'include',
             });
+
+            if (response.status === 409) {
+                setError('You already left a review for this player.');
+                return;
+            }
 
             if (!response.ok) {
                 throw new Error('Failed to submit review');
@@ -73,9 +83,7 @@ const RatingPage = () => {
             });
 
         } catch (error) {
-            console.error(error);
             setError('Failed to submit the review. Please try again later.');
-            alert("Error with submitting review.")
         } finally {
             setLoading(false);
         }

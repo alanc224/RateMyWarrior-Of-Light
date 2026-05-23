@@ -44,8 +44,6 @@ app.get('/api/characters', async (req, res) => {
                 world: worldName 
             }
         });
-
-        console.log('Raw FFXIV API Response Data:', response.data);
         return res.json(response.data);
 
     } catch (error) {

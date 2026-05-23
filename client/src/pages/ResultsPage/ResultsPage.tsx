@@ -39,12 +39,9 @@ function ResultsPage() {
       setCurrentPage(1); // Reset to page 1 on new search
       
       try {
-        console.log(`Fetching characters: ${query} on world: ${world || 'all'}`);
         
         // Step 1: Get characters from Lodestone
         const data = await searchCharacters(query, world || '');
-        console.log(`Received ${data.length} characters`);
-        
         // Step 2: Fetch ratings for each character from MongoDB
         const charactersWithRatings = await Promise.all(
           data.map(async (character) => {
@@ -56,8 +53,6 @@ function ResultsPage() {
             };
           })
         );
-        
-        console.log('Characters with ratings:', charactersWithRatings);
         setAllResults(charactersWithRatings);
       } catch (err) {
         console.error('Error fetching characters:', err);
@@ -71,7 +66,6 @@ function ResultsPage() {
   }, [category, world, query]);
 
   function handleCardClick(player: PlayerInfo) {
-    console.log('Navigate to player profile:', player.id);
     navigate(`/detailpage/${player.id}`, {
       state: {
         id: player.id,

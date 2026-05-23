@@ -71,10 +71,8 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
                 }
                 if (reviewIdsToDelete.length > 0) {
                     await ReviewModel.deleteMany({ _id: { $in: reviewIdsToDelete } });
-                    console.log(`[Webhook] Deleted ${reviewIdsToDelete.length} anonymous reviews for user: ${id}`);
                 }
                 await UserModel.findOneAndDelete({ clerkId: id });
-                console.log(`[Webhook] Successfully removed user profile for user: ${id}`);
 
             } catch (dbError) {
                 console.error("Error handling user deletion workflow:", dbError);

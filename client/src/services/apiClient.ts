@@ -12,14 +12,12 @@ export const apiClient = axios.create({
 // Log requests and responses
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   }
 );
 
 apiClient.interceptors.response.use(
   (response) => {
-    console.log(`API Response: ${response.status} - Found ${response.data.length} results`);
     return response;
   },
   (error) => {

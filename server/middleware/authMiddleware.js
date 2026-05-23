@@ -21,14 +21,12 @@ const authenticateToken = async (req, res, next) => {
             if (user) {
                 req.user = { id: user._id, username: user.username };
                 isAuthenticated = true;
-                // console.log("Authenticated user:", req.user);  // Check req.user
 
             } else {
                 res.clearCookie('authToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/' });
             }
         } catch (error) {
             res.clearCookie('authToken', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/' });
-            // console.log("Error verifying token:", error);
 
         }
     }

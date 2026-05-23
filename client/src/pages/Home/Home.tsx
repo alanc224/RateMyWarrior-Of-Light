@@ -90,13 +90,6 @@ function Home() {
           Search Player
         </button>
 
-        {(!selectedWorld || !characterName.trim()) && (
-          <p className="search-hint">
-            {!selectedWorld
-              ? "Select a world to continue"
-              : "Enter a character name to search"}
-          </p>
-        )}
       </section>
 
       <section className="home-more-info">
