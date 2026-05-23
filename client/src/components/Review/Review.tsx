@@ -4,7 +4,6 @@ interface ReviewProps {
     rating: number,
     comment: string,
     date: string,
-    id: string,
     playAgain: boolean,
     recommend: boolean
     contentType: string;
@@ -28,21 +27,17 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType} : Rev
                 
             </div>
             <div className='review-information-container'>
-                <p className='review-content-type'>{contentType}</p>
+                <div className='badge-container'>
+                    <span className='review-content-badge'>{contentType}</span>
+                </div>
+                
                 <div className='review-meta-info'>
                     <span>Play Again: <strong>{playAgain ? 'Yes' : 'No'}</strong></span>
                     <span>Recommend: <strong>{recommend ? 'Yes' : 'No'}</strong></span>
                 </div>
-                <br></br>
-                {/* <span>Test</span> <span>test 2</span> */}
-                {/* <br></br><br></br> */}
-                <p className='review-description'>
-                    {comment}
-                    {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error natus corporis soluta. Tempora tenetur nobis a iure neque sunt, voluptatum ipsa officia veritatis magni iste? Saepe deleniti deserunt ipsa repellendus. */}
-                </p>
-                {/* <div className='review-upvotes'>
-                    Helpful <i>0 Upvotes</i> <i>0 Downvotes</i>
-                </div> */}
+
+                <br />
+                <p className='review-description'>{comment}</p>
             </div>
             <div className='review-date'>{date}</div>
             

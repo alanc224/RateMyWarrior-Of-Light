@@ -199,7 +199,7 @@ const DetailedPage = () => {
                 <hr />
                 <div className='reviews-container'>
                     {visibleReviews.map((e, i) => {
-                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} id={id!} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} />
+                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} />
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>

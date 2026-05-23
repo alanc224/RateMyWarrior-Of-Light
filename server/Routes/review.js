@@ -67,7 +67,7 @@ router.get('/:characterId/reviews', async (req, res) => {
                     character_id: review.character_id,
                     character_name: review.character_name,
                     comment: review.comment,
-                    date: review.createdAt ? review.createdAt.toISOString() : null, 
+                    date: review.date ? new Date(review.date).toISOString() : null,
                     rating: review.rating,
                     server: review.server,
                     playAgain: review.playAgain, 
