@@ -4,9 +4,11 @@ interface ReviewProps {
     rating: number,
     comment: string,
     date: string,
-    id: string
+    id: string,
+    playAgain: boolean,
+    recommend: boolean
 }
-const Review = ({rating, comment, date, id} : ReviewProps) => {
+const Review = ({rating, comment, date, id, playAgain, recommend} : ReviewProps) => {
     // let rating = 5;
     const getBGColor = (rating : number) => {
         if (rating == 1 || rating == 2){
@@ -26,6 +28,10 @@ const Review = ({rating, comment, date, id} : ReviewProps) => {
             </div>
             <div className='review-information-container'>
                 <p className='review-player-id'>{id}</p>
+                <div className='review-meta-info' style={{ marginTop: '5px', fontSize: '0.9em', color: '#555' }}>
+                    <span>Play Again: <strong>{playAgain ? 'Yes' : 'No'}</strong></span>
+                    <span style={{ marginLeft: '10px' }}>Recommend: <strong>{recommend ? 'Yes' : 'No'}</strong></span>
+                </div>
                 <br></br>
                 {/* <span>Test</span> <span>test 2</span> */}
                 {/* <br></br><br></br> */}

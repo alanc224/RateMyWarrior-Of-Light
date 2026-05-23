@@ -9,6 +9,8 @@ interface ReviewItem {
     rating: number;
     comment: string;
     date: string;
+    playAgain: boolean;
+    recommend: boolean;
 }
 
 const DetailedPage = () => {
@@ -53,7 +55,9 @@ const DetailedPage = () => {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
-                            }) : "N/A"
+                            }) : "N/A",
+                            playAgain: r.playAgain,
+                            recommend: r.recommend
                         }))
                     );
 
@@ -122,7 +126,7 @@ const DetailedPage = () => {
                 <hr />
                 <div className='reviews-container'>
                     {visibleReviews.map((e, i) => {
-                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} id={id!} />
+                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} id={id!} playAgain={e.playAgain} recommend={e.recommend} />
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>
