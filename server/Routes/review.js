@@ -8,11 +8,11 @@ const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
     try {
-        const { characterId, rating, reviewText, characterName, server } = req.body;
+        const { characterId, rating, reviewText, characterName, server, playAgain, recommend } = req.body;
         const parsedRating = parseInt(rating, 10);
         const authenticatedUserId = req.auth.userId; 
         
-        if (!characterId || !rating || !reviewText || !characterName || !server) {
+        if (!characterId || !rating || !reviewText || !characterName || !server || playAgain === undefined || recommend === undefined) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
         if (parsedRating < 1 || parsedRating > 5) {
@@ -69,6 +69,8 @@ router.get('/:characterId/reviews', async (req, res) => {
                     date: review.createdAt ? review.createdAt.toISOString() : null, 
                     rating: review.rating,
                     server: review.server,
+                    playAgain: review.playAgain, 
+                    recommend: review.recommend
                 };
             });
             res.json({ reviews: formattedReviews });
