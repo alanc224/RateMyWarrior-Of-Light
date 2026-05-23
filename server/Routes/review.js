@@ -29,6 +29,8 @@ const submitReview = async (req, res) => {
             server: server,
             rating: parsedRating,
             comment: reviewText,
+            playAgain: playAgain,
+            recommend: recommend
         });
 
         await newReview.save();
