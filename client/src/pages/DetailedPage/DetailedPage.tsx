@@ -39,7 +39,7 @@ const DetailedPage = () => {
             if (!id) return;
             setLoading(true);
             try {
-                const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/characters/${id}`);
+                const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/players/${id}`);
                 if (!response.ok) throw new Error("Character not found");
                 const data = await response.json();
                 setCharacter(data);
