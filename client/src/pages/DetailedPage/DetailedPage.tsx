@@ -21,7 +21,6 @@ interface ReviewItem {
 const DetailedPage = () => {
     const { id } = useParams<{ id?: string }>();
     const location = useLocation();
-    const state = location.state;
     const navigate = useNavigate();
 
     const [character, setCharacter] = useState(location.state || null);
