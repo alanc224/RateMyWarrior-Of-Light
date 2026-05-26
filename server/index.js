@@ -20,11 +20,12 @@ const corsOptions = {
 app.options(/.*/, cors(corsOptions), (req, res) => res.sendStatus(200));
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(express.json());
 
 
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
-app.use(express.json());
+app.use('/api/reviews', reviewRoute);
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 
@@ -59,7 +60,6 @@ app.get('/api/characters', async (req, res) => {
 const { clerkMiddleware } = require('@clerk/express');
 app.use(clerkMiddleware());
 
-app.use('/api/reviews', reviewRoute);
 
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
