@@ -8,6 +8,7 @@ const axios = require('axios');
 const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
+const playerRoutes = require('./Routes/playerRoutes');
 
 const corsOptions = {
     origin: [
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
+app.use('/api/players', playerRoutes);
 app.use(express.json());
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';

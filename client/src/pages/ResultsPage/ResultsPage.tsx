@@ -65,17 +65,26 @@ function ResultsPage() {
     fetchData();
   }, [category, world, query]);
 
-  function handleCardClick(player: PlayerInfo) {
-    navigate(`/detailpage/${player.id}`, {
-      state: {
-        id: player.id,
-        name: player.characterName,
-        portrait: player.portrait,
-        server: player.serverName,
-        world: player.worldName
-      }
-    });
-  }
+  async function handleCardClick(player: PlayerInfo) {
+  try {
+        await fetch('https://ratemywarrioroflight-api.onrender.com/api/players/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            id: player.id,
+            name: player.characterName,
+            server: player.serverName,
+            world: player.worldName,
+            portrait: player.portrait
+        })
+        });
+    } catch (e) {
+        console.error("Sync failed, but continuing to detail page...");
+    }
+    
+    // Now navigate
+    navigate(`/detailpage/${player.id}`, { state: player });
+    }
 
   function goToPage(page: number) {
     setCurrentPage(page);

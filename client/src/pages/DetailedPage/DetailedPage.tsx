@@ -22,81 +22,93 @@ const DetailedPage = () => {
     const { id } = useParams<{ id?: string }>();
     const location = useLocation();
     const state = location.state;
+    const navigate = useNavigate();
 
-    const redirectRate = () => {
-        navigate(`/rating/${id}`, {
-            state: {
-                id: state.id,
-                name: state.name,
-                portrait: state.portrait,
-                server: state.server,
-                world: state.world
-            }
-        });
-    };
-
+    const [character, setCharacter] = useState(location.state || null);
+    const [loading, setLoading] = useState(!location.state);
     const [ratings, setRatings] = useState([0, 0, 0, 0, 0]);
     const [average, setAverage] = useState(0);
     const [reviews, setReviews] = useState<ReviewItem[]>([]);
+    const [visibleCount, setVisibleCount] = useState(3);
 
     useEffect(() => {
-        const getReviews = async () => {
-            if (!id) return;
-
+        const fetchCharacter = async () => {
+            if (!id || character) return; 
             try {
-                const response = await fetch(/*`http://localhost:5001/api/reviews/${id}/reviews`*/`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`);
-                if (!response.ok) {
-                    console.error("Failed to fetch reviews:", response.statusText);
-                    return;
-                }
+                const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/characters/${id}`);
+                if (!response.ok) throw new Error("Character not found");
                 const data = await response.json();
-
-                if (data.reviews && Array.isArray(data.reviews)) {
-                    setReviews(
-                        data.reviews.map((r: any) => ({
-                            rating: r.rating,
-                            comment: r.comment,
-                            date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                            }) : "N/A",
-                            playAgain: r.playAgain,
-                            recommend: r.recommend,
-                            contentType: r.contentType || "Other"
-                        }))
-                    );
-
-                    const counts = [0, 0, 0, 0, 0]; // 1-5 stars
-                    let total = 0;
-                    let count = 0;
-                    data.reviews.forEach((r: any) => {
-                        if (r.rating >= 1 && r.rating <= 5) {
-                            counts[5 - r.rating]++;
-                            total += r.rating;
-                            count++;
-                        }
-                    });
-                    setRatings(counts);
-                    setAverage(count > 0 ? total / count : 0);
-                }
+                setCharacter(data);
             } catch (error) {
-                console.error("Error fetching reviews:", error);
+                console.error("Error fetching character:", error);
+            } finally {
+                setLoading(false);
             }
         };
+        fetchCharacter();
+    }, [id, character]);
 
-        getReviews();
-    }, [id]);
+        useEffect(() => {
+            const getReviews = async () => {
+                if (!id) return;
+                try {
+                    const response = await fetch(/*`http://localhost:5001/api/reviews/${id}/reviews`*/`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`);
+                    if (!response.ok) {
+                        return;
+                    }
+                    const data = await response.json();
+
+                    if (data.reviews && Array.isArray(data.reviews)) {
+                        setReviews(
+                            data.reviews.map((r: any) => ({
+                                rating: r.rating,
+                                comment: r.comment,
+                                date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                }) : "N/A",
+                                playAgain: r.playAgain,
+                                recommend: r.recommend,
+                                contentType: r.contentType || "Other"
+                            }))
+                        );
+
+                        const counts = [0, 0, 0, 0, 0]; // 1-5 stars
+                        let total = 0;
+                        let count = 0;
+                        data.reviews.forEach((r: any) => {
+                            if (r.rating >= 1 && r.rating <= 5) {
+                                counts[5 - r.rating]++;
+                                total += r.rating;
+                                count++;
+                            }
+                        });
+                        setRatings(counts);
+                        setAverage(count > 0 ? total / count : 0);
+                    }
+                } catch (error) {
+                    console.error("Error fetching reviews:", error);
+                }
+            };
+
+            getReviews();
+        }, [id]);
+
+    const redirectRate = () => {
+        if (!character) return;
+        navigate(`/rating/${id}`, { state: character });
+    };
+
+    if (loading) return <div>Loading...</div>;
+    if (!character) return <div>Character not found.</div>;
 
     const totalVotes = ratings.reduce((sum, count) => sum + count, 0);
     const roundedAverage = Math.round(average * 10) / 10;
 
-    const [visibleCount, setVisibleCount] = useState(3);
-
     const visibleReviews = reviews.slice(0, visibleCount);
     const hasMore = visibleCount < reviews.length;
 
-    const navigate = useNavigate();
     const totalReviews = reviews.length;
     const playAgainPercent = totalReviews > 0 
     ? Math.round((reviews.filter(r => r.playAgain).length / totalReviews) * 100) 
@@ -107,14 +119,17 @@ const DetailedPage = () => {
     : 0;   
 
     const TombstoneURL = (baseUrl: string) => {
-        const formattedName = state.name.toLowerCase().replace(' ', '-');
+        if (!character) return;
+        
+        const formattedName = character.name.toLowerCase().replace(' ', '-');
         const fullUrl = `${baseUrl}/${id}/${formattedName}`;
         window.open(fullUrl, '_blank');
-    };
+        };
+
     const FFlogsURL = () => {
+        if (!character) return;
         try {
-            const cleanWorld = state.world.split(' ')[0].trim();
-            
+            const cleanWorld = character.world.split(' ')[0].trim();
             const worldData = allWorlds.find(w => 
                 w.name.toLowerCase() === cleanWorld.toLowerCase()
             );
@@ -132,7 +147,7 @@ const DetailedPage = () => {
             };
 
             const regionCode = regionMap[worldData.region];
-            const formattedName = state.name.trim().replace(' ', '%20');
+            const formattedName = character.name.trim().replace(' ', '%20');
             const url = `https://www.fflogs.com/character/${regionCode}/${worldData.name.toLowerCase()}/${formattedName}`;
             
             console.log("Opening FFLogs URL:", url);
@@ -161,8 +176,8 @@ const DetailedPage = () => {
                             </span>
                         </p>
                         
-                        <p className='player-name'>{state.name}</p>
-                        <p className='player-blurb'>Player in the {state.server} server</p>
+                        <p className='player-name'>{character.name}</p>
+                        <p className='player-blurb'>Player in the {character.server} server</p>
                         
                         {totalVotes > 0 && (
                             <div className='stats-container'>
@@ -182,7 +197,7 @@ const DetailedPage = () => {
                             
                             <div className='action-button-group'>
                                 <button className='image-btn' onClick={FFlogsURL}>
-                                    <img src={favicon1} alt="FFLOGS" />
+                                    <img src={favicon1} alt="FFLogs" />
                                 </button>
                                 <button className='image-btn' onClick={() => TombstoneURL('https://tomestone.gg/character')}>
                                     <img src={iconImg} alt="Toombstone" />
