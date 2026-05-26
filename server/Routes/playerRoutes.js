@@ -1,5 +1,5 @@
-const express = require('express');
-const Character = require('../Models/players'); 
+import express from 'express';
+import Character from '../Models/players.js';
 
 const router = express.Router();
 
