@@ -31,13 +31,17 @@ const DetailedPage = () => {
     const [visibleCount, setVisibleCount] = useState(3);
 
     useEffect(() => {
+        if (character) {
+            setLoading(false);
+            return;
+        }
         const fetchCharacter = async () => {
-            if (!id || character) return; 
+            if (!id) return;
+            setLoading(true);
             try {
                 const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/characters/${id}`);
                 if (!response.ok) throw new Error("Character not found");
                 const data = await response.json();
-                console.log("API Response Data:", data);
                 setCharacter(data);
             } catch (error) {
                 console.error("Error fetching character:", error);
@@ -45,8 +49,9 @@ const DetailedPage = () => {
                 setLoading(false);
             }
         };
+
         fetchCharacter();
-    }, [id, character]);
+        }, [id, character]);
 
         useEffect(() => {
             const getReviews = async () => {
@@ -157,7 +162,7 @@ const DetailedPage = () => {
             console.error("FFlogsURL Error:", error);
         }
     };
-
+    console.log("Full Character Object:", character);
     return (
         <>
             <Header />
@@ -176,8 +181,8 @@ const DetailedPage = () => {
                             </span>
                         </p>
                         
-                        <p className='player-name'>{character.name}</p>
-                        <p className='player-blurb'>Player in the {character.server} server</p>
+                        <p className='player-name'>{character.characterName || character.name}</p>
+                        <p className='player-blurb'>Player in the {character.serverName || character.server} server</p>
                         
                         {totalVotes > 0 && (
                             <div className='stats-container'>
