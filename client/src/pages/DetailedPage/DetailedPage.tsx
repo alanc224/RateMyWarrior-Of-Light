@@ -37,6 +37,7 @@ const DetailedPage = () => {
                 const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/characters/${id}`);
                 if (!response.ok) throw new Error("Character not found");
                 const data = await response.json();
+                console.log("API Response Data:", data);
                 setCharacter(data);
             } catch (error) {
                 console.error("Error fetching character:", error);

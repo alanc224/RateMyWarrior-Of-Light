@@ -19,4 +19,14 @@ router.post('/sync', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const character = await Character.findById(req.params.id);
+        if (!character) return res.status(404).json({ error: "Character not found" });
+        res.json(character);
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 module.exports = router;
