@@ -1,6 +1,5 @@
-// routes/characterRoutes.js
-import express from 'express';
-import Character from '../models/players.js';
+const express = require('express');
+const Character = require('../Models/players'); 
 
 const router = express.Router();
 
