@@ -20,9 +20,17 @@ router.post('/sync', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log("Looking for character with ID:", id);
+
     try {
-        const character = await Character.findById(req.params._id);
-        if (!character) return res.status(404).json({ error: "Character not found" });
+        const character = await Character.findById(id); 
+        
+        console.log("Database returned:", character);
+
+        if (!character) {
+            return res.status(404).json({ error: "Character not found" });
+        }
         res.json(character);
     } catch (error) {
         res.status(500).json({ error: "Server error" });
