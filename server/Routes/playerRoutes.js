@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     console.log("Looking for character with ID:", id);
 
     try {
-        const character = await Character.findById(id); 
+        const character = await Character.findOne({ _id: id }); 
         
         console.log("Database returned:", character);
 
@@ -33,6 +33,7 @@ router.get('/:id', async (req, res) => {
         }
         res.json(character);
     } catch (error) {
+        console.error("Database error:", error);
         res.status(500).json({ error: "Server error" });
     }
 });
