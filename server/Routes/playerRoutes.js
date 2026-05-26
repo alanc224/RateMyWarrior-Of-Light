@@ -1,5 +1,5 @@
-import express from 'express';
-import Character from '../Models/players.js';
+const express = require('express');
+const Character = require('../Models/players');
 
 const router = express.Router();
 
@@ -9,16 +9,8 @@ router.post('/sync', async (req, res) => {
     try {
         const updatedCharacter = await Character.findOneAndUpdate(
             { _id: id },
-            { 
-                name, 
-                server, 
-                world, 
-                portrait 
-            }, 
-            { 
-                new: true,
-                upsert: true
-            }
+            { name, server, world, portrait }, 
+            { new: true, upsert: true }
         );
         res.status(200).json(updatedCharacter);
     } catch (error) {
@@ -27,4 +19,4 @@ router.post('/sync', async (req, res) => {
     }
 });
 
-export default router;
+module.exports = router;
