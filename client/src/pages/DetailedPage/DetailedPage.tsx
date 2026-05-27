@@ -137,22 +137,36 @@ const DetailedPage = () => {
 
     const TombstoneURL = (baseUrl: string) => {
         if (!character) return;
+        const characterName = character.name || character.characterName || character.character_name || "";
         
-        const formattedName = character.name.toLowerCase().replace(' ', '-');
+        if (!characterName) {
+            console.error("TombstoneURL Error: Character name is missing entirely from state/API data.");
+            return;
+        }
+
+        const formattedName = characterName.toLowerCase().replace(' ', '-');
         const fullUrl = `${baseUrl}/${id}/${formattedName}`;
         window.open(fullUrl, '_blank');
-        };
+    };
 
     const FFlogsURL = () => {
         if (!character) return;
         try {
-            const cleanWorld = character.world.split(' ')[0].trim();
+            const characterName = character.name || character.characterName || character.character_name || "";
+            const characterWorld = character.world || character.server || character.serverName || "";
+
+            if (!characterName || !characterWorld) {
+                console.error("FFlogsURL Error: Missing required name or world string fields.", { characterName, characterWorld });
+                return;
+            }
+
+            const cleanWorld = characterWorld.split(' ')[0].trim();
             const worldData = allWorlds.find(w => 
                 w.name.toLowerCase() === cleanWorld.toLowerCase()
             );
             
             if (!worldData) {
-                console.error("World not found in allWorlds list!");
+                console.error("World not found in allWorlds list!", cleanWorld);
                 return;
             }
 
@@ -164,7 +178,7 @@ const DetailedPage = () => {
             };
 
             const regionCode = regionMap[worldData.region];
-            const formattedName = character.name.trim().replace(' ', '%20');
+            const formattedName = characterName.trim().replace(' ', '%20');
             const url = `https://www.fflogs.com/character/${regionCode}/${worldData.name.toLowerCase()}/${formattedName}`;
 
             window.open(url, '_blank');
