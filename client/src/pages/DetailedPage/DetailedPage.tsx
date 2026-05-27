@@ -102,7 +102,19 @@ const DetailedPage = () => {
 
     const redirectRate = () => {
         if (!character) return;
-        navigate(`/rating/${id}`, { state: character });
+        const resolvedId = character.id || character.character_id || id || "";
+        const resolvedName = character.name || character.characterName || character.character_name || "Unknown Character";
+        const resolvedServer = character.server || character.serverName || character.world || "Unknown Server";
+
+        navigate(`/rating/${id}`, { 
+            state: {
+                id: String(resolvedId),
+                name: resolvedName, 
+                server: resolvedServer,
+                portrait: character.portrait || "",
+                world: character.world || resolvedServer
+            } 
+        });
     };
 
     if (loading) return <div>Loading...</div>;
@@ -154,15 +166,13 @@ const DetailedPage = () => {
             const regionCode = regionMap[worldData.region];
             const formattedName = character.name.trim().replace(' ', '%20');
             const url = `https://www.fflogs.com/character/${regionCode}/${worldData.name.toLowerCase()}/${formattedName}`;
-            
-            console.log("Opening FFLogs URL:", url);
+
             window.open(url, '_blank');
             
         } catch (error) {
             console.error("FFlogsURL Error:", error);
         }
     };
-    console.log("Full Character Object:", character);
     return (
         <>
             <Header />

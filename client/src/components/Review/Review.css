@@ -142,6 +142,9 @@
     margin-top: 0.75rem;
     font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
     font-weight: 400;
+    overflow-wrap: break-word; 
+    word-break: break-word;  
+    white-space: pre-wrap;
 }
 
 .review-information-container {
@@ -188,4 +191,75 @@
     display: flex;
     align-items: center;
     margin-bottom: 5px; /* Adds a little breathing room */
+}
+
+/*mobile stuff*/
+@media screen and (max-width: 650px) {
+    .review-container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+
+    .review-rating-container,
+    .review-information-container {
+        display: contents !important; 
+    }
+    .badge-container {
+        grid-column: 1;
+        grid-row: 1;
+        margin: 0 !important;
+        align-self: center;
+    }
+
+    .review-date {
+        position: static !important;
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end; /* Snaps to upper right */
+        align-self: center;
+        background: rgba(15, 52, 96, 0.3);
+        border: 1px solid #0f3460;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        margin: 0 !important;
+    }
+
+    .review-rating-container > p,
+    .review-rating-container > div {
+        grid-column: 1 / span 2;
+    }
+
+    .review-rating-container > p {
+        grid-row: 2;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+        font-size: 0.75rem;
+        color: #a0c1d1;
+    }
+
+    .review-rating-container > div {
+        grid-row: 3;
+        margin: 0.25rem 0 0.5rem 0 !important;
+        width: 110px; 
+    }
+    .review-meta-info {
+        grid-column: 1 / span 2;
+        grid-row: 4;
+        display: flex !important;
+        flex-direction: row !important; 
+        gap: 2rem;                    
+        margin: 0.5rem 0 !important;
+        width: 100%;
+    }
+    .review-description {
+        grid-column: 1 / span 2;
+        grid-row: 5;
+        width: 100%;
+        margin-top: 0.5rem !important;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
 }

@@ -71,6 +71,8 @@ body {
     border-radius: 0.75rem;
     padding: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 500px; 
+    box-sizing: border-box;
 }
 
 .bar-graph-container h3 {
@@ -80,7 +82,6 @@ body {
     font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
     letter-spacing: 0.05em;
 }
-
 .player-overall-quality {
     padding: 1rem 0;
     font-size: .85rem;
@@ -235,14 +236,44 @@ hr {
     display: flex;
 }
 
-/* Explicitly size the images so they aren't "way too big" */
 .image-btn img {
-    width: 60px;       /* Adjust this value to make them smaller/larger */
-    height: 60px;      /* Keep square or set to auto */
+    width: 60px;    
+    height: 60px;    
     object-fit: contain;
     border-radius: 8px;
 }
 
 .image-btn:hover {
     transform: scale(1.05);
+}
+
+/* mobile stuff */
+@media (max-width: 768px) {
+  .detailpage-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .player-details {
+    width: 100% !important;
+  }
+
+  .bar-graph-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1rem !important;
+  }
+
+  .detail-page {
+    padding: 1rem !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .player-rating-score {
+    font-size: 4rem !important;
+  }
 }

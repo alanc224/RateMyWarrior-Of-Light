@@ -23,9 +23,9 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType} : Rev
         <div className='review-container'>
             <div className='review-rating-container'>
                 <p>QUALITY</p>
-                <div className={getBGColor(rating)}>{rating}.0</div>
-                
+                <div className={getBGColor(rating)}>{rating}.0</div>      
             </div>
+
             <div className='review-information-container'>
                 <div className='badge-container'>
                     <span className='review-content-badge'>{contentType}</span>

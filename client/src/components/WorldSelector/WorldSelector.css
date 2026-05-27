@@ -197,3 +197,68 @@
 .world-selector__content::-webkit-scrollbar-thumb:hover {
   background: #ff6b81;
 }
+
+/* mobile stuff */
+@media (max-width: 768px) {
+  .world-selector__dropdown {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+    z-index: 99999; 
+    display: flex;
+    flex-direction: column;
+    background: #0f0f1e !important;
+    transform: translateZ(0);
+  }
+
+  .world-selector__mobile-close {
+    display: block;
+    background: #e94560;
+    color: #ffffff;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Trebuchet MS', sans-serif;
+    transition: background 0.2s ease;
+  }
+
+  .world-selector__mobile-close:hover {
+    background: #ff6b81;
+  }
+
+
+  .world-selector__content {
+    flex: 1;
+    max-height: none; 
+    overflow-y: auto;
+    padding-bottom: 3rem; 
+  }
+
+
+  .world-selector__worlds {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .world-selector__world {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .world-selector__mobile-close {
+    display: none;
+  }
+}

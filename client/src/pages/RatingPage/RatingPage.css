@@ -161,3 +161,59 @@ body {
 .rating-dropdown-container {
     margin-bottom: 20px; 
 }
+
+@media screen and (max-width: 650px) {
+    .rating-page-container {
+        margin: 1rem auto;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .rating-component {
+        padding: 1.5rem 1rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .rating-component > div, 
+    .rating-component ul, 
+    .rating-component ol,
+    .rating-elements > div:first-child > div { 
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important; 
+        justify-content: center !important;
+        gap: 0.5rem !important;  
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 1rem 0 0 0 !important;
+        box-sizing: border-box !important;
+        pointer-events: auto !important;
+    }
+
+
+    .rating-component button,
+    .rating-component li,
+    .rating-component [class*="button"],
+    .rating-component [class*="scale"] {
+        flex: 1 1 calc(50% - 0.5rem) !important;
+        min-width: 120px !important;
+        height: 60px !important;        
+        padding: 0.5rem !important;
+        font-size: 1.1rem !important;
+        box-sizing: border-box !important;
+        
+        position: relative !important;
+        z-index: 10 !important;
+        pointer-events: auto !important; 
+        cursor: pointer !important;
+    }
+    .rating-component button:last-child,
+    .rating-component li:last-child,
+    .rating-component [class*="button"]:last-child,
+    .rating-component [class*="scale"]:last-child {
+        flex: 0 1 calc(50% - 0.5rem) !important;
+    }
+}

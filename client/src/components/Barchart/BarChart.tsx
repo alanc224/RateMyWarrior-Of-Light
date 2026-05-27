@@ -19,11 +19,11 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
         label: 'Ratings',
         data: ratings,
         backgroundColor: [
-          '#7ff6c3', // Awesome 5 - Green (keeping your existing green)
+          '#7ff6c3', // Awesome 5 - Green
           '#fbbf24', // Great 4 - Gold
-          '#fff170', // Good 3 - Yellow (keeping your existing yellow)
+          '#fff170', // Good 3 - Yellow
           '#f2994a', // OK 2 - Orange
-          '#ff9c9c', // Awful 1 - Red (keeping your existing red)
+          '#ff9c9c', // Awful 1 - Red
         ],
         barThickness: 35,
         grouped: false,
@@ -31,7 +31,7 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
       {
         label: 'Background',
         data: new Array(ratings.length).fill(maxVotes),
-        backgroundColor: '#1a1a2e', // Dark background matching theme
+        backgroundColor: '#1a1a2e', 
         barThickness: 35,
         hoverBackgroundColor: '#1a1a2e'
       }
@@ -39,49 +39,56 @@ const BarChart: React.FC<BarChartProps> = ({ ratings }) => {
   ]};
 
   const options: ChartOptions<'bar'> = {
-    responsive: true,
-    indexAxis: 'y',
-    layout: {
-      padding: {
-        right: 50
-      }
-    },
-    plugins: {
-      datalabels: {
-        display: (context) => context.datasetIndex === 0,
-        align: 'end', 
-        anchor: 'end',
-        color: '#ffffff', // White text for visibility
-        font: {
-          size: 20,
-          weight: 'bold',
-        },
-        formatter: (value: number) => `${value}`
-      }
-    },
-    scales: {
-      x: {
-        display: false,
+  responsive: true,
+  maintainAspectRatio: false,
+  indexAxis: 'y',
+  layout: {
+    padding: {
+      right: 45, 
+      left: 5
+    }
+  },
+  plugins: {
+    datalabels: {
+      display: (context) => context.datasetIndex === 0,
+      anchor: 'end',
+      align: 'end',
+      offset: 8, 
+      color: '#ffffff',
+      font: {
+        size: 16,
+        weight: 'bold',
       },
-      y: {
-        grid: {
-          display: false
+      formatter: (value: number) => `${value}`
+    }
+  },
+  scales: {
+    x: {
+      display: false,
+      beginAtZero: true,
+    },
+    y: {
+      grid: {
+        display: false
+      },
+      ticks: {
+        color: '#ffffff', 
+        padding: 10,
+        font: {
+          size: 14,
+          weight: 'bold'
         },
-        ticks: {
-          color: '#ffffff', // White labels
-          font: {
-            size: 14,
-            weight: 'bold'
-          }
-        }
+        mirror: false, 
+        z: 10 
       }
     }
-  };
+  }
+};
 
   return (
-    <div style={{ width: '500px', height: '300px' }}>
+    <div style={{ width: '100%', maxWidth: '500px', height: '300px' }}>
       <Bar data={data} options={options} plugins={[ChartDataLabels]}/>
     </div>
-  )
-}
+  );
+};
 export default BarChart;

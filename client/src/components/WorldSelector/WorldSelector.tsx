@@ -25,6 +25,19 @@ function WorldSelector({ value, onChange, placeholder = 'Select a world...' }: W
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+            document.body.style.height = '100vh';
+        } else {
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        };
+        }, [isOpen]);
 
   function handleWorldSelect(world: string) {
     onChange(world);
@@ -75,6 +88,7 @@ function WorldSelector({ value, onChange, placeholder = 'Select a world...' }: W
 
       {isOpen && (
         <div className="world-selector__dropdown">
+        <button type="button" className="world-selector__mobile-close" onClick={() => setIsOpen(false)}> ✕ Close Menu</button>
           {/* Search Input */}
           <div className="world-selector__search">
             <input

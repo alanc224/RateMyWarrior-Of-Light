@@ -43,15 +43,15 @@ const RatingPage = () => {
         setError(null); // Reset error
 
         const reviewData = {
-            characterId: state.id,
-            rating: rating,
+            characterId: String(state.id),
+            characterName: state.name, 
+            server: state.server,            
+            rating: Number(rating),
             reviewText: review,
-            characterName: state.name,
-            server: state.server,
-            playAgain: yesNo1 === 'yes', 
+            playAgain: yesNo1 === 'yes',
             recommend: yesNo2 === 'yes',
             contentType: contentType,
-        };
+    };
 
         try {
             const token = await getToken();
