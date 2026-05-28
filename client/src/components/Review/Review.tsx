@@ -44,18 +44,18 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwn
             </div>
             <div className='review-date'>{date}</div>
 
-        <div className="review-actions-wrapper" style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+            <div className="review-actions-container">
                 {isOwner ? (
                     <>
-                        <button onClick={onEdit} className="edit-review-btn" style={{ backgroundColor: '#48cae4', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                        <button onClick={onEdit} className="review-action-btn edit">
                             Edit
                         </button>
-                        <button onClick={onDelete} className="delete-review-btn" style={{ backgroundColor: '#e63946', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                        <button onClick={onDelete} className="review-action-btn delete">
                             Delete
                         </button>
                     </>
                 ) : (
-                    <button onClick={() => alert("Reported placeholder clicked")} className="report-review-btn" style={{ backgroundColor: '#ecefe6', color: '#333', border: '1px solid #ccc', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                    <button onClick={() => alert("this does nothing yet")} className="review-action-btn report">
                         Report
                     </button>
                 )}

@@ -190,7 +190,7 @@
 .badge-container {
     display: flex;
     align-items: center;
-    margin-bottom: 5px; /* Adds a little breathing room */
+    margin-bottom: 5px; 
 }
 
 /*mobile stuff*/
@@ -218,7 +218,7 @@
         position: static !important;
         grid-column: 2;
         grid-row: 1;
-        justify-self: end; /* Snaps to upper right */
+        justify-self: end; 
         align-self: center;
         background: rgba(15, 52, 96, 0.3);
         border: 1px solid #0f3460;
@@ -262,4 +262,72 @@
         padding-top: 1rem;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
+}
+
+.review-container {
+    position: relative; 
+}
+
+
+.review-date {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #8892b0;
+    font-size: 0.85rem;
+}
+
+
+.review-actions-container {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.review-action-btn {
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.review-action-btn.edit {
+    color: #48cae4;
+    border: 1px solid rgba(72, 202, 228, 0.4);
+    background-color: rgba(72, 202, 228, 0.05);
+}
+
+.review-action-btn.edit:hover {
+    background-color: #48cae4;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(72, 202, 228, 0.3);
+}
+
+
+.review-action-btn.delete {
+    color: #e63946;
+    border: 1px solid rgba(230, 57, 70, 0.4);
+    background-color: rgba(230, 57, 70, 0.05);
+}
+
+.review-action-btn.delete:hover {
+    background-color: #e63946;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
+}
+.review-action-btn.report {
+    color: #a8b2d1;
+    border: 1px solid rgba(168, 178, 209, 0.2);
+}
+
+.review-action-btn.report:hover {
+    background-color: rgba(168, 178, 209, 0.1);
+    color: #fff;
 }
