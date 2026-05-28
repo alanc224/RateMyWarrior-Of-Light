@@ -124,6 +124,7 @@ const RatingPage = () => {
             contentType: contentType,
         };
 
+
         try {
             const token = await getToken();
 
@@ -218,8 +219,17 @@ const RatingPage = () => {
                                 className='rating-text-review'
                                 value={review}
                                 onChange={(e) => setReview(e.target.value)}
+                                maxLength={350}
                                 placeholder="What do you want to let other players know about this player?"
                             />
+                        <div style={{ 
+                                textAlign: 'right', 
+                                fontSize: '0.85rem', 
+                                color: review.length >= 350 ? 'red' : '#666',
+                                marginTop: '5px' 
+                            }}>
+                                {review.length} / 350
+                            </div>
                         </div>
                     </div>
                     
