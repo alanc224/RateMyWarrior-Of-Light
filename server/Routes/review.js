@@ -3,8 +3,7 @@ const router = express.Router();
 const ReviewModel = require('../Models/reviews'); 
 require('dotenv').config();
 const crypto = require('crypto');
-// 🌟 Clean up imports - only import requireAuth here
-const { requireAuth } = require('@clerk/express'); 
+const { requireAuth, authenticateRequest } = require('@clerk/express');
 const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
@@ -59,11 +58,17 @@ const submitReview = async (req, res) => {
 router.get('/:characterId/reviews', async (req, res) => {
     try {
         let userId = null;
-        
-        if (req.auth && req.auth.userId) {
-            userId = req.auth.userId;
+        try {
+            const requestState = await authenticateRequest(req);
+            if (requestState && requestState.toAuth() && requestState.toAuth().userId) {
+                userId = requestState.toAuth().userId;
+                console.log("=== SUCCESS: authenticateRequest found user ID ===", userId);
+            } else {
+                console.log("=== NOTICE: authenticateRequest parsed but user is guest ===");
+            }
+        } catch (authError) {
+            console.error("=== ERROR: Manual header decryption failed ===", authError.message);
         }
-
         const { characterId } = req.params;
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 
