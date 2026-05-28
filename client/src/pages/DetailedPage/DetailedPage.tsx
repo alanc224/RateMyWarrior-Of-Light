@@ -56,65 +56,72 @@ const DetailedPage = () => {
         }, [id, character]);
 
         useEffect(() => {
-            const getReviews = async () => {
-                if (!id || !isLoaded) return;
-                try {
-                    const headers: HeadersInit = {};
+    const getReviews = async () => {
+        if (!id || !isLoaded) return;
 
-                    if (isSignedIn) {
-                        const token = await getToken();
-                        if (token) {
-                            headers['Authorization'] = `Bearer ${token}`;
-                        }
-                    }
-
-                    const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`, {
-                        method: 'GET',
-                        headers: headers
-                    });
-                    if (!response.ok) {
-                        return;
-                    }
-                    const data = await response.json();
-
-                    if (data.reviews && Array.isArray(data.reviews)) {
-                        setReviews(
-                            data.reviews.map((r: any) => ({
-                                id: r.id,
-                                rating: r.rating,
-                                comment: r.comment,
-                                date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
-                                    month: "short",
-                                    day: "numeric",
-                                    year: "numeric",
-                                }) : "N/A",
-                                playAgain: r.playAgain,
-                                recommend: r.recommend,
-                                contentType: r.contentType || "Other",
-                                isOwner: r.isOwner
-                            }))
-                        );
-
-                        const counts = [0, 0, 0, 0, 0]; // 1-5 stars
-                        let total = 0;
-                        let count = 0;
-                        data.reviews.forEach((r: any) => {
-                            if (r.rating >= 1 && r.rating <= 5) {
-                                counts[5 - r.rating]++;
-                                total += r.rating;
-                                count++;
-                            }
-                        });
-                        setRatings(counts);
-                        setAverage(count > 0 ? total / count : 0);
-                    }
-                } catch (error) {
-                    console.error("Error fetching reviews:", error);
-                }
+        try {
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             };
+            if (isSignedIn) {
+                const token = await getToken();
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    console.log("Frontend verified token exists and attached it!");
+                } else {
+                    console.warn("Frontend isSignedIn is true, but getToken() returned null.");
+                }
+            } else {
+                console.log("Fetching reviews in guest mode (not signed in).");
+            }
 
-            getReviews();
-        }, [id,isSignedIn, isLoaded]);
+            const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`, {
+                method: 'GET',
+                headers: headers
+            });
+            
+            if (!response.ok) return;
+            const data = await response.json();
+
+            if (data.reviews && Array.isArray(data.reviews)) {
+                setReviews(
+                    data.reviews.map((r: any) => ({
+                        id: r.id,
+                        rating: r.rating,
+                        comment: r.comment,
+                        date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                        }) : "N/A",
+                        playAgain: r.playAgain,
+                        recommend: r.recommend,
+                        contentType: r.contentType || "Other",
+                        isOwner: r.isOwner
+                    }))
+                );
+
+                const counts = [0, 0, 0, 0, 0];
+                let total = 0;
+                let count = 0;
+                data.reviews.forEach((r: any) => {
+                    if (r.rating >= 1 && r.rating <= 5) {
+                        counts[5 - r.rating]++;
+                        total += r.rating;
+                        count++;
+                    }
+                });
+                setRatings(counts);
+                setAverage(count > 0 ? total / count : 0);
+            }
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+        }
+    };
+
+    getReviews();
+    }, [id, isSignedIn, isLoaded]);
 
     const redirectRate = () => {
         if (!character) return;
