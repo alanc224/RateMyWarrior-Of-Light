@@ -66,7 +66,10 @@ const DetailedPage = () => {
                         if (token) headers['Authorization'] = `Bearer ${token}`;
                     }
 
-                    const response = await fetch(/*`http://localhost:5001/api/reviews/${id}/reviews`*/`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`);
+                    const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`, {
+                    method: 'GET',
+                    headers: headers
+                }   );
                     if (!response.ok) {
                         return;
                     }
@@ -282,8 +285,8 @@ const DetailedPage = () => {
                 </div>
                 <hr />
                 <div className='reviews-container'>
-                    {visibleReviews.map((e, i) => {
-                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} isOwner={e.isOwner} onDelete={() => handleDeleteReview(e.id)} onEdit={() => navigate(`/rating/${id}`, { state: character })} />
+                    {visibleReviews.map((e) => {
+                        return <Review key={e.id} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} isOwner={e.isOwner} onDelete={() => handleDeleteReview(e.id)} onEdit={() => navigate(`/rating/${id}`, { state: character })} />
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>

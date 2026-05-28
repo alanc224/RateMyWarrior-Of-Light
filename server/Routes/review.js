@@ -97,6 +97,9 @@ router.get('/:characterId/reviews', async (req, res) => {
         console.error('Error fetching reviews:', error);
         res.status(500).json({ message: 'Failed to fetch reviews' });
     }
+    console.log("--- DEBUGGING HASH MATCH ---");
+    console.log("Calculated current user hash:", currentUserHash);
+    console.log("Stored review user hash:    ", review.hash_user);
 });
 
 router.post('/', requireAuth(), submitReview);
