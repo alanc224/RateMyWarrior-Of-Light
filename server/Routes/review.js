@@ -61,9 +61,9 @@ router.get('/:characterId/reviews', async (req, res) => {
         let currentUserHash = null;
         try {
             const authState = getAuth(req);
-            
             if (authState && authState.userId) {
-                const secretCombination = `${authState.userId}_${characterId}_${SALT}`;
+                const cleanCharacterId = String(characterId).trim();
+                const secretCombination = `${authState.userId}_${cleanCharacterId}_${SALT}`;
                 currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
             }
         } catch (authErr) {
@@ -74,6 +74,11 @@ router.get('/:characterId/reviews', async (req, res) => {
 
         if (reviews && reviews.length > 0) {
             const formattedReviews = reviews.map(review => {
+                const isMatch = currentUserHash ? review.hash_user === currentUserHash : false;
+                console.log("--- DEBUGGING HASH MATCH FOR REVIEW:", review._id.toString(), "---");
+                console.log("Calculated current user hash:", currentUserHash);
+                console.log("Stored review user hash:    ", review.hash_user);
+                console.log("Do they match?              ", isMatch);
                 return {
                     id: review._id.toString(),
                     character_id: review.character_id,
@@ -97,9 +102,6 @@ router.get('/:characterId/reviews', async (req, res) => {
         console.error('Error fetching reviews:', error);
         res.status(500).json({ message: 'Failed to fetch reviews' });
     }
-    console.log("--- DEBUGGING HASH MATCH ---");
-    console.log("Calculated current user hash:", currentUserHash);
-    console.log("Stored review user hash:    ", review.hash_user);
 });
 
 router.post('/', requireAuth(), submitReview);
