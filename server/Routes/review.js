@@ -106,7 +106,12 @@ router.get('/:characterId/reviews', async (req, res) => {
                 const isMatch = currentHash ? (storedHash === currentHash) : false;
                 
                 console.log("--- DEBUGGING HASH MATCH FOR REVIEW:", review._id.toString(), "---");
-                console.log("Using Character ID from Doc:", review.character_id);
+                console.log("Raw Ingredients for Calculation:");
+                console.log(`  - userId:       "${userId}"`);
+                console.log(`  - character_id: "${cleanDocCharacterId}"`);
+                console.log(`  - SALT:         "${SALT}"`);
+                console.log(`  - Combined:     "${secretCombination}"`);
+                console.log("-----------------------------------------");
                 console.log("Calculated current user hash:", currentHash);
                 console.log("Stored review user hash:    ", storedHash);
                 console.log("Do they match?              ", isMatch);
