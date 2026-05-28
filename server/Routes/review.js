@@ -58,11 +58,16 @@ router.get('/:characterId/reviews', async (req, res) => {
     const { characterId } = req.params;
 
     try {
-        const { userId } = getAuth(req);
         let currentUserHash = null;
-        if (userId) {
-            const secretCombination = `${userId}_${characterId}_${SALT}`;
-            currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+        try {
+            const authState = getAuth(req);
+            
+            if (authState && authState.userId) {
+                const secretCombination = `${authState.userId}_${characterId}_${SALT}`;
+                currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+            }
+        } catch (authErr) {
+            currentUserHash = null;
         }
 
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();

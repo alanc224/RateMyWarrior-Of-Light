@@ -12,7 +12,6 @@ const reviewSchema = new Schema({
     playAgain: { type: Boolean, required: true },
     recommend: { type: Boolean, required: true },
     contentType: { type: String, required: true, default: 'Other' },
-    isOwner:  { type: Boolean, required: true, default: false }
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
