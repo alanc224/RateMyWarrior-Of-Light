@@ -3,7 +3,8 @@ const router = express.Router();
 const ReviewModel = require('../Models/reviews'); 
 require('dotenv').config();
 const crypto = require('crypto');
-const { requireAuth, clerkMiddleware } = require('@clerk/express');
+// 🌟 Clean up imports - only import requireAuth here
+const { requireAuth } = require('@clerk/express'); 
 const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
@@ -55,20 +56,21 @@ const submitReview = async (req, res) => {
     }
 };
 
-router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
-    const { characterId } = req.params;
-
+router.get('/:characterId/reviews', async (req, res) => {
     try {
         let userId = null;
+        
         if (req.auth && req.auth.userId) {
             userId = req.auth.userId;
         }
+
         const { characterId } = req.params;
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 
         if (reviews && reviews.length > 0) {
             const formattedReviews = reviews.map(review => {
                 let currentUserHash = null;
+                
                 if (userId) {
                     const cleanDocCharacterId = String(review.character_id).trim();
                     const secretCombination = `${userId}_${cleanDocCharacterId}_${SALT}`;
@@ -97,7 +99,6 @@ router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
                     recommend: review.recommend,
                     contentType: review.contentType,
                     isOwner: isMatch
-                    
                 };
             });
             res.json({ reviews: formattedReviews });
