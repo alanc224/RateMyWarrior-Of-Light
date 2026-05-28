@@ -60,8 +60,21 @@ router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
 
     try {
         let currentUserHash = null;
+        let userId = null;
         if (req.auth && req.auth.userId) {
-            const secretCombination = `${req.auth.userId}_${characterId}_${SALT}`;
+            userId = req.auth.userId;
+        } else {
+            try {
+                const manualAuth = getAuth(req);
+                if (manualAuth && manualAuth.userId) {
+                    userId = manualAuth.userId;
+                }
+            } catch (err) {
+                console.log("Fallback getAuth authentication check bypassed or skipped.");
+            }
+        }
+        if (userId) {
+            const secretCombination = `${userId}_${characterId}_${SALT}`;
             currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
         }
 
