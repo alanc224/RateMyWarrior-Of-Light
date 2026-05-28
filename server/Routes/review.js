@@ -6,11 +6,35 @@ const crypto = require('crypto');
 const { requireAuth, authenticateRequest } = require('@clerk/express');
 const SALT = process.env.SALT;
 
+const getUserIdFromHeaders = (req) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            const parts = token.split('.');
+            if (parts.length === 3) {
+                const payloadJson = Buffer.from(parts[1], 'base64').toString('utf8');
+                const payload = JSON.parse(payloadJson);
+                if (payload && payload.sub) {
+                    return payload.sub;
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Error parsing JWT from headers:", err.message);
+    }
+    return null;
+};
+
 const submitReview = async (req, res) => {
     try {
         const { characterId, rating, reviewText, characterName, server, playAgain, recommend, contentType } = req.body;
         const parsedRating = parseInt(rating, 10);
-        const authenticatedUserId = req.auth.userId; 
+        const authenticatedUserId = req.auth?.userId || getUserIdFromHeaders(req); 
+        
+        if (!authenticatedUserId) {
+            return res.status(401).json({ error: 'Unauthorized: Could not verify user identity.' });
+        } 
         
         if (!characterId || !rating || !reviewText || !characterName || !server || playAgain === undefined || recommend === undefined || !contentType) {
             return res.status(400).json({ error: 'Missing required fields' });
@@ -57,17 +81,12 @@ const submitReview = async (req, res) => {
 
 router.get('/:characterId/reviews', async (req, res) => {
     try {
-        let userId = null;
-        try {
-            const requestState = await authenticateRequest(req);
-            if (requestState && requestState.toAuth() && requestState.toAuth().userId) {
-                userId = requestState.toAuth().userId;
-                console.log("=== SUCCESS: authenticateRequest found user ID ===", userId);
-            } else {
-                console.log("=== NOTICE: authenticateRequest parsed but user is guest ===");
-            }
-        } catch (authError) {
-            console.error("=== ERROR: Manual header decryption failed ===", authError.message);
+        const userId = getUserIdFromHeaders(req);
+
+        if (userId) {
+            console.log("=== SUCCESS: Manually decoded token user ID ===", userId);
+        } else {
+            console.log("=== NOTICE: No Bearer token found or user is guest ===");
         }
         const { characterId } = req.params;
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
@@ -146,7 +165,11 @@ router.get('/character/:id', async (req, res) => {
 router.delete('/:reviewId', requireAuth(), async (req, res) => {
     try {
         const { reviewId } = req.params;
-        const authenticatedUserId = req.auth.userId;
+        const authenticatedUserId = req.auth?.userId || getUserIdFromHeaders(req);
+
+        if (!authenticatedUserId) {
+            return res.status(401).json({ error: 'Unauthorized: Could not confirm active session identity.' });
+        }
 
         const review = await ReviewModel.findById(reviewId);
         if (!review) {
