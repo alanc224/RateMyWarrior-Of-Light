@@ -82,12 +82,6 @@ const submitReview = async (req, res) => {
 router.get('/:characterId/reviews', async (req, res) => {
     try {
         const userId = getUserIdFromHeaders(req);
-
-        if (userId) {
-            console.log("=== SUCCESS: Manually decoded token user ID ===", userId);
-        } else {
-            console.log("=== NOTICE: No Bearer token found or user is guest ===");
-        }
         const { characterId } = req.params;
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 

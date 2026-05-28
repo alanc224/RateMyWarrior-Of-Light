@@ -245,6 +245,69 @@ hr {
     transform: scale(1.05);
 }
 
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(3, 5, 8, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.custom-modal-card {
+    background-color: #0b0e14;
+    border: 1px solid rgba(230, 57, 70, 0.3);
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.modal-btn.confirm-delete { background-color: #e63946; border: none; color: #fff; }
+
+.custom-modal-card h3 {
+    color: #ffffff; 
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.custom-modal-card p {
+    color: #ffffff;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+.modal-btn.cancel {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.modal-btn.cancel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* mobile stuff */
 @media (max-width: 768px) {
   .detailpage-container {

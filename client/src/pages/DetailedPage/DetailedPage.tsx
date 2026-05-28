@@ -11,6 +11,7 @@ import { useAuth } from '@clerk/clerk-react';
 
 interface ReviewItem {
     id: string;
+    _id?: string;
     rating: number;
     comment: string;
     date: string;
@@ -31,6 +32,7 @@ const DetailedPage = () => {
     const [average, setAverage] = useState(0);
     const [reviews, setReviews] = useState<ReviewItem[]>([]);
     const [visibleCount, setVisibleCount] = useState(3);
+    const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         if (character) {
@@ -207,9 +209,7 @@ const DetailedPage = () => {
             console.error("FFlogsURL Error:", error);
         }
     };
-    const handleDeleteReview = async (reviewId: string) => {
-        if (!window.confirm("Are you sure you want to delete your review?")) return;
-
+    const handleDeleteReview = async (reviewId: string) => {    
         try {
             const token = await getToken();
             const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${reviewId}`, {
@@ -222,13 +222,9 @@ const DetailedPage = () => {
             if (!response.ok) {
                 throw new Error("Failed to delete the review.");
             }
-
-            // Optimistically remove the review from the local state list immediately
-            setReviews(prev => prev.filter(review => review.id !== reviewId));
-            alert("Review deleted successfully.");
-            
-            // Optional: You could trigger a page reload or re-fetch to update averages
             window.location.reload();
+            // setReviews(prev => prev.filter(review => (review._id || review.id) !== reviewId));
+
 
         } catch (error) {
             console.error("Delete Error:", error);
@@ -302,7 +298,7 @@ const DetailedPage = () => {
                                 recommend={e.recommend} 
                                 contentType={e.contentType} 
                                 isOwner={e.isOwner} 
-                                onDelete={() => handleDeleteReview(e.id)} 
+                                onDelete={() => setReviewToDelete(e._id || e.id)}
                                 onEdit={() => navigate(`/rating/${id}`, { 
                                     state: { 
                                         character: character, 
@@ -321,6 +317,31 @@ const DetailedPage = () => {
                     )}
                 </div>
             </div>
+            {reviewToDelete && (
+        <div className="custom-modal-overlay">
+            <div className="custom-modal-card">
+                <h3>Confirm Deletion</h3>
+                <p>Are you sure you want to permanently delete your review?</p>
+                <div className="modal-actions">
+                    <button 
+                        className="modal-btn cancel" 
+                        onClick={() => setReviewToDelete(null)}
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        className="modal-btn confirm-delete" 
+                        onClick={() => {
+                            handleDeleteReview(reviewToDelete!);
+                            setReviewToDelete(null);
+                        }}
+                    >
+                        Yes, Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    )}
         </>
     );
 };

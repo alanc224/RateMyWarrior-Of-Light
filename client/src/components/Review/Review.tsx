@@ -55,7 +55,7 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwn
                         </button>
                     </>
                 ) : (
-                    <button onClick={() => alert("this does nothing yet")} className="review-action-btn report">
+                    <button onClick={() => alert("this does nothing")} className="review-action-btn report">
                         Report
                     </button>
                 )}
