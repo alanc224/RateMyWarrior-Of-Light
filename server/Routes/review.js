@@ -94,6 +94,8 @@ router.get('/:characterId/reviews', async (req, res) => {
         if (reviews && reviews.length > 0) {
             const formattedReviews = reviews.map(review => {
                 let currentUserHash = null;
+                const cleanDocCharacterId = String(review.character_id).trim();
+                let secretCombination = "";
                 
                 if (userId) {
                     const cleanDocCharacterId = String(review.character_id).trim();
