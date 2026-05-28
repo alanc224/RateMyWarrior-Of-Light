@@ -3,7 +3,7 @@ const router = express.Router();
 const ReviewModel = require('../Models/reviews'); 
 require('dotenv').config();
 const crypto = require('crypto');
-const { requireAuth,getAuth } = require('@clerk/express'); 
+const { requireAuth, clerkMiddleware } = require('@clerk/express');
 const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
@@ -19,12 +19,13 @@ const submitReview = async (req, res) => {
             return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         }
 
-        const secretCombination = `${authenticatedUserId}_${characterId}_${SALT}`;
+        const cleanCharacterId = String(characterId).trim();
+        const secretCombination = `${authenticatedUserId}_${cleanCharacterId}_${SALT}`;
         const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
 
         const newReview = new ReviewModel({
             hash_user: hashedUser,
-            character_id: characterId,
+            character_id: cleanCharacterId,
             character_name: characterName,
             server: server,
             rating: parsedRating,
@@ -54,30 +55,26 @@ const submitReview = async (req, res) => {
     }
 };
 
-router.get('/:characterId/reviews', async (req, res) => {
+router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
     const { characterId } = req.params;
 
     try {
         let currentUserHash = null;
-        try {
-            const authState = getAuth(req);
-            if (authState && authState.userId) {
-                const cleanCharacterId = String(characterId).trim();
-                const secretCombination = `${authState.userId}_${cleanCharacterId}_${SALT}`;
-                currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
-            }
-        } catch (authErr) {
-            currentUserHash = null;
+        if (req.auth && req.auth.userId) {
+            const secretCombination = `${req.auth.userId}_${characterId}_${SALT}`;
+            currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
         }
 
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 
         if (reviews && reviews.length > 0) {
             const formattedReviews = reviews.map(review => {
+                const storedHash = String(review.hash_user).trim();
+                const currentHash = currentUserHash ? String(currentUserHash).trim() : null;
                 const isMatch = currentUserHash ? review.hash_user === currentUserHash : false;
                 console.log("--- DEBUGGING HASH MATCH FOR REVIEW:", review._id.toString(), "---");
-                console.log("Calculated current user hash:", currentUserHash);
-                console.log("Stored review user hash:    ", review.hash_user);
+                console.log("Calculated current user hash:", currentHash);
+                console.log("Stored review user hash:    ", storedHash);
                 console.log("Do they match?              ", isMatch);
                 return {
                     id: review._id.toString(),
@@ -90,7 +87,7 @@ router.get('/:characterId/reviews', async (req, res) => {
                     playAgain: review.playAgain, 
                     recommend: review.recommend,
                     contentType: review.contentType,
-                    isOwner: currentUserHash ? review.hash_user === currentUserHash : false
+                    isOwner: isMatch
                     
                 };
             });
