@@ -21,24 +21,29 @@ const RatingPage = () => {
     const { isSignedIn, getToken } = useAuth();
     const { openSignIn } = useClerk();
 
+
+    const passedCharacter = location.state?.character || location.state;
+    const editReviewData = location.state?.editReviewData || null;
+    const isEditing = !!editReviewData;
+
     const [character, setCharacter] = useState<CharacterDetails | null>(() => {
-        if (location.state) {
+        if (passedCharacter) {
             return {
-                id: String(location.state.id || id),
-                name: location.state.name || location.state.characterName || "",
-                server: location.state.server || location.state.serverName || location.state.world || "",
-                portrait: location.state.portrait || "",
-                world: location.state.world || ""
+                id: String(passedCharacter.id || id),
+                name: passedCharacter.name || passedCharacter.characterName || passedCharacter.character_name || "",
+                server: passedCharacter.server || passedCharacter.serverName || passedCharacter.world || "",
+                portrait: passedCharacter.portrait || "",
+                world: passedCharacter.world || ""
             };
         }
         return null;
     });
 
-    const [rating, setRating] = useState(0);
-    const [yesNo1, setYesNo1] = useState<"" | "yes" | "no">("");
-    const [yesNo2, setYesNo2] = useState<"" | "yes" | "no">("");
-    const [review, setReview] = useState("");
-    const [contentType, setContentType] = useState("Dungeon");
+    const [rating, setRating] = useState(editReviewData ? editReviewData.rating : 0);
+    const [yesNo1, setYesNo1] = useState<"" | "yes" | "no">( editReviewData ? (editReviewData.playAgain ? "yes" : "no") : "");
+    const [yesNo2, setYesNo2] = useState<"" | "yes" | "no">( editReviewData ? (editReviewData.recommend ? "yes" : "no") : "");
+    const [review, setReview] = useState(editReviewData ? editReviewData.comment : "");
+    const [contentType, setContentType] = useState(editReviewData ? editReviewData.contentType : "Dungeon");
     const [pageLoading, setPageLoading] = useState(!character); 
     const [submitLoading, setSubmitLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -121,8 +126,15 @@ const RatingPage = () => {
 
         try {
             const token = await getToken();
-            const response = await fetch('https://ratemywarrioroflight-api.onrender.com/api/reviews', {
-                method: 'POST',
+
+            const targetUrl = isEditing 
+                ? `https://ratemywarrioroflight-api.onrender.com/api/reviews/${editReviewData.id}`
+                : 'https://ratemywarrioroflight-api.onrender.com/api/reviews';
+                
+            const targetMethod = isEditing ? 'PUT' : 'POST';
+
+            const response = await fetch(targetUrl, {
+                method: targetMethod,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -131,6 +143,11 @@ const RatingPage = () => {
             });
 
             const data = await response.json();
+
+            if (!isEditing && response.status === 409) {
+                setError('You already left a review for this player.');
+                return;
+            }
 
             if (response.status === 409) {
                 setError('You already left a review for this player.');
@@ -141,7 +158,6 @@ const RatingPage = () => {
                 throw new Error(data.error || 'Failed to submit review');
             }
 
-            // Route safely back to the detailed profile view 
             navigate(`/detailpage/${character.id}`, {
                 state: character
             });
@@ -168,7 +184,7 @@ const RatingPage = () => {
         <>
             <Header />
             <div className='rating-page-container'>
-                <p className='rating-name'>{character?.name || "Unknown Character"}</p>
+                <p className='rating-name'>{isEditing ? `Editing Review for ${character?.name}` : character?.name || "Unknown Character"}</p>
                 <p className='rating-add-rating'>Player in the {character?.server || "Unknown Server"} server</p>
                 <div className='rating-elements'>
                     <RatingScale value={rating} onChange={(newValue) => setRating(newValue ?? 0)} />
@@ -219,7 +235,7 @@ const RatingPage = () => {
                             onClick={handleSubmitReview} 
                             disabled={submitLoading || !character}
                         > 
-                            {submitLoading ? 'Submitting...' : 'Submit Rating'}
+                            {submitLoading ? 'Saving Changes...' : isEditing ? 'Update Review' : 'Submit Rating'}
                         </button>
                     </div>
                 </div>

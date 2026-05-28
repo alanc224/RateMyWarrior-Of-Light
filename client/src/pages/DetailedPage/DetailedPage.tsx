@@ -68,12 +68,9 @@ const DetailedPage = () => {
                 const token = await getToken();
                 if (token) {
                     headers['Authorization'] = `Bearer ${token}`;
-                    console.log("Frontend verified token exists and attached it!");
                 } else {
                     console.warn("Frontend isSignedIn is true, but getToken() returned null.");
                 }
-            } else {
-                console.log("Fetching reviews in guest mode (not signed in).");
             }
 
             const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`, {
@@ -295,7 +292,25 @@ const DetailedPage = () => {
                 <hr />
                 <div className='reviews-container'>
                     {visibleReviews.map((e) => {
-                        return <Review key={e.id} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} isOwner={e.isOwner} onDelete={() => handleDeleteReview(e.id)} onEdit={() => navigate(`/rating/${id}`, { state: character })} />
+                        return (
+                            <Review 
+                                key={e.id} 
+                                rating={e.rating} 
+                                comment={e.comment} 
+                                date={e.date} 
+                                playAgain={e.playAgain} 
+                                recommend={e.recommend} 
+                                contentType={e.contentType} 
+                                isOwner={e.isOwner} 
+                                onDelete={() => handleDeleteReview(e.id)} 
+                                onEdit={() => navigate(`/rating/${id}`, { 
+                                    state: { 
+                                        character: character, 
+                                        editReviewData: e
+                                    } 
+                                })} 
+                            />
+                        );
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>

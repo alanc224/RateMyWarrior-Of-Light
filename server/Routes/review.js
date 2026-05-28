@@ -106,17 +106,6 @@ router.get('/:characterId/reviews', async (req, res) => {
                 const storedHash = String(review.hash_user).trim();
                 const currentHash = currentUserHash ? String(currentUserHash).trim() : null;
                 const isMatch = currentHash ? (storedHash === currentHash) : false;
-                
-                console.log("--- DEBUGGING HASH MATCH FOR REVIEW:", review._id.toString(), "---");
-                console.log("Raw Ingredients for Calculation:");
-                console.log(`  - userId:       "${userId}"`);
-                console.log(`  - character_id: "${cleanDocCharacterId}"`);
-                console.log(`  - SALT:         "${SALT}"`);
-                console.log(`  - Combined:     "${secretCombination}"`);
-                console.log("-----------------------------------------");
-                console.log("Calculated current user hash:", currentHash);
-                console.log("Stored review user hash:    ", storedHash);
-                console.log("Do they match?              ", isMatch);
 
                 return {
                     id: review._id.toString(),
@@ -195,6 +184,37 @@ router.delete('/:reviewId', requireAuth(), async (req, res) => {
 
     } catch (error) {
         console.error('Error deleting review:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.put('/:reviewId', requireAuth(), async (req, res) => {
+    try {
+        const { reviewId } = req.params;
+        const { rating, reviewText, playAgain, recommend, contentType } = req.body;
+        const authenticatedUserId = req.auth?.userId || getUserIdFromHeaders(req);
+        if (!authenticatedUserId) return res.status(401).json({ error: 'Unauthorized' });
+
+        const review = await ReviewModel.findById(reviewId);
+        if (!review) return res.status(404).json({ error: 'Review not found' });
+
+        const secretCombination = `${authenticatedUserId}_${review.character_id}_${SALT}`;
+        const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
+        if (review.hash_user !== hashedUser) {
+            return res.status(403).json({ error: 'Unauthorized ownership mismatch.' });
+        }
+
+        review.rating = parseInt(rating, 10);
+        review.comment = reviewText;
+        review.playAgain = playAgain;
+        review.recommend = recommend;
+        review.contentType = contentType;
+        review.date = new Date();
+
+        await review.save();
+        res.json({ message: 'Review updated successfully!' });
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
