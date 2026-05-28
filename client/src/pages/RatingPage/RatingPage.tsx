@@ -1,26 +1,87 @@
 import RatingScale from "../../components/RatingComponents/RatingScale/RatingScale";
 import RatingYesNo from "../../components/RatingComponents/RatingYesNo/RatingYesNo";
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Header from "../../components/Header/Header"; // No need to pass props anymore
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import Header from "../../components/Header/Header"; 
 import "./RatingPage.css";
-import { useAuth, useClerk } from '@clerk/clerk-react'
+import { useAuth, useClerk } from '@clerk/clerk-react';
 
+interface CharacterDetails {
+    id: string;
+    name: string;
+    server: string;
+    portrait?: string;
+    world?: string;
+}
 
 const RatingPage = () => {
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { isSignedIn, getToken } = useAuth();
+    const { openSignIn } = useClerk();
+
+    const [character, setCharacter] = useState<CharacterDetails | null>(() => {
+        if (location.state) {
+            return {
+                id: String(location.state.id || id),
+                name: location.state.name || location.state.characterName || "",
+                server: location.state.server || location.state.serverName || location.state.world || "",
+                portrait: location.state.portrait || "",
+                world: location.state.world || ""
+            };
+        }
+        return null;
+    });
+
     const [rating, setRating] = useState(0);
     const [yesNo1, setYesNo1] = useState<"" | "yes" | "no">("");
     const [yesNo2, setYesNo2] = useState<"" | "yes" | "no">("");
     const [review, setReview] = useState("");
     const [contentType, setContentType] = useState("Dungeon");
-    const navigate = useNavigate();
-    const location = useLocation();
-    const state = location.state;
-    const { isSignedIn, getToken } = useAuth();
-    const { openSignIn } = useClerk();
-
-    const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = useState(!character); 
+    const [submitLoading, setSubmitLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (character) {
+            setPageLoading(false);
+            return;
+        }
+
+        const fetchCharacterDetails = async () => {
+            if (!id) {
+                setError("No valid character ID found in the URL path.");
+                setPageLoading(false);
+                return;
+            }
+            try {
+                setPageLoading(true);
+                const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/players/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error("Could not look up character data for this URL.");
+                }
+                
+                const data = await response.json();
+                
+                setCharacter({
+                    id: String(data.id || data.character_id || id),
+                    name: data.name || data.characterName || data.character_name || "Unknown Character",
+                    server: data.server || data.serverName || data.world || "Unknown Server",
+                    portrait: data.portrait || "",
+                    world: data.world || data.server || ""
+                });
+            } catch (err: any) {
+                console.error("Error matching direct link character access:", err);
+                setError(err.message || "Failed to load character information.");
+            } finally {
+                setPageLoading(false);
+            }
+        };
+
+        fetchCharacterDetails();
+    }, [id, character]);
 
     const handleSubmitReview = async () => {
         if (!isSignedIn) {
@@ -29,41 +90,47 @@ const RatingPage = () => {
             return;
         }
 
-        if (!rating || !review) {
+        if (!character) {
+            setError('Cannot submit review: Character identity details are missing.');
+            return;
+        }
+
+        if (!rating || !review.trim()) {
             setError('Please provide both a rating and a review.');
             return;
         }
 
         if (!yesNo1 || !yesNo2) {
-        setError('Please answer both "Play Again" and "Recommend" questions.');
-        return;
-    }
+            setError('Please answer both "Play Again" and "Recommend" questions.');
+            return;
+        }
 
-        setLoading(true);
-        setError(null); // Reset error
+        setSubmitLoading(true);
+        setError(null); 
 
         const reviewData = {
-            characterId: String(state.id),
-            characterName: state.name, 
-            server: state.server,            
+            characterId: String(character.id),
+            characterName: character.name, 
+            server: character.server,            
             rating: Number(rating),
             reviewText: review,
             playAgain: yesNo1 === 'yes',
             recommend: yesNo2 === 'yes',
             contentType: contentType,
-    };
+        };
 
         try {
             const token = await getToken();
-            const response = await fetch(/*'http://localhost:5001/api/reviews'*/ 'https://ratemywarrioroflight-api.onrender.com/api/reviews', {
+            const response = await fetch('https://ratemywarrioroflight-api.onrender.com/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(reviewData),
-                // credentials: 'include',
             });
+
+            const data = await response.json();
 
             if (response.status === 409) {
                 setError('You already left a review for this player.');
@@ -71,35 +138,41 @@ const RatingPage = () => {
             }
 
             if (!response.ok) {
-                throw new Error('Failed to submit review');
+                throw new Error(data.error || 'Failed to submit review');
             }
 
-            navigate(`/detailpage/${state.id}`, {
-                state: {
-                    id: state.id,
-                    name: state.name,
-                    portrait: state.portrait,
-                    server: state.server,
-                    world: state.world,
-                }
+            // Route safely back to the detailed profile view 
+            navigate(`/detailpage/${character.id}`, {
+                state: character
             });
 
-        } catch (error) {
-            setError('Failed to submit the review. Please try again later.');
+        } catch (error: any) {
+            setError(error.message || 'Failed to submit the review. Please try again later.');
         } finally {
-            setLoading(false);
+            setSubmitLoading(false);
         }
     };
 
+    if (pageLoading) {
+        return (
+            <>
+                <Header />
+                <div className='rating-page-container' style={{ textAlign: 'center', marginTop: '50px' }}>
+                    <p>Loading character identity profile...</p>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
-            <Header  />
+            <Header />
             <div className='rating-page-container'>
-                <p className='rating-name'>{state.name}</p>
-                <p className='rating-add-rating'>Add Rating</p>
+                <p className='rating-name'>{character?.name || "Unknown Character"}</p>
+                <p className='rating-add-rating'>Player in the {character?.server || "Unknown Server"} server</p>
                 <div className='rating-elements'>
                     <RatingScale value={rating} onChange={(newValue) => setRating(newValue ?? 0)} />
-                    <RatingYesNo question="Would you play this with player again?" value={yesNo1} onChange={(newValue) => setYesNo1(newValue)} />
+                    <RatingYesNo question="Would you play with this player again?" value={yesNo1} onChange={(newValue) => setYesNo1(newValue)} />
                     <RatingYesNo question="Would you recommend others to play with this player?" value={yesNo2} onChange={(newValue) => setYesNo2(newValue)} />
 
                     <div className='rating-component'>
@@ -133,18 +206,26 @@ const RatingPage = () => {
                             />
                         </div>
                     </div>
+                    
                     {error && (
-                        <div className="error-message" style={{ color: 'red', marginBottom: '15px' }}>
+                        <div className="error-message" style={{ color: 'red', marginBottom: '15px', fontWeight: 'bold' }}>
                             {error}
                         </div>
                     )}
+                    
                     <div className="rating-component">
-                        <button className='rating-submit-btn' onClick={handleSubmitReview} disabled={loading}> {loading ? 'Submitting...' : 'Submit Rating'}</button>
+                        <button 
+                            className='rating-submit-btn' 
+                            onClick={handleSubmitReview} 
+                            disabled={submitLoading || !character}
+                        > 
+                            {submitLoading ? 'Submitting...' : 'Submit Rating'}
+                        </button>
                     </div>
                 </div>
             </div>
         </>
-    )
+    );
 };
 
 export default RatingPage;

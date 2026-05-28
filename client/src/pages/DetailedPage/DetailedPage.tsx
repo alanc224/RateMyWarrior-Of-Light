@@ -7,22 +7,24 @@ import Review from "../../components/Review/Review";
 import favicon1 from '../../assets/favicon1.png';
 import iconImg from '../../assets/icon.webp';
 import { allWorlds } from '../../data/worlds'; 
+import { useAuth } from '@clerk/clerk-react';
 
 interface ReviewItem {
+    id: string;
     rating: number;
     comment: string;
     date: string;
     playAgain: boolean;
     recommend: boolean;
     contentType: string;
-
+    isOwner: boolean;
 }
 
 const DetailedPage = () => {
     const { id } = useParams<{ id?: string }>();
     const location = useLocation();
     const navigate = useNavigate();
-
+    const { isSignedIn, getToken } = useAuth();
     const [character, setCharacter] = useState(location.state || null);
     const [loading, setLoading] = useState(!location.state);
     const [ratings, setRatings] = useState([0, 0, 0, 0, 0]);
@@ -57,6 +59,13 @@ const DetailedPage = () => {
             const getReviews = async () => {
                 if (!id) return;
                 try {
+                    const headers: HeadersInit = {};
+
+                    if (isSignedIn) {
+                        const token = await getToken();
+                        if (token) headers['Authorization'] = `Bearer ${token}`;
+                    }
+
                     const response = await fetch(/*`http://localhost:5001/api/reviews/${id}/reviews`*/`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`);
                     if (!response.ok) {
                         return;
@@ -66,6 +75,7 @@ const DetailedPage = () => {
                     if (data.reviews && Array.isArray(data.reviews)) {
                         setReviews(
                             data.reviews.map((r: any) => ({
+                                id: r.id,
                                 rating: r.rating,
                                 comment: r.comment,
                                 date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
@@ -75,7 +85,8 @@ const DetailedPage = () => {
                                 }) : "N/A",
                                 playAgain: r.playAgain,
                                 recommend: r.recommend,
-                                contentType: r.contentType || "Other"
+                                contentType: r.contentType || "Other",
+                                isOwner: r.isOwner
                             }))
                         );
 
@@ -98,7 +109,7 @@ const DetailedPage = () => {
             };
 
             getReviews();
-        }, [id]);
+        }, [id,isSignedIn]);
 
     const redirectRate = () => {
         if (!character) return;
@@ -187,6 +198,35 @@ const DetailedPage = () => {
             console.error("FFlogsURL Error:", error);
         }
     };
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!window.confirm("Are you sure you want to delete your review?")) return;
+
+        try {
+            const token = await getToken();
+            const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${reviewId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete the review.");
+            }
+
+            // Optimistically remove the review from the local state list immediately
+            setReviews(prev => prev.filter(review => review.id !== reviewId));
+            alert("Review deleted successfully.");
+            
+            // Optional: You could trigger a page reload or re-fetch to update averages
+            window.location.reload();
+
+        } catch (error) {
+            console.error("Delete Error:", error);
+            alert("Could not delete your review at this time.");
+        }
+    };
+
     return (
         <>
             <Header />
@@ -243,7 +283,7 @@ const DetailedPage = () => {
                 <hr />
                 <div className='reviews-container'>
                     {visibleReviews.map((e, i) => {
-                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} />
+                        return <Review key={i} rating={e.rating} comment={e.comment} date={e.date} playAgain={e.playAgain} recommend={e.recommend} contentType={e.contentType} isOwner={e.isOwner} onDelete={() => handleDeleteReview(e.id)} onEdit={() => navigate(`/rating/${id}`, { state: character })} />
                     })}
                     {hasMore && (
                         <div className='load-more-ratings-btn'>

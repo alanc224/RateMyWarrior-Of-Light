@@ -7,8 +7,11 @@ interface ReviewProps {
     playAgain: boolean,
     recommend: boolean
     contentType: string;
+    isOwner: boolean;
+    onDelete: () => void;
+    onEdit: () => void;
 }
-const Review = ({rating, comment, date, playAgain, recommend, contentType} : ReviewProps) => {
+const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwner, onDelete, onEdit} : ReviewProps) => {
     // let rating = 5;
     const getBGColor = (rating : number) => {
         if (rating == 1 || rating == 2){
@@ -40,6 +43,23 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType} : Rev
                 <p className='review-description'>{comment}</p>
             </div>
             <div className='review-date'>{date}</div>
+
+        <div className="review-actions-wrapper" style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                {isOwner ? (
+                    <>
+                        <button onClick={onEdit} className="edit-review-btn" style={{ backgroundColor: '#48cae4', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                            Edit
+                        </button>
+                        <button onClick={onDelete} className="delete-review-btn" style={{ backgroundColor: '#e63946', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                            Delete
+                        </button>
+                    </>
+                ) : (
+                    <button onClick={() => alert("Reported placeholder clicked")} className="report-review-btn" style={{ backgroundColor: '#ecefe6', color: '#333', border: '1px solid #ccc', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' }}>
+                        Report
+                    </button>
+                )}
+            </div>
             
         </div>
     );

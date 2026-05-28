@@ -3,7 +3,7 @@ const router = express.Router();
 const ReviewModel = require('../Models/reviews'); 
 require('dotenv').config();
 const crypto = require('crypto');
-const { requireAuth } = require('@clerk/express'); 
+const { requireAuth,getAuth } = require('@clerk/express'); 
 const SALT = process.env.SALT;
 
 const submitReview = async (req, res) => {
@@ -58,6 +58,13 @@ router.get('/:characterId/reviews', async (req, res) => {
     const { characterId } = req.params;
 
     try {
+        const { userId } = getAuth(req);
+        let currentUserHash = null;
+        if (userId) {
+            const secretCombination = `${userId}_${characterId}_${SALT}`;
+            currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+        }
+
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 
         if (reviews && reviews.length > 0) {
@@ -72,7 +79,8 @@ router.get('/:characterId/reviews', async (req, res) => {
                     server: review.server,
                     playAgain: review.playAgain, 
                     recommend: review.recommend,
-                    contentType: review.contentType
+                    contentType: review.contentType,
+                    isOwner: currentUserHash ? review.hash_user === currentUserHash : false
                     
                 };
             });
@@ -111,6 +119,32 @@ router.get('/character/:id', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error processing ratings" });
   }
+});
+
+router.delete('/:reviewId', requireAuth(), async (req, res) => {
+    try {
+        const { reviewId } = req.params;
+        const authenticatedUserId = req.auth.userId;
+
+        const review = await ReviewModel.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: 'Review not found' });
+        }
+
+        const secretCombination = `${authenticatedUserId}_${review.character_id}_${SALT}`;
+        const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
+
+        if (review.hash_user !== hashedUser) {
+            return res.status(403).json({ error: 'Unauthorized: You do not own this review document.' });
+        }
+
+        await ReviewModel.findByIdAndDelete(reviewId);
+        res.json({ message: 'Review successfully removed from database.' });
+
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 module.exports = router;
