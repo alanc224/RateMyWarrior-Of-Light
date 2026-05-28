@@ -63,14 +63,20 @@ router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
         let userId = null;
         if (req.auth && req.auth.userId) {
             userId = req.auth.userId;
+            console.log("User ID extracted via req.auth:", userId);
         } else {
-            try {
-                const manualAuth = getAuth(req);
-                if (manualAuth && manualAuth.userId) {
-                    userId = manualAuth.userId;
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                const token = authHeader.split(' ')[1];
+                try {
+                    const verifiedToken = await clerkClient.verifyToken(token);
+                    if (verifiedToken && verifiedToken.sub) {
+                        userId = verifiedToken.sub; 
+                        console.log("User ID manually verified from Bearer token:", userId);
+                    }
+                } catch (verifyError) {
+                    console.error("Manual token verification failed:", verifyError.message);
                 }
-            } catch (err) {
-                console.log("Fallback getAuth authentication check bypassed or skipped.");
             }
         }
         if (userId) {
