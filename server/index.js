@@ -5,10 +5,12 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
+const { clerkMiddleware } = require('@clerk/express');
 const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 const playerRoutes = require('./Routes/playerRoutes');
+
 
 const corsOptions = {
     origin: [
@@ -16,11 +18,13 @@ const corsOptions = {
         'https://ratemywarrioroflight.onrender.com'
     ],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'] 
 };
-app.options(/.*/, cors(corsOptions), (req, res) => res.sendStatus(200));
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+app.use(clerkMiddleware());
 
 
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
@@ -56,10 +60,6 @@ app.get('/api/characters', async (req, res) => {
         res.status(status).json({ error: message });
     }
 });
-
-const { clerkMiddleware } = require('@clerk/express');
-app.use(clerkMiddleware());
-
 
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))

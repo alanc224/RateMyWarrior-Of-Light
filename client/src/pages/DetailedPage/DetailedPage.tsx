@@ -24,7 +24,7 @@ const DetailedPage = () => {
     const { id } = useParams<{ id?: string }>();
     const location = useLocation();
     const navigate = useNavigate();
-    const { isSignedIn, getToken } = useAuth();
+    const { isSignedIn, getToken, isLoaded } = useAuth();
     const [character, setCharacter] = useState(location.state || null);
     const [loading, setLoading] = useState(!location.state);
     const [ratings, setRatings] = useState([0, 0, 0, 0, 0]);
@@ -57,19 +57,21 @@ const DetailedPage = () => {
 
         useEffect(() => {
             const getReviews = async () => {
-                if (!id) return;
+                if (!id || !isLoaded) return;
                 try {
                     const headers: HeadersInit = {};
 
                     if (isSignedIn) {
                         const token = await getToken();
-                        if (token) headers['Authorization'] = `Bearer ${token}`;
+                        if (token) {
+                            headers['Authorization'] = `Bearer ${token}`;
+                        }
                     }
 
                     const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${id}/reviews`, {
-                    method: 'GET',
-                    headers: headers
-                }   );
+                        method: 'GET',
+                        headers: headers
+                    });
                     if (!response.ok) {
                         return;
                     }
@@ -112,7 +114,7 @@ const DetailedPage = () => {
             };
 
             getReviews();
-        }, [id,isSignedIn]);
+        }, [id,isSignedIn, isLoaded]);
 
     const redirectRate = () => {
         if (!character) return;
