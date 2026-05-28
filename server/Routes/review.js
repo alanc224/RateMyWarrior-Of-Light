@@ -59,35 +59,22 @@ router.get('/:characterId/reviews',clerkMiddleware(), async (req, res) => {
     const { characterId } = req.params;
 
     try {
-        let currentUserHash = null;
         let userId = null;
         if (req.auth && req.auth.userId) {
             userId = req.auth.userId;
-            console.log("User ID extracted via req.auth:", userId);
-        } else {
-            const authHeader = req.headers.authorization;
-            if (authHeader && authHeader.startsWith('Bearer ')) {
-                const token = authHeader.split(' ')[1];
-                try {
-                    const verifiedToken = await clerkClient.verifyToken(token);
-                    if (verifiedToken && verifiedToken.sub) {
-                        userId = verifiedToken.sub; 
-                        console.log("User ID manually verified from Bearer token:", userId);
-                    }
-                } catch (verifyError) {
-                    console.error("Manual token verification failed:", verifyError.message);
-                }
-            }
         }
-        if (userId) {
-            const secretCombination = `${userId}_${characterId}_${SALT}`;
-            currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
-        }
-
+        const { characterId } = req.params;
         const reviews = await ReviewModel.find({ character_id: characterId }).lean();
 
         if (reviews && reviews.length > 0) {
             const formattedReviews = reviews.map(review => {
+                let currentUserHash = null;
+                if (userId) {
+                    const cleanDocCharacterId = String(review.character_id).trim();
+                    const secretCombination = `${userId}_${cleanDocCharacterId}_${SALT}`;
+                    currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+                }
+
                 const storedHash = String(review.hash_user).trim();
                 const currentHash = currentUserHash ? String(currentUserHash).trim() : null;
                 const isMatch = currentUserHash ? review.hash_user === currentUserHash : false;
