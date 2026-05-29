@@ -28,11 +28,17 @@ body {
 .rating-add-rating {
     font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
     font-size: 1.75rem;
-    line-height: 1rem;
+    line-height: 1.4;
     margin-bottom: 2rem;
     color: #a0c1d1;
     text-align: center;
     letter-spacing: 0.03em;
+    word-wrap: break-word;
+    max-width: 100%;
+
+    @media (max-width: 600px){
+        font-size: 0.9rem;
+    }
 }
 
 .rating-elements > * {
