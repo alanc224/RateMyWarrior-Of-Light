@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -32,12 +33,17 @@ app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 
+const searchLimiter = rateLimit({
+    windowMs: 2000,
+    limit: 1,
+    message: { error: "Too many requests, please wait a moment." }
+});
+
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 const searchCache = new Map(); // search cache
-let lastRequestTime = 0;
 
 // API for webscraping
-app.get('/api/characters', async (req, res) => {
+app.get('/api/characters', searchLimiter, async (req, res) => {
     const characterName = req.query.name;
     const worldName = req.query.world || 'Faerie'; // default to faerie if the request was sent without a world
     const cacheKey = `${worldName}-${characterName}`.toLowerCase();
@@ -49,13 +55,6 @@ app.get('/api/characters', async (req, res) => {
     if (!characterName || !worldName) {
         return res.status(400).send('Missing a field.');
     }
-    
-    const now = Date.now();
-    if (now - lastRequestTime < 2000) { 
-        return res.status(429).send("Too many requests, please wait a moment.");
-    }
-
-    lastRequestTime = now;
 
     try {
         const proxyUrl = `${EXTERNAL_API_PROXY}/character/search`;
@@ -66,7 +65,12 @@ app.get('/api/characters', async (req, res) => {
                 world: worldName 
             }
         });
-        searchCache.set(cacheKey, response.data);
+
+        const uniqueData = response.data.filter((char, index, self) =>
+            index === self.findIndex((c) => c.id === char.id)
+        );
+
+        searchCache.set(cacheKey, uniqueData);
         return res.json(response.data);
 
     } catch (error) {
