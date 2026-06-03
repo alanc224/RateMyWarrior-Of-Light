@@ -67,7 +67,7 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
         });
 
         const uniqueData = response.data.filter((char, index, self) =>
-            index === self.findIndex((c) => c.id === char.id)
+            index === self.findIndex((c) => c.ID === char.ID)
         );
 
         searchCache.set(cacheKey, uniqueData);
