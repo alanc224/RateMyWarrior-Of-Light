@@ -1,7 +1,22 @@
 const express = require('express');
 const Character = require('../Models/players');
+const Review = require('../Models/reviews');
+
 
 const router = express.Router();
+
+router.get('/ratings/bulk', async (req, res) => {
+    const idsString = req.query.ids;
+    if (!idsString) return res.json([]);
+    const ids = idsString.split(',');
+    
+    try {
+        const ratings = await Review.find({ characterId: { $in: ids } });
+        res.json(ratings);
+    } catch (err) {
+        res.status(500).json({ error: "Bulk fetch failed" });
+    }
+});
 
 router.post('/sync', async (req, res) => {
     const { id, name, server, world, portrait } = req.body;

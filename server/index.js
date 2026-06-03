@@ -11,7 +11,6 @@ const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 const playerRoutes = require('./Routes/playerRoutes');
-const reviewModel = require('./Models/reviews');
 
 
 const corsOptions = {
@@ -75,23 +74,6 @@ app.get('/api/characters', async (req, res) => {
         const status = error.response ? error.response.status : 500;
         const message = error.response ? error.response.data : 'An Error Occured with ffxivapi';
         res.status(status).json({ error: message });
-    }
-});
-
-app.get('/api/ratings/bulk', async (req, res) => {
-    const idsString = req.query.ids;
-    if (!idsString) {
-        return res.json([]);
-    }
-    
-    const ids = idsString.split(',');
-
-    try {
-        const ratings = await reviewModel.find({ characterId: { $in: ids } });
-        res.json(ratings);
-    } catch (err) {
-        console.error('Bulk fetch error:', err);
-        res.status(500).json({ error: "Bulk fetch failed" });
     }
 });
 
