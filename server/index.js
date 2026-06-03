@@ -77,6 +77,16 @@ app.get('/api/characters', async (req, res) => {
     }
 });
 
+app.get('/api/ratings/bulk', async (req, res) => {
+    const ids = req.query.ids.split(',');
+    try {
+        const ratings = await RatingModel.find({ characterId: { $in: ids } });
+        res.json(ratings);
+    } catch (err) {
+        res.status(500).json({ error: "Bulk fetch failed" });
+    }
+});
+
 mongoose.connect(mongoURI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log('MongoDB connection error:', err));

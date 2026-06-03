@@ -2,9 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { PlayerInfo } from '../../types/player'; 
 import ResultCard from '../../components/ResultCard';
-import { searchCharacters, getCharacterRatings } from '../../services/api';
+import { searchCharacters } from '../../services/api';
 import Header from '../../components/Header/Header';
 import './ResultsPage.css';
+
+interface RatingInfo {
+  characterId: number;
+  rating: number;
+  reviewCount: number;
+}
 
 function ResultsPage() {
   const { category, world, query } = useParams<{ 
@@ -28,42 +34,46 @@ function ResultsPage() {
   const currentResults = allResults.slice(startIndex, endIndex);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!query) {
-        setLoading(false);
-        return;
-      }
-      
-      setLoading(true);
-      setError(null);
-      setCurrentPage(1); // Reset to page 1 on new search
-      
-      try {
-        
-        // Step 1: Get characters from Lodestone
-        const data = await searchCharacters(query, world || '');
-        // Step 2: Fetch ratings for each character from MongoDB
-        const charactersWithRatings = await Promise.all(
-          data.map(async (character) => {
-            const ratings = await getCharacterRatings(character.id);
-            return {
-              ...character,
-              rating: ratings?.rating,
-              reviewCount: ratings?.reviewCount
-            };
-          })
-        );
-        setAllResults(charactersWithRatings);
-      } catch (err) {
-        console.error('Error fetching characters:', err);
-        setError('Failed to load characters. Please try again.');
-      } finally {
-        setLoading(false);
-      }
+  async function fetchData() {
+    if (!query) {
+      setLoading(false);
+      return;
     }
     
-    fetchData();
-  }, [category, world, query]);
+    setLoading(true);
+    setError(null);
+    setCurrentPage(1);
+    
+    try {
+      const data = await searchCharacters(query, world || '');
+      if (data.length === 0) { 
+        setAllResults([]); 
+        return; 
+      }
+      const ids = data.map(d => d.id).join(',');
+      const ratingsData: RatingInfo[] = await fetch(`/api/ratings/bulk?ids=${ids}`).then(r => r.json());
+
+      const results = data.map(char => {
+        const ratingInfo = ratingsData.find(r => String(r.characterId) === String(char.id));
+        return {
+          ...char,
+          rating: ratingInfo?.rating || 0,
+          reviewCount: ratingInfo?.reviewCount || 0
+        };
+      });
+      setAllResults(results);
+
+    } catch (err) {
+      console.error('Error fetching characters:', err);
+      setError('Failed to load characters. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  fetchData();
+}, [category, world, query]);
+
 
   async function handleCardClick(player: PlayerInfo) {
   try {
@@ -113,7 +123,7 @@ function ResultsPage() {
           Searching Lodestone...
         </p>
         <p className="results-page__loading-tip">
-          This may take 30-60 seconds for common names.
+          May take a while if the server is booting up.
         </p>
       </div>
     );
