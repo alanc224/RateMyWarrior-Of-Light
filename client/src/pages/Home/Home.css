@@ -1,5 +1,5 @@
 html, body {
-    overscroll-behavior-y: none;
+    /* overscroll-behavior-y: none; */
 }
 /* ==================== HEADER ==================== */
 .home-header {
