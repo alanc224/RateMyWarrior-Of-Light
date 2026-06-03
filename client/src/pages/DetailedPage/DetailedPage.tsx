@@ -6,6 +6,7 @@ import Header from '../../components/Header/Header';
 import Review from "../../components/Review/Review";
 import favicon1 from '../../assets/favicon1.png';
 import iconImg from '../../assets/icon.webp';
+import lodestone from '../../assets/lodestone.png';
 import { allWorlds } from '../../data/worlds'; 
 import { useAuth } from '@clerk/clerk-react';
 
@@ -169,7 +170,7 @@ const DetailedPage = () => {
     const visibleReviews = reviews.slice(0, visibleCount);
     const hasMore = visibleCount < reviews.length;
 
-    const TombstoneURL = (baseUrl: string) => {
+    const TomestoneURL = (baseUrl: string) => {
         if (!character) return;
         const characterName = character.name || character.characterName || character.character_name || "";
         
@@ -289,8 +290,14 @@ const DetailedPage = () => {
                                 <button className='image-btn' onClick={FFlogsURL}>
                                     <img src={favicon1} alt="FFLogs" />
                                 </button>
-                                <button className='image-btn' onClick={() => TombstoneURL('https://tomestone.gg/character')}>
-                                    <img src={iconImg} alt="Toombstone" />
+                                <button className='image-btn' onClick={() => TomestoneURL('https://tomestone.gg/character')}>
+                                    <img src={iconImg} alt="Tomestone" />
+                                </button>
+                                <button 
+                                    className='image-btn' 
+                                    onClick={() => window.open(`https://na.finalfantasyxiv.com/lodestone/character/${id}`, '_blank', 'noopener,noreferrer')}
+                                    >
+                                    <img src={lodestone} alt="Lodestone" />
                                 </button>
                             </div>
                         </div>
