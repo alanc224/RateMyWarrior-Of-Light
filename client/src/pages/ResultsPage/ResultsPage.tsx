@@ -6,12 +6,6 @@ import { searchCharacters } from '../../services/api';
 import Header from '../../components/Header/Header';
 import './ResultsPage.css';
 
-interface RatingInfo {
-  characterId: number;
-  rating: number;
-  reviewCount: number;
-}
-
 function ResultsPage() {
   const { category, world, query } = useParams<{ 
     category?: string;
@@ -50,17 +44,26 @@ function ResultsPage() {
         setAllResults([]); 
         return; 
       }
+      
       const ids = data.map(d => d.id).join(',');        
-      const ratingsData = await fetch(`/api/players/ratings/bulk?ids=${ids}`).then(r => r.json());
-
+      
+      const response = await fetch(`/api/players/ratings/bulk?ids=${ids}`);
+      
+      let ratingsData = [];
+      if (response.ok) {
+          ratingsData = await response.json();
+      } else {
+          console.warn(`Ratings API failed with status ${response.status}. Defaulting to 0 ratings.`);
+      }
       const results = data.map(char => {
-        const ratingInfo = ratingsData.find(r => String(r.characterId) === String(char.id));
+        const ratingInfo = ratingsData.find((r: any) => String(r.characterId) === String(char.id));
         return {
           ...char,
           rating: ratingInfo?.rating || 0,
           reviewCount: ratingInfo?.reviewCount || 0
         };
       });
+      
       setAllResults(results);
 
     } catch (err) {
