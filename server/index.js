@@ -34,9 +34,9 @@ app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 
 const searchLimiter = rateLimit({
-    windowMs: 2000,
-    limit: 1,
-    message: { error: "Too many requests, please wait a moment." }
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    message: { error: "Too many search requests, please try again later." }
 });
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
