@@ -51,7 +51,7 @@ function ResultsPage() {
         return; 
       }
       const ids = data.map(d => d.id).join(',');        
-      const ratingsData: RatingInfo[] = await fetch(`/api/players/ratings/bulk?ids=${ids}`).then(r => r.json());
+      const ratingsData = await fetch(`/api/players/ratings/bulk?ids=${ids}`).then(r => r.json());
 
       const results = data.map(char => {
         const ratingInfo = ratingsData.find(r => String(r.characterId) === String(char.id));
