@@ -40,7 +40,7 @@ let lastRequestTime = 0;
 app.get('/api/characters', async (req, res) => {
     const characterName = req.query.name;
     const worldName = req.query.world || 'Faerie'; // default to faerie if the request was sent without a world
-    const cacheKey = `${world}-${name}`.toLowerCase();
+    const cacheKey = `${worldName}-${characterName}`.toLowerCase();
 
     if (searchCache.has(cacheKey)) {
         return res.json(searchCache.get(cacheKey));
