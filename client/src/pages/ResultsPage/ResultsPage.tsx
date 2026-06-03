@@ -47,7 +47,7 @@ function ResultsPage() {
       
       const ids = data.map(d => d.id).join(',');        
       
-      const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/players/ratings/bulk?ids=${ids}`);
+      const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/players/ratings/bulk?ids=${ids}`); // this is the url
       
       let ratingsData = [];
       if (response.ok) {
