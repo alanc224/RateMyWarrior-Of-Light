@@ -27,15 +27,15 @@ function WorldSelector({ value, onChange, placeholder = 'Select a world...' }: W
   }, []);
     useEffect(() => {
         if (isOpen) {
+            if (window.innerWidth <= 768) {
             document.body.style.overflow = 'hidden';
-            document.body.style.height = '100vh';
+            }
         } else {
             document.body.style.overflow = '';
-            document.body.style.height = '';
         }
+        
         return () => {
             document.body.style.overflow = '';
-            document.body.style.height = '';
         };
         }, [isOpen]);
 

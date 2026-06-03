@@ -126,16 +126,20 @@
     }
 
     .header-search-container {
-        width: 100%;
+        display: flex;
         flex-wrap: wrap;
-        padding: 0 1rem;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0 0.5rem;
     }
 
     .header-input, .world-selector {
-        flex: 1 1 200px; 
+        flex: 1 1 100%;
+        max-width: 100%;
     }
     .header-search-btn {
-        flex: 1 1 100%; 
+    flex: 1 1 100%;
+    margin-top: 0.5rem;
     }
     
     .header-img {
