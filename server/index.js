@@ -11,7 +11,7 @@ const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 const playerRoutes = require('./Routes/playerRoutes');
-const RatingModel = require('./Models/Rating');
+const reviewModel = require('./Models/reviews');
 
 
 const corsOptions = {
@@ -87,7 +87,7 @@ app.get('/api/ratings/bulk', async (req, res) => {
     const ids = idsString.split(',');
 
     try {
-        const ratings = await RatingModel.find({ characterId: { $in: ids } });
+        const ratings = await reviewModel.find({ characterId: { $in: ids } });
         res.json(ratings);
     } catch (err) {
         console.error('Bulk fetch error:', err);
