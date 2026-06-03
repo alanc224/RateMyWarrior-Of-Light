@@ -11,13 +11,33 @@ router.get('/ratings/bulk', async (req, res) => {
     const ids = idsString.split(',');
     
     try {
-        const ratings = await Review.find({ characterId: { $in: ids } });
+        const ratings = await Review.aggregate([
+            { 
+                $match: { character_id: { $in: ids } } 
+            },
+            { 
+                $group: {
+                    _id: "$character_id", 
+                    rating: { $avg: "$rating" }, 
+                    reviewCount: { $sum: 1 } 
+                } 
+            },
+            {
+                $project: {
+                    _id: 0,
+                    characterId: "$_id", 
+                    rating: { $round: ["$rating", 1] },
+                    reviewCount: 1
+                }
+            }
+        ]);
+        
         res.json(ratings);
     } catch (err) {
+        console.error("Bulk fetch error:", err);
         res.status(500).json({ error: "Bulk fetch failed" });
     }
 });
-
 router.post('/sync', async (req, res) => {
     const { id, name, server, world, portrait } = req.body;
 
