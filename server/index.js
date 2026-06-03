@@ -33,15 +33,29 @@ app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
+const searchCache = new Map(); // search cache
+let lastRequestTime = 0;
 
 // API for webscraping
 app.get('/api/characters', async (req, res) => {
     const characterName = req.query.name;
-    const worldName = req.query.world || 'Faerie';
+    const worldName = req.query.world || 'Faerie'; // default to faerie if the request was sent without a world
+    const cacheKey = `${world}-${name}`.toLowerCase();
+
+    if (searchCache.has(cacheKey)) {
+        return res.json(searchCache.get(cacheKey));
+    }
 
     if (!characterName || !worldName) {
         return res.status(400).send('Missing a field.');
     }
+    
+    const now = Date.now();
+    if (now - lastRequestTime < 2000) { 
+        return res.status(429).send("Too many requests, please wait a moment.");
+    }
+
+    lastRequestTime = now;
 
     try {
         const proxyUrl = `${EXTERNAL_API_PROXY}/character/search`;
@@ -52,6 +66,7 @@ app.get('/api/characters', async (req, res) => {
                 world: worldName 
             }
         });
+        searchCache.set(cacheKey, response.data);
         return res.json(response.data);
 
     } catch (error) {
