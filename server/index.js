@@ -43,7 +43,7 @@ const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 const searchCache = new Map(); // search cache
 
 // API for webscraping
-app.get('/api/characters', /*searchLimiter*/, async (req, res) => {
+app.get('/api/characters', /*searchLimiter,*/ async (req, res) => {
     const characterName = req.query.name;
     const worldName = req.query.world || 'Faerie'; // default to faerie if the request was sent without a world
     const cacheKey = `${worldName}-${characterName}`.toLowerCase();
