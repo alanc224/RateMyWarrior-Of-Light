@@ -1,0 +1,36 @@
+.not-found-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #0f0f1e;
+}
+
+.not-found-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.not-found-title {
+  font-size: 5rem;
+  color: #e94560;
+  margin: 0;
+}
+
+.not-found-text {
+  font-size: 1.25rem;
+  color: #a0c1d1; 
+  max-width: 400px;
+}
+
+.not-found-img {
+  max-width: 300px; 
+  height: auto;
+  margin-bottom: 0.5rem; 
+  border-radius: 8px;
+}

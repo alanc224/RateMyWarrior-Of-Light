@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import DetailedPage from './pages/DetailedPage/DetailedPage';
 import RatingPage from './pages/RatingPage/RatingPage';
+import NotFound from './pages/404/404';
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
             <Route path="/results/player/:world/:query" element={<ResultsPage />} />
             <Route path="/detailpage/:id" element={<DetailedPage />} />
             <Route path="/rating/:id" element={<RatingPage />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }
