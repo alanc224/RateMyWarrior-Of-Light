@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -33,11 +33,11 @@ app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 
-const searchLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 100,
-    message: { error: "Too many search requests, please try again later." }
-});
+// const searchLimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000,
+//     limit: 100,
+//     message: { error: "Too many search requests, please try again later." }
+// });
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 const searchCache = new Map(); // search cache
@@ -66,11 +66,7 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
             }
         });
 
-        const uniqueData = response.data.filter((char, index, self) =>
-            index === self.findIndex((c) => c.ID === char.ID)
-        );
-
-        searchCache.set(cacheKey, uniqueData);
+        searchCache.set(cacheKey, response.data);
         return res.json(response.data);
 
     } catch (error) {
