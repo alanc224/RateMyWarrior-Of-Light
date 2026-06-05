@@ -13,6 +13,7 @@ const requireModOrAdmin = (req, res, next) => {
 };
 
 router.get('/users', requireAuth(), (req, res) => {
+    console.log("DEBUG: Authorization Header:", req.headers.authorization);
     console.log("DEBUG: Available keys in req.auth:", Object.keys(req.auth || {}));
     console.log("DEBUG: req.auth.claims:", req.auth?.claims);
     console.log("DEBUG: req.auth.sessionClaims:", req.auth?.sessionClaims);
