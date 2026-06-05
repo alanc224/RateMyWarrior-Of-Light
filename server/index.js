@@ -40,7 +40,7 @@ app.use('/api/reviews', reviewRoute);
 app.use('/api/mod', modRoutes);
 
 const requireAdmin = (req, res, next) => {
-    const role = req.auth?.sessionClaims?.metadata?.role;
+    const role = req.auth?.sessionClaims?.publicMetadata?.role;
 
     if (role !== 'admin') {
         return res.status(403).json({ error: "Unauthorized. Admin privileges required." });

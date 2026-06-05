@@ -3,7 +3,7 @@ const router = express.Router();
 const { clerkClient } = require('@clerk/express'); 
 
 const requireModOrAdmin = (req, res, next) => {
-    const role = req.auth?.sessionClaims?.metadata?.role;
+    const role = req.auth?.sessionClaims?.publicMetadata?.role;
     if (role !== 'mod' && role !== 'admin') {
         return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
     }
@@ -23,7 +23,7 @@ router.get('/users', requireModOrAdmin, async (req, res) => {
 router.post('/users/:id/toggle-ban', requireModOrAdmin, async (req, res) => {
     const { id } = req.params;
     const { currentStatus } = req.body;
-    const requesterRole = req.auth?.sessionClaims?.metadata?.role;
+    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
     
     try {
         const targetUser = await clerkClient.users.getUser(id);
@@ -53,7 +53,7 @@ router.post('/users/:id/toggle-ban', requireModOrAdmin, async (req, res) => {
 router.post('/users/:id/change-role', requireModOrAdmin, async (req, res) => {
     const { id } = req.params;
     const { newRole } = req.body;
-    const requesterRole = req.auth?.sessionClaims?.metadata?.role;
+    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
 
     if (requesterRole !== 'admin') {
         return res.status(403).json({ error: "Unauthorized: Only administrators can adjust user groups." });
@@ -77,7 +77,7 @@ router.post('/users/:id/change-role', requireModOrAdmin, async (req, res) => {
 
 router.delete('/users/:id', requireModOrAdmin, async (req, res) => {
     const { id } = req.params;
-    const requesterRole = req.auth?.sessionClaims?.metadata?.role;
+    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
 
     if (requesterRole !== 'admin') {
         return res.status(403).json({ error: "Unauthorized: Only administrators can permanently delete accounts." });
