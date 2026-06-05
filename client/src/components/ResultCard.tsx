@@ -20,7 +20,6 @@ function ResultCard({ player, onClick }: ResultCardProps) {
             alt={`${player.characterName}'s portrait`}
             className="result-card__portrait"
             onError={(e) => {
-              // Fallback if image fails to load
               e.currentTarget.style.display = 'none';
               if (e.currentTarget.nextElementSibling) {
                 (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';

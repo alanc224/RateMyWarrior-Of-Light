@@ -47,8 +47,12 @@ const submitReview = async (req, res) => {
         const secretCombination = `${authenticatedUserId}_${cleanCharacterId}_${SALT}`;
         const hashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
 
+        const globalCombination = `${authenticatedUserId}_${SALT}`;
+        const globalHashedUser = crypto.createHash('sha256').update(globalCombination).digest('hex');
+
         const newReview = new ReviewModel({
             hash_user: hashedUser,
+            global_user_hash: globalHashedUser,
             character_id: cleanCharacterId,
             character_name: characterName,
             server: server,
@@ -210,6 +214,27 @@ router.put('/:reviewId', requireAuth(), async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/user', async (req, res) => {
+    const authenticatedUserId = req.auth?.userId || getUserIdFromHeaders(req); 
+
+    if (!authenticatedUserId) {
+        return res.status(401).json({ error: "Unauthorized access." });
+    }
+
+    try {
+        const globalCombination = `${authenticatedUserId}_${SALT}`;
+        const globalHashedUser = crypto.createHash('sha256').update(globalCombination).digest('hex');
+        const userReviews = await ReviewModel.find({ global_user_hash: globalHashedUser })
+                                             .sort({ _id: -1 })
+                                             .lean();
+        
+        res.json(userReviews);
+    } catch (error) {
+        console.error('Error pulling user ledger data:', error.message);
+        res.status(500).json({ error: "Failed to collect account review logs." });
     }
 });
 

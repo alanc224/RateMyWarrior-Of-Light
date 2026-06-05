@@ -12,6 +12,7 @@ const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 const playerRoutes = require('./Routes/playerRoutes');
+const modRoutes = require('./Routes/modRoutes');
 
 
 const corsOptions = {
@@ -36,6 +37,21 @@ app.get('/health', (req, res) => {
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
+app.use('/api/mod', modRoutes);
+
+const requireAdmin = (req, res, next) => {
+    const role = req.auth?.sessionClaims?.metadata?.role;
+
+    if (role !== 'admin') {
+        return res.status(403).json({ error: "Unauthorized. Admin privileges required." });
+    }
+    next();
+};
+
+
+app.delete('/api/reviews/:id', requireAdmin, async (req, res) => {
+    res.send("Review deleted successfully by Admin.");
+});
 
 
 const searchLimiter = rateLimit({

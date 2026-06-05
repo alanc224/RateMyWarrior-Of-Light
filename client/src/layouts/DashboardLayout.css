@@ -1,0 +1,291 @@
+.dashboard-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #0b0e14;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dashboard-main-area {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+.dashboard-sidebar {
+  width: 240px;
+  min-width: 240px;
+  background-color: #111622;
+  border-right: 1px solid #1f293d;
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-brief {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #1f293d;
+}
+
+.profile-brief h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.role-badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.role-badge.admin { background-color: #ff4757; color: #fff; }
+.role-badge.mod { background-color: #ffa502; color: #000; }
+.role-badge.user { background-color: #2ed573; color: #fff; }
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-nav a {
+  display: block;
+  color: #a0aec0;
+  text-decoration: none;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav a:hover {
+  background-color: #1c2436;
+  color: #ffffff;
+  padding-left: 1.25rem;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 2.5rem 3.5rem;
+  background-color: #0b0e14;
+}
+
+.page-content h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  color: #ffffff;
+}
+
+.muted-text {
+  color: #718096;
+  margin: 0 0 2rem 0;
+  font-size: 0.95rem;
+}
+
+.mod-queue-container {
+  background-color: #111622;
+  border: 1px solid #1f293d;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.mod-queue-container h3 {
+  margin: 0 0 1.25rem 0;
+  font-size: 1.2rem;
+}
+
+.mod-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.mod-table th {
+  padding: 1rem;
+  color: #718096;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #1f293d;
+}
+
+.mod-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #1f293d;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.mod-table td:last-child {
+  display: flex;
+  gap: 0.5rem;
+}
+.btn-mod {
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-mod:hover {
+  opacity: 0.9;
+}
+
+.btn-mod.approve {
+  background-color: #2ed573;
+  color: #fff;
+}
+
+.btn-mod.delete {
+  background-color: #ff4757;
+  color: #fff;
+}
+
+.mod-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #1f293d;
+  padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: #718096;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: #fff;
+}
+
+.tab-btn.active {
+  color: #ff4757;
+  border-bottom: 2px solid #ff4757;
+}
+
+.status-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+.status-tag.active {
+  background-color: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+}
+.status-tag.banned {
+  background-color: rgba(255, 71, 87, 0.15);
+  color: #ff4757;
+}
+
+.btn-mod.ban {
+  background-color: #ffa502;
+  color: #000;
+}
+
+.btn-mod.unban {
+  background-color: #2ed573;
+  color: #fff;
+}
+
+.user-reviews-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.user-review-card {
+  background-color: #111622;
+  border: 1px solid #1f293d;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.user-review-card:hover {
+  border-color: #2f394e;
+  transform: translateY(-2px);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.review-card-header h5 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.review-world-tag {
+  font-size: 0.8rem;
+  color: #718096;
+  background-color: #1c2436;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #2f394e;
+}
+
+.rating-indicator-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+.rating-indicator-badge.like {
+  background-color: rgba(46, 213, 115, 0.12);
+  color: #2ed573;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.rating-indicator-badge.dislike {
+  background-color: rgba(255, 71, 87, 0.12);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
+.review-card-body {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.review-card-footer {
+  font-size: 0.8rem;
+  color: #4a5568;
+  text-align: right;
+}

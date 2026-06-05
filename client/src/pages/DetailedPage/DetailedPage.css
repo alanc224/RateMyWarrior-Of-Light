@@ -219,7 +219,7 @@ hr {
     display: flex;
     gap: 15px;         /* Space between the two buttons */
     margin-top: 15px;
-    justify-content: flex-start; /* Ensures left-alignment with your text */
+    justify-content: flex-start; 
     align-items: center;
     width: 100%;
 }

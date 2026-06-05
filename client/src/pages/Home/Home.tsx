@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { SignedIn, SignedOut, UserButton, useClerk } from "@clerk/clerk-react"; 
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react"; 
 import WorldSelector from "../../components/WorldSelector/WorldSelector";
 import Logo from "../../assets/homepage/logo.png";
 import Icon1 from "../../assets/homepage/ctp-icon1.png";
@@ -10,10 +10,18 @@ import "./Home.css";
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedWorld, setSelectedWorld] = useState("");
   const [characterName, setCharacterName] = useState("");
 
-  const { openSignUp, openSignIn } = useClerk();
+  const { openSignUp, openSignIn, signOut} = useClerk();
+
+  useEffect(() => {
+    if (location.state?.showLogin) {
+      openSignIn();
+      navigate("/", { replace: true, state: {} });
+    }
+  }, [location.state, openSignIn, navigate]);
 
   const handleSearch = () => {
     if (!selectedWorld) {
@@ -48,8 +56,13 @@ function Home() {
           </SignedOut>
 
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+            <Link to="/profile" className="sign-up">
+                My Profile
+            </Link>
+            <button className="log-in" onClick={() => signOut().then(() => navigate('/'))}>
+                Log Out
+            </button>
+            </SignedIn>
         </div>
       </section>
 

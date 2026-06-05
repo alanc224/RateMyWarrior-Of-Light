@@ -18,7 +18,8 @@ html, body {
     gap: 1rem;
 }
 
-.account-buttons > button {
+.account-buttons > button, 
+.account-buttons > a {
     font-family: 'Trebuchet MS', 'Arial', sans-serif;
     padding: 0.5rem 1.5rem;
     border: none;
@@ -28,6 +29,9 @@ html, body {
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 0.03em;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
 }
 
 .account-buttons > .sign-up {
@@ -353,7 +357,7 @@ html, body {
     color: #5f7a8a;
 }
 
-/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 1200px) {
     .icon-container {
         gap: 2rem;
@@ -379,6 +383,13 @@ html, body {
         height: auto;
         padding: 1rem;
         justify-content: center;
+    }
+    .home-dashboard-link {
+        font-size: 0.9rem;
+        padding: 0.45rem 1rem;
+        border-radius: 1rem;
+        border: 2px solid rgba(160, 174, 192, 0.2);
+        background: rgba(26, 26, 46, 0.6);
     }
 
     .home-body > h1 {
