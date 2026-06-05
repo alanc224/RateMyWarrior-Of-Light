@@ -28,16 +28,21 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(clerkMiddleware());
 
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
 
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 
-// const searchLimiter = rateLimit({
-//     windowMs: 15 * 60 * 1000,
-//     limit: 100,
-//     message: { error: "Too many search requests, please try again later." }
-// });
+
+const searchLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 20,
+    message: { error: "Too many search requests, please try again later." }
+});
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 const searchCache = new Map(); // search cache
