@@ -69,7 +69,7 @@ const DetailedPage = () => {
                 'Accept': 'application/json'
             };
             if (isSignedIn) {
-                const token = await getToken();
+                const token = await getToken({ template: 'api-template' });
                 if (token) {
                     headers['Authorization'] = `Bearer ${token}`;
                 } else {
@@ -225,7 +225,7 @@ const DetailedPage = () => {
     const handleDeleteReview = async (reviewId: string) => {   
         if (!reviewId) return;
         try {
-            const token = await getToken();
+            const token = await getToken({ template: 'api-template' });
             const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${reviewId}`, {
                 method: 'DELETE',
                 headers: {

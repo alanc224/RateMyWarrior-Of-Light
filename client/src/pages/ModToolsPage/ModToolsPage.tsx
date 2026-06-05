@@ -34,7 +34,7 @@ export default function ModToolsPage() {
         if (currentRole === 'user') return;
 
         try {
-            const token = await getToken();
+            const token = await getToken({ template: 'api-template' });
             
             const [usersRes, reportsRes] = await Promise.all([
             fetch(`${BASE_URL}/api/mod/users`, { 
@@ -79,7 +79,7 @@ export default function ModToolsPage() {
   const handleToggleBan = async (userId: string, currentStatus: string) => {
     const targetStatus = currentStatus === 'active' ? 'banned' : 'active';
     try {
-      const token = await getToken();
+      const token = await getToken({ template: 'api-template' });
       const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/status`, {
         method: 'PATCH',
         headers: { 
@@ -100,7 +100,7 @@ export default function ModToolsPage() {
   const handleChangeRole = async (userId: string, targetCurrentRole: string) => {
     const newRole = targetCurrentRole === 'mod' ? 'user' : 'mod';
     try {
-      const token = await getToken();
+      const token = await getToken({ template: 'api-template' });
       const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/role`, {
         method: 'PATCH',
         headers: { 
@@ -121,7 +121,7 @@ export default function ModToolsPage() {
   const handleDeleteUser = async (userId: string) => {
     if (!window.confirm("Permanently erase this account? This cannot be undone.")) return;
     try {
-      const token = await getToken();
+      const token = await getToken({ template: 'api-template' });
       const res = await fetch(`${BASE_URL}/api/mod/users/${userId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
@@ -137,7 +137,7 @@ export default function ModToolsPage() {
 
   const handleReportAction = async (reportId: string, action: 'keep' | 'delete', reviewId: string) => {
     try {
-      const token = await getToken();
+      const token = await getToken({ template: 'api-template' });
       const res = await fetch(`${BASE_URL}/api/mod/reports/${reportId}`, {
         method: 'POST',
         headers: { 

@@ -3,8 +3,8 @@ const router = express.Router();
 const { clerkClient } = require('@clerk/express'); 
 
 const requireModOrAdmin = (req, res, next) => {
-    const role = req.auth?.sessionClaims?.publicMetadata?.role;
-    console.log("Session Claims:", req.auth?.sessionClaims);
+    const role = req.auth?.sessionClaims?.role; 
+
     if (role !== 'mod' && role !== 'admin') {
         return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
     }

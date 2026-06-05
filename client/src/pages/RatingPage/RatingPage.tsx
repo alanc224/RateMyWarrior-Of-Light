@@ -126,7 +126,7 @@ const RatingPage = () => {
 
 
         try {
-            const token = await getToken();
+            const token = await getToken({ template: 'api-template' });
 
             const targetUrl = isEditing 
                 ? `https://ratemywarrioroflight-api.onrender.com/api/reviews/${editReviewData.id}`

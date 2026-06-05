@@ -22,7 +22,7 @@ export default function UserProfilePage() {
   useEffect(() => {
     async function fetchUserReviews() {
         try {
-        const token = await getToken();
+        const token = await getToken({ template: 'api-template' });
         const response = await fetch('https://ratemywarrioroflight-api.onrender.com/api/reviews/user', {
             headers: { 
             'Authorization': `Bearer ${token}`,

@@ -26,7 +26,7 @@ export default function AdminDashboardPage() {
       if (currentRole !== 'admin') return;
 
       try {
-        const token = await getToken();
+        const token = await getToken({ template: 'api-template' });
         const response = await fetch(`${BASE_URL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
