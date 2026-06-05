@@ -33,13 +33,19 @@ router.get('/users', [requireAuth(), requireModOrAdmin], async (req, res) => {
     try {
         const users = await clerkClient.users.getUserList();
         const sanitized = users.data.map(u => ({
-            ...u,
-            role: u.publicMetadata?.role || 'user'
+            id: u.id,
+            username: u.username || 'Unknown',
+            email: u.emailAddresses[0]?.emailAddress || 'N/A',
+            role: u.publicMetadata?.role || 'user',
+            status: u.banned ? 'banned' : 'active' 
         }));
-        res.json(sanitized);
-    } catch (e) { res.status(500).json({ error: "Fetch failed" }); }
+        
+        res.status(200).json(sanitized);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Failed to fetch users." });
+    }
 });
-
 router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
     const { currentStatus } = req.body;

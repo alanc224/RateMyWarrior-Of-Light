@@ -241,46 +241,54 @@ export default function ModToolsPage() {
                     const canCurrentRoleDeleteTarget = currentRole === 'admin' && !isTargetAdmin && !isSelf;
 
                     return (
-                      <tr key={account.id}>
-                        <td><strong>{account.username}</strong></td>
-                        <td><span className={`role-badge ${account.role}`}>{account.role.toUpperCase()}</span></td>
-                        <td><span className={`status-tag ${account.status}`}>{account.status.toUpperCase()}</span></td>
-                        <td>
-                          
-                          {currentRole === 'admin' && !isTargetAdmin && account.status === 'active' && (
-                            <button 
-                              className="btn-mod role-toggle" 
-                              onClick={() => handleChangeRole(account.id, account.role)}
-                              style={{ backgroundColor: '#4a5568', color: '#fff', marginRight: '0.5rem' }}
-                            >
-                              {account.role === 'mod' ? '❌ Demote to User' : '👑 Promote to Mod'}
-                            </button>
-                          )}
-
-                          {canCurrentRoleBanTarget && !isSelf ? (
-                            <button 
-                              className={`btn-mod ${account.status === 'active' ? 'ban' : 'unban'}`}
-                              onClick={() => handleToggleBan(account.id, account.status)}
-                            >
-                              {account.status === 'active' ? 'Ban' : 'Unban'}
-                            </button>
-                          ) : (
-                            <span style={{ color: '#4a5568', fontSize: '0.85rem', fontStyle: 'italic', padding: '0 0.5rem' }}>
-                              {isTargetAdmin ? 'Protected (Admin)' : 'Locked'}
+                        <tr key={account.id}>
+                            <td><strong>{account.username}</strong></td>
+                            <td>
+                            <span className={`role-badge ${account.role}`}>
+                                {(account.role || 'user').toUpperCase()}
                             </span>
-                          )}
-                          
-                          {canCurrentRoleDeleteTarget && (
-                            <button className="btn-mod delete" onClick={() => handleDeleteUser(account.id)} style={{ marginLeft: '0.5rem' }}>
-                              Delete
-                            </button>
-                          )}
+                            </td>
+                            
+                            <td>
+                            <span className={`status-tag ${account.status}`}>
+                                {(account.status || 'active').toUpperCase()}
+                            </span>
+                            </td>
 
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
+                            <td>
+                            {currentRole === 'admin' && !isTargetAdmin && account.status === 'active' && (
+                                <button 
+                                className="btn-mod role-toggle" 
+                                onClick={() => handleChangeRole(account.id, account.role)}
+                                style={{ backgroundColor: '#4a5568', color: '#fff', marginRight: '0.5rem' }}
+                                >
+                                {account.role === 'mod' ? '❌ Demote to User' : '👑 Promote to Mod'}
+                                </button>
+                            )}
+
+                            {canCurrentRoleBanTarget && !isSelf ? (
+                                <button 
+                                className={`btn-mod ${account.status === 'active' ? 'ban' : 'unban'}`}
+                                onClick={() => handleToggleBan(account.id, account.status)}
+                                >
+                                {account.status === 'active' ? 'Ban' : 'Unban'}
+                                </button>
+                            ) : (
+                                <span style={{ color: '#4a5568', fontSize: '0.85rem', fontStyle: 'italic', padding: '0 0.5rem' }}>
+                                {isTargetAdmin ? 'Protected (Admin)' : 'Locked'}
+                                </span>
+                            )}
+                            
+                            {canCurrentRoleDeleteTarget && (
+                                <button className="btn-mod delete" onClick={() => handleDeleteUser(account.id)} style={{ marginLeft: '0.5rem' }}>
+                                Delete
+                                </button>
+                            )}
+                            </td>
+                        </tr>
+                        );
+                    })}
+                    </tbody>
               </table>
             </div>
           )}
