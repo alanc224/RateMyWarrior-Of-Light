@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth, clerkClient } = require('@clerk/express');
-const ReportModel = require('../Models/reports'); 
+const ReportModel = require('../Models/Report');
 
 const requireModOrAdmin = (req, res, next) => {
     try {
@@ -31,16 +31,13 @@ const requireModOrAdmin = (req, res, next) => {
 
 router.get('/users', [requireAuth(), requireModOrAdmin], async (req, res) => {
     try {
-        const usersResponse = await clerkClient.users.getUserList();
-        const sanitizedUsers = usersResponse.data.map(user => ({
-            ...user,
-            role: user.publicMetadata?.role || 'user'
+        const users = await clerkClient.users.getUserList();
+        const sanitized = users.data.map(u => ({
+            ...u,
+            role: u.publicMetadata?.role || 'user'
         }));
-        
-        res.status(200).json(sanitizedUsers); 
-    } catch (error) {
-        res.status(500).json({ error: "Failed to fetch users." });
-    }
+        res.json(sanitized);
+    } catch (e) { res.status(500).json({ error: "Fetch failed" }); }
 });
 
 router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
@@ -124,11 +121,11 @@ router.delete('/users/:id', [requireAuth(), requireModOrAdmin], async (req, res)
 
 router.get('/reports', [requireAuth(), requireModOrAdmin], async (req, res) => {
     try {
-        const reports = await ReportModel.find(); 
+        const reports = await ReportModel.find().lean();
         res.json(reports);
-    } catch (error) {
-        console.error("DEBUG: Reports Database Error:", error);
-        res.status(500).json({ error: "Failed to retrieve reports." });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Database failed" });
     }
 });
 
