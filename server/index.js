@@ -87,4 +87,18 @@ mongoose.connect(mongoURI)
     .catch(err => console.log('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 5001;
+
+setInterval(async () => {
+    try {
+        await axios.get('https://ffxivapi-proxy.onrender.com');
+    } catch (error) {
+        if (error.response) {
+            console.log(`Proxy responded with status ${error.response.status}`);
+        } else {
+            console.error('Error keeping proxy awake:', error.message);
+        }
+    }
+}, 10 * 60 * 1000);
+
+
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
