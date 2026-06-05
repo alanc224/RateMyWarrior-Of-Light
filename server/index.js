@@ -17,7 +17,7 @@ const modRoutes = require('./Routes/modRoutes');
 
 const corsOptions = {
     origin: [
-        'http://localhost:5173', 
+        // 'http://localhost:5173', 
         'https://ratemywarrioroflight.onrender.com'
     ],
     credentials: true,

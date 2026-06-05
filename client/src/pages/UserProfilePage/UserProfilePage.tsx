@@ -21,37 +21,31 @@ export default function UserProfilePage() {
 
   useEffect(() => {
     async function fetchUserReviews() {
-      try {
+        try {
         const token = await getToken();
-        const response = await fetch('/api/reviews/user', {
-          headers: { Authorization: `Bearer ${token}` }
+        const response = await fetch('https://ratemywarrioroflight-api.onrender.com/api/reviews/user', {
+            headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+            }
         });
         
         if (response.ok) {
-          const data = await response.json();
-          setReviews(data);
+            const data = await response.json();
+            setReviews(data);
         } else {
-          setReviews([
-            {
-              _id: 'id1',
-              character_name: 'test',
-              server: 'test server',
-              recommend: true,
-              rating: 5,
-              comment: 'test review',
-              date: '2026-06-01T14:30:00.000Z'
-            },
-          ]);
+            console.error('API Error Status:', response.status);
+            setReviews([]);
         }
-      } catch (error) {
-        console.error('Error hitting review endpoints:', error);
+        } catch (error) {
+        console.error('Error fetching user reviews:', error);
         } finally {
-        setLoading(false); 
+        setLoading(false);
         }
     }
 
     fetchUserReviews();
-  }, [getToken]);
+    }, [getToken]);
 
   return (
     <div className="page-content">
