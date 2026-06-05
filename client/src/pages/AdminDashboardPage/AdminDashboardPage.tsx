@@ -14,6 +14,7 @@ interface AdminStats {
 export default function AdminDashboardPage() {
   const { user: currentUser } = useUser();
   const { getToken } = useAuth();
+  const BASE_URL = 'https://ratemywarrioroflight-api.onrender.com';
   
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function AdminDashboardPage() {
 
       try {
         const token = await getToken();
-        const response = await fetch('/api/admin/stats', {
+        const response = await fetch(`${BASE_URL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 

@@ -27,31 +27,45 @@ export default function ModToolsPage() {
   const [loading, setLoading] = useState(true);
 
   const currentRole = (currentUser?.publicMetadata?.role as 'user' | 'mod' | 'admin') || 'user';
+  const BASE_URL = 'https://ratemywarrioroflight-api.onrender.com';
 
-  useEffect(() => {
-    async function loadModerationData() {
-      if (currentRole === 'user') return;
+    useEffect(() => {
+        async function loadModerationData() {
+        if (currentRole === 'user') return;
 
-      try {
-        const token = await getToken();
-        
-        const [usersRes, reportsRes] = await Promise.all([
-          fetch('/api/mod/users', { headers: { Authorization: `Bearer ${token}` } }),
-          fetch('/api/mod/reports', { headers: { Authorization: `Bearer ${token}` } })
-        ]);
+        try {
+            const token = await getToken();
+            
+            const [usersRes, reportsRes] = await Promise.all([
+            fetch(`${BASE_URL}/api/mod/users`, { 
+                headers: { Authorization: `Bearer ${token}` } 
+            }),
+            fetch(`${BASE_URL}/api/mod/reports`, { 
+                headers: { Authorization: `Bearer ${token}` } 
+            })
+            ]);
 
-        if (usersRes.ok) setUsers(await usersRes.json());
-        if (reportsRes.ok) setReports(await reportsRes.json());
+            if (usersRes.ok) {
+            setUsers(await usersRes.json());
+            } else {
+            console.error("Users API failed with status:", usersRes.status);
+            }
 
-      } catch (err) {
-        console.error('Failed to capture administration feeds:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
+            if (reportsRes.ok) {
+            setReports(await reportsRes.json());
+            } else {
+            console.error("Reports API failed with status:", reportsRes.status);
+            }
 
-    loadModerationData();
-  }, [getToken, currentRole]);
+        } catch (err) {
+            console.error('Failed to capture administration feeds:', err);
+        } finally {
+            setLoading(false);
+        }
+        }
+
+        loadModerationData();
+    }, [getToken, currentRole]);
 
   if (currentRole === 'user') {
     return (
@@ -66,7 +80,7 @@ export default function ModToolsPage() {
     const targetStatus = currentStatus === 'active' ? 'banned' : 'active';
     try {
       const token = await getToken();
-      const res = await fetch(`/api/mod/users/${userId}/status`, {
+      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/status`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -87,7 +101,7 @@ export default function ModToolsPage() {
     const newRole = targetCurrentRole === 'mod' ? 'user' : 'mod';
     try {
       const token = await getToken();
-      const res = await fetch(`/api/mod/users/${userId}/role`, {
+      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/role`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -108,7 +122,7 @@ export default function ModToolsPage() {
     if (!window.confirm("Permanently erase this account? This cannot be undone.")) return;
     try {
       const token = await getToken();
-      const res = await fetch(`/api/mod/users/${userId}`, {
+      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -124,7 +138,7 @@ export default function ModToolsPage() {
   const handleReportAction = async (reportId: string, action: 'keep' | 'delete', reviewId: string) => {
     try {
       const token = await getToken();
-      const res = await fetch(`/api/mod/reports/${reportId}`, {
+      const res = await fetch(`${BASE_URL}/api/mod/reports/${reportId}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
