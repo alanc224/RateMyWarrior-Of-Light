@@ -40,6 +40,7 @@ app.use('/api/reviews', reviewRoute);
 app.use('/api/mod', modRoutes);
 
 const requireAdmin = (req, res, next) => {
+    console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
     const role = req.auth?.sessionClaims?.publicMetadata?.role;
 
     if (role !== 'admin') {
