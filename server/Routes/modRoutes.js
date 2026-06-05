@@ -13,13 +13,19 @@ const requireModOrAdmin = (req, res, next) => {
 };
 
 router.get('/users', requireAuth(), (req, res) => {
+    console.log("DEBUG: Available keys in req.auth:", Object.keys(req.auth || {}));
+    console.log("DEBUG: req.auth.claims:", req.auth?.claims);
+    console.log("DEBUG: req.auth.sessionClaims:", req.auth?.sessionClaims);
     const { sessionClaims } = req.auth;
-    console.log("DEBUG: sessionClaims inside route:", sessionClaims);
 
-    const role = sessionClaims?.role; 
+    const role = req.auth?.claims?.role 
+              || req.auth?.sessionClaims?.role 
+              || req.auth?.role; 
+
+    console.log("DEBUG: Found Role:", role);
 
     if (role !== 'mod' && role !== 'admin') {
-        return res.status(403).json({ error: "Access Denied." });
+        return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
     }
     res.json({ message: "Success" });
 });
