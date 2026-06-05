@@ -7,7 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
 app.set('trust proxy', 1);
-const { clerkMiddleware } = require('@clerk/express');
+const { clerkMiddleware, requireAuth } = require('@clerk/express');
 const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
@@ -37,11 +37,11 @@ app.get('/health', (req, res) => {
 app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
-app.use('/api/mod', modRoutes);
+app.use('/api/mod', requireAuth(), modRoutes);
 
 const requireAdmin = (req, res, next) => {
     console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
-    const role = req.auth?.sessionClaims?.publicMetadata?.role;
+    const role = req.auth?.sessionClaims?.role; 
 
     if (role !== 'admin') {
         return res.status(403).json({ error: "Unauthorized. Admin privileges required." });
