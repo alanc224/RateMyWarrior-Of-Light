@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const app = express();
@@ -96,6 +97,11 @@ app.get('/api/characters', /*searchLimiter,*/ async (req, res) => {
         const message = error.response ? error.response.data : 'An Error Occured with ffxivapi';
         res.status(status).json({ error: message });
     }
+});
+
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 mongoose.connect(mongoURI)
