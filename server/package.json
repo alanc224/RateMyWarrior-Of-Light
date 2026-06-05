@@ -24,6 +24,7 @@
     "svix": "^1.94.0"
   },
   "overrides": {
-    "js-cookie": "^3.0.5"
+    "js-cookie": "^3.0.5", 
+    "path-to-regexp": "0.1.7"
   }
 }
