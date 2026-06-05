@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth } = require('@clerk/express');
-// const { clerkClient } = require('@clerk/express'); 
-// const ReportModel = require('../Models/Report'); 
+const { requireAuth, clerkClient } = require('@clerk/express');
+const ReportModel = require('../Models/report'); 
 
 const requireModOrAdmin = (req, res, next) => {
     try {
@@ -30,8 +29,14 @@ const requireModOrAdmin = (req, res, next) => {
     }
 };
 
-router.get('/users', [requireAuth(), requireModOrAdmin], (req, res) => {
-    res.status(200).json({ message: "Admin access granted!" });
+router.get('/users', [requireAuth(), requireModOrAdmin], async (req, res) => {
+    try {
+        const users = await clerkClient.users.getUserList();
+        res.status(200).json(users.data); 
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Failed to fetch users." });
+    }
 });
 
 router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
