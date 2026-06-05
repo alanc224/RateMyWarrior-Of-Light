@@ -1,40 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth } = require('@clerk/express');
+// const { clerkClient } = require('@clerk/express'); 
+// const ReportModel = require('../Models/Report'); 
 
 const requireModOrAdmin = (req, res, next) => {
-    console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
-    const role = req.auth?.sessionClaims?.role; 
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: "Missing or invalid token." });
+        }
+        
+        const token = authHeader.split(' ')[1];
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
+        
+        const role = decodedPayload.role;
+        
+        if (role !== 'mod' && role !== 'admin') {
+            return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
+        }
+        
+        req.userRole = role; 
+        next();
 
-    if (role !== 'mod' && role !== 'admin') {
-        return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
+    } catch (error) {
+        console.error("Token decoding error:", error);
+        return res.status(500).json({ error: "Server error processing token." });
     }
-    next();
 };
 
-router.get('/users', requireAuth(), (req, res) => {
-    console.log("DEBUG: Authorization Header:", req.headers.authorization);
-    console.log("DEBUG: Available keys in req.auth:", Object.keys(req.auth || {}));
-    console.log("DEBUG: req.auth.claims:", req.auth?.claims);
-    console.log("DEBUG: req.auth.sessionClaims:", req.auth?.sessionClaims);
-    const { sessionClaims } = req.auth;
-
-    const role = req.auth?.claims?.role 
-              || req.auth?.sessionClaims?.role 
-              || req.auth?.role; 
-
-    console.log("DEBUG: Found Role:", role);
-
-    if (role !== 'mod' && role !== 'admin') {
-        return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
-    }
-    res.json({ message: "Success" });
+router.get('/users', [requireAuth(), requireModOrAdmin], (req, res) => {
+    res.status(200).json({ message: "Admin access granted!" });
 });
 
-router.post('/users/:id/toggle-ban', requireModOrAdmin, async (req, res) => {
+router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
     const { currentStatus } = req.body;
-    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
+    const requesterRole = req.userRole; 
     
     try {
         const targetUser = await clerkClient.users.getUser(id);
@@ -61,10 +64,10 @@ router.post('/users/:id/toggle-ban', requireModOrAdmin, async (req, res) => {
     }
 });
 
-router.post('/users/:id/change-role', requireModOrAdmin, async (req, res) => {
+router.post('/users/:id/change-role', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
     const { newRole } = req.body;
-    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
+    const requesterRole = req.userRole;
 
     if (requesterRole !== 'admin') {
         return res.status(403).json({ error: "Unauthorized: Only administrators can adjust user groups." });
@@ -86,9 +89,9 @@ router.post('/users/:id/change-role', requireModOrAdmin, async (req, res) => {
     }
 });
 
-router.delete('/users/:id', requireModOrAdmin, async (req, res) => {
+router.delete('/users/:id', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
-    const requesterRole = req.auth?.sessionClaims?.publicMetadata?.role;
+    const requesterRole = req.userRole;
 
     if (requesterRole !== 'admin') {
         return res.status(403).json({ error: "Unauthorized: Only administrators can permanently delete accounts." });
@@ -110,7 +113,7 @@ router.delete('/users/:id', requireModOrAdmin, async (req, res) => {
     }
 });
 
-router.get('/reports', requireModOrAdmin, async (req, res) => {
+router.get('/reports', [requireAuth(), requireModOrAdmin], async (req, res) => {
     try {
         const reports = await ReportModel.find(); 
         res.json(reports);
