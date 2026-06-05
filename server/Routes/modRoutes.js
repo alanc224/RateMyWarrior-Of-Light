@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { clerkClient } = require('@clerk/express'); 
+const { requireAuth } = require('@clerk/express');
 
 const requireModOrAdmin = (req, res, next) => {
     console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
@@ -12,14 +12,16 @@ const requireModOrAdmin = (req, res, next) => {
     next();
 };
 
-router.get('/users', requireModOrAdmin, async (req, res) => {
-    try {
-        const response = await clerkClient.users.getUserList();
-        res.json(response.data);
-    } catch (error) {
-        console.error('Error fetching users:', error.message);
-        res.status(500).json({ error: "Failed to retrieve user directory." });
+router.get('/users', requireAuth(), (req, res) => {
+    const { sessionClaims } = req.auth;
+    console.log("DEBUG: sessionClaims inside route:", sessionClaims);
+
+    const role = sessionClaims?.role; 
+
+    if (role !== 'mod' && role !== 'admin') {
+        return res.status(403).json({ error: "Access Denied." });
     }
+    res.json({ message: "Success" });
 });
 
 router.post('/users/:id/toggle-ban', requireModOrAdmin, async (req, res) => {
