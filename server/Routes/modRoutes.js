@@ -4,6 +4,7 @@ const { clerkClient } = require('@clerk/express');
 
 const requireModOrAdmin = (req, res, next) => {
     const role = req.auth?.sessionClaims?.publicMetadata?.role;
+    console.log("Session Claims:", req.auth?.sessionClaims);
     if (role !== 'mod' && role !== 'admin') {
         return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
     }
@@ -96,6 +97,15 @@ router.delete('/users/:id', requireModOrAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error deleting user:', error.message);
         res.status(500).json({ error: "Failed to completely delete user." });
+    }
+});
+
+router.get('/reports', requireModOrAdmin, async (req, res) => {
+    try {
+        const reports = await ReportModel.find(); 
+        res.json(reports);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to retrieve reports." });
     }
 });
 
