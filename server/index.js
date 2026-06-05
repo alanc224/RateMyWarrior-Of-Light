@@ -100,7 +100,7 @@ app.get('/api/characters', /*searchLimiter,*/ async (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.get('*', (req, res) => {
+app.get('/:any*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
