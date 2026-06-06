@@ -9,6 +9,8 @@ const requireModOrAdmin = (req, res, next) => {
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({ error: "Missing or invalid token." });
         }
+        const role = req.auth?.sessionClaims?.role;
+        console.log(role)
         
         const token = authHeader.split(' ')[1];
         const payloadBase64 = token.split('.')[1];
