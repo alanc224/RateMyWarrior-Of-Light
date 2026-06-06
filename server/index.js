@@ -43,7 +43,6 @@ app.use('/api/mod', requireAuth(), modRoutes);
 app.use('/api/admin', requireAuth(), adminRoutes);
 
 const requireAdmin = (req, res, next) => {
-    console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
     const role = req.auth?.sessionClaims?.role; 
 
     if (role !== 'admin') {

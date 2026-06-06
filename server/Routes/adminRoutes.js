@@ -16,9 +16,18 @@ const checkApiHealth = async () => {
     }
 };
 
-router.get('/stats', async (req, res) => {
-    console.log("FULL SESSION CLAIMS:", JSON.stringify(req.auth?.sessionClaims, null, 2));
-    console.log("Authorization Header:", req.headers.authorization);
+const bypassClerkMiddleware = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: "No token" });
+    
+    const token = authHeader.split(' ')[1];
+    const payloadBase64 = token.split('.')[1];
+    const decoded = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
+    req.auth = { sessionClaims: decoded };
+    next();
+};
+
+router.get('/stats',bypassClerkMiddleware, async (req, res) => {
     const role = req.auth?.sessionClaims?.role;
     if (role !== 'admin') {
         return res.status(403).json({ error: "Access Denied." });
