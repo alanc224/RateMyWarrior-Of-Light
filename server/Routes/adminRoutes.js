@@ -17,6 +17,7 @@ const checkApiHealth = async () => {
 };
 
 router.get('/stats', async (req, res) => {
+    console.log("FULL SESSION CLAIMS:", JSON.stringify(req.auth?.sessionClaims, null, 2));
     const role = req.auth?.sessionClaims?.role;
     if (role !== 'admin') {
         return res.status(403).json({ error: "Access Denied." });
