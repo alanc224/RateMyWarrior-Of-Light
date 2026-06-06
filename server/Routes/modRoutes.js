@@ -135,4 +135,21 @@ router.get('/reports', [requireAuth(), requireModOrAdmin], async (req, res) => {
     }
 });
 
+router.post('/reports/:reportId', [requireAuth(), requireModOrAdmin], async (req, res) => {
+    const { reportId } = req.params;
+    const { action, reviewId } = req.body;
+
+    try {
+        if (action === 'delete') {
+            await ReviewModel.findByIdAndDelete(reviewId);
+        }
+        await ReportModel.findByIdAndDelete(reportId);
+        
+        res.status(200).json({ message: "Action processed successfully" });
+    } catch (error) {
+        console.error("Error processing report action:", error);
+        res.status(500).json({ error: "Failed to process report action" });
+    }
+});
+
 module.exports = router;
