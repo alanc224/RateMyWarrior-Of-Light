@@ -3,7 +3,7 @@ import { useUser, useAuth } from '@clerk/clerk-react';
 
 interface Report {
   _id: string;
-  character_name: string;
+  characterName: string;
   server: string;
   reason: string;
   reviewId: string;
@@ -193,7 +193,7 @@ export default function ModToolsPage() {
                   <tbody>
                     {reports.map((report) => (
                         <tr key={report._id}>
-                        <td><strong>{report.character_name}</strong></td>
+                        <td><strong>{report.characterName}</strong></td>
                         <td><span className="review-world-tag">{report.server}</span></td>
                         {/* New Column: Display the content here */}
                         <td style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
