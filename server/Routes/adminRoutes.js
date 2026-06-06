@@ -4,7 +4,7 @@ const { requireAuth, clerkClient } = require('@clerk/express');
 const axios = require('axios');
 const { requireModOrAdmin } = require('./modRoutes');
 const ReportModel = require('../Models/Report');
-const ReviewModel = require('../Models/Review');
+const ReviewModel = require('../Models/reviews');
 const StatsModel = require('../Models/Stats');
 
 const checkApiHealth = async () => {
