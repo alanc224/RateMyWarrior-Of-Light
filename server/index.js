@@ -13,6 +13,8 @@ const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
 const playerRoutes = require('./Routes/playerRoutes');
 const modRoutes = require('./Routes/modRoutes');
+const adminRoutes = require('./Routes/adminRoutes');
+const StatsModel = require('./Models/Stats');
 
 
 const corsOptions = {
@@ -38,6 +40,7 @@ app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 app.use('/api/mod', requireAuth(), modRoutes);
+app.use('/api/admin', requireAuth(), adminRoutes);
 
 const requireAdmin = (req, res, next) => {
     console.log("DEBUG: Received sessionClaims:", JSON.stringify(req.auth?.sessionClaims, null, 2));
@@ -63,14 +66,29 @@ const searchLimiter = rateLimit({
 
 const EXTERNAL_API_PROXY = 'https://ffxivapi-proxy.onrender.com';
 const searchCache = new Map(); // search cache
+let totalLookups = 0;
+let cacheHits = 0;
+
+async function incrementStats(isCacheHit) {
+    try {
+        await StatsModel.findOneAndUpdate(
+            {}, 
+            { $inc: { totalLookups: 1, cacheHits: isCacheHit ? 1 : 0 } }, 
+            { upsert: true, new: true }
+        );
+    } catch (err) {
+        console.error("Failed to persist stats:", err);
+    }
+}
 
 // API for webscraping
-app.get('/api/characters', /*searchLimiter,*/ async (req, res) => {
+app.get('/api/characters', searchLimiter, async (req, res) => {
     const characterName = req.query.name;
     const worldName = req.query.world || 'Faerie'; // default to faerie if the request was sent without a world
     const cacheKey = `${worldName}-${characterName}`.toLowerCase();
 
     if (searchCache.has(cacheKey)) {
+        incrementStats(true);
         return res.json(searchCache.get(cacheKey));
     }
 
@@ -89,6 +107,7 @@ app.get('/api/characters', /*searchLimiter,*/ async (req, res) => {
         });
 
         searchCache.set(cacheKey, response.data);
+        incrementStats(false);
         return res.json(response.data);
 
     } catch (error) {
