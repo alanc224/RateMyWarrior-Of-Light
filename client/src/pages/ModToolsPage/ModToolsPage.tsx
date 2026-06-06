@@ -158,8 +158,6 @@ export default function ModToolsPage() {
     }
   };
 
-  console.log("Current state of users array:", users);
-
   return (
     <div className="page-content">
       <h2>Moderation Action Center</h2>

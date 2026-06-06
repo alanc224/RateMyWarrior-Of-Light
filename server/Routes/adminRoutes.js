@@ -38,14 +38,14 @@ router.get('/stats',bypassClerkMiddleware, async (req, res) => {
         if (!stats) stats = { totalLookups: 0, cacheHits: 0 };
         const totalRequests = stats.totalLookups || 1;
 
-        const [users, reports, reviews] = await Promise.all([
-            clerkClient.users.getCount(),
+        const [userCount, reports, reviews] = await Promise.all([
+            clerkClient.users.getCount(), 
             ReportModel.countDocuments({ status: 'open' }),
             ReviewModel.countDocuments()
         ]);
 
         res.json({
-            totalUsers: users.totalCount,
+            totalUsers: userCount,
             characterLookups: stats.totalLookups,
             totalReviews: reviews,
             apiGateStatus: await checkApiHealth(),

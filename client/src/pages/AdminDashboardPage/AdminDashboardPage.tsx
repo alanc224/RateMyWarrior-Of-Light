@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
       <h3 style={{ fontSize: '1.1rem', color: '#fff', margin: '2rem 0 1rem 0' }}>Core Aggregates</h3>
       <div className="stats-grid">
         <div className="stat-card">
-          <span>Total Database Users</span>
+          <span>Total Users</span>
           <h3>{stats?.totalUsers?.toLocaleString() || '0'}</h3>
         </div>
         <div className="stat-card">
