@@ -7,7 +7,9 @@ const reportSchema = new mongoose.Schema({
     server : { type: String, required: true},
     reviewContent: { type: String, required: true },
     timestamp: { type: Date, default: Date.now },
-    status: { type: String, default: 'pending' }
+    status: { type: String, default: 'pending' },
+    reporterUsername: { type: String, required: true },
+    reviewOwnerUsername: { type: String, required: true },
 });
 
 module.exports = mongoose.model('Report', reportSchema);

@@ -57,21 +57,9 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
 
         case 'user.deleted':
             try {
-                const HASH_SALT = process.env.HASH_SALT;
-                const allReviews = await ReviewModel.find({}, 'character_id hash_user').lean();
-                
-                const reviewIdsToDelete = [];
-                for (const review of allReviews) {
-                    const secretCombination = `${id}_${review.character_id}_${HASH_SALT}`;
-                    const computedHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
-                    
-                    if (review.hash_user === computedHash) {
-                        reviewIdsToDelete.push(review._id);
-                    }
-                }
-                if (reviewIdsToDelete.length > 0) {
-                    await ReviewModel.deleteMany({ _id: { $in: reviewIdsToDelete } });
-                }
+                const secretCombination = `${id}_${process.env.SALT}`;
+                const globalHashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
+                await ReviewModel.deleteMany({ global_user_hash: globalHashedUser });
                 await UserModel.findOneAndDelete({ clerkId: id });
 
             } catch (dbError) {

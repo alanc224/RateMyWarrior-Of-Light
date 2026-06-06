@@ -113,11 +113,19 @@ router.delete('/users/:id', [requireAuth(), requireModOrAdmin], async (req, res)
     try {
         const targetUser = await clerkClient.users.getUser(id);
         const targetRole = targetUser.publicMetadata?.role || 'user';
+        const secretCombination = `${id}_${process.env.SALT}`;
+        const globalHashedUser = crypto.createHash('sha256').update(secretCombination).digest('hex');
+        const email = targetUser.emailAddresses[0]?.emailAddress;
+
+        if (email) {
+            await BlockedEmail.create({ email, reason: "Account terminated by admin" });
+        }
+        
 
         if (targetRole === 'admin') {
             return res.status(403).json({ error: "Hierarchy Violation: Safeguard active. Administrators cannot delete fellow administrators." });
         }
-
+        await ReviewModel.deleteMany({ global_user_hash: globalHashedUser });
         await clerkClient.users.deleteUser(id);
         res.json({ message: "Account completely terminated." });
     } catch (error) {

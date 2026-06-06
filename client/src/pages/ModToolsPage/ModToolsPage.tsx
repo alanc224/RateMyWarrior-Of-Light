@@ -8,6 +8,8 @@ interface Report {
   reason: string;
   reviewId: string;
   reviewContent: string;
+  reporterUsername: string;
+  reviewOwnerUsername: string;
 }
 
 interface UserAccount {
@@ -83,13 +85,13 @@ export default function ModToolsPage() {
     const targetStatus = currentStatus === 'active' ? 'banned' : 'active';
     try {
       const token = await getToken({ template: 'api-template' });
-      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/status`, {
+      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/toggle-ban`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` 
         },
-        body: JSON.stringify({ status: targetStatus })
+        body: JSON.stringify({ status: currentStatus })
       });
 
       if (res.ok) {
@@ -104,7 +106,7 @@ export default function ModToolsPage() {
     const newRole = targetCurrentRole === 'mod' ? 'user' : 'mod';
     try {
       const token = await getToken({ template: 'api-template' });
-      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/role`, {
+      const res = await fetch(`${BASE_URL}/api/mod/users/${userId}/change-role`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -195,6 +197,10 @@ export default function ModToolsPage() {
                   <tbody>
                     {reports.map((report) => (
                         <tr key={report._id}>
+                        <td>
+                            <div>Review by: <strong>{report.reviewOwnerUsername}</strong></div>
+                            <div style={{fontSize: '0.8rem', color: '#888'}}>Reported by: {report.reporterUsername}</div>
+                        </td>
                         <td><strong>{report.characterName}</strong></td>
                         <td><span className="review-world-tag">{report.server}</span></td>
                         <td style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
