@@ -7,6 +7,8 @@ const ReportModel = require('../Models/Report');
 const ReviewModel = require('../Models/reviews');
 const StatsModel = require('../Models/Stats');
 
+console.log("Authorization Header:", req.headers.authorization);
+
 const checkApiHealth = async () => {
     try {
         const response = await axios.get(process.env.EXTERNAL_API_PROXY);
