@@ -47,15 +47,18 @@ export default function ModToolsPage() {
             ]);
 
             if (usersRes.ok) {
-            setUsers(await usersRes.json());
+                const data = await usersRes.json();
+                console.log("Users received from API:", data); 
+                setUsers(data);
+                
             } else {
-            console.error("Users API failed with status:", usersRes.status);
+                console.error("Users API failed with status:", usersRes.status);
             }
 
             if (reportsRes.ok) {
-            setReports(await reportsRes.json());
+                setReports(await reportsRes.json());
             } else {
-            console.error("Reports API failed with status:", reportsRes.status);
+                console.error("Reports API failed with status:", reportsRes.status);
             }
 
         } catch (err) {
