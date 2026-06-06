@@ -77,16 +77,16 @@ export default function AdminDashboardPage() {
       <div className="stats-grid">
         <div className="stat-card">
           <span>Total Database Users</span>
-          <h3>{stats.totalUsers.toLocaleString()}</h3>
+          <h3>{stats?.totalUsers?.toLocaleString() || '0'}</h3>
         </div>
         <div className="stat-card">
           <span>Character Lookups</span>
-          <h3>{stats.characterLookups.toLocaleString()}</h3>
+          <h3>{stats?.characterLookups?.toLocaleString() || '0'}</h3>
         </div>
         <div className="stat-card">
-          <span>Total Reviews Written</span>
-          <h3>{stats.totalReviews.toLocaleString()}</h3>
-        </div>
+            <span>Total Reviews Written</span>
+            <h3>{stats?.totalReviews?.toLocaleString() || '0'}</h3>
+            </div>
       </div>
 
       <h3 style={{ fontSize: '1.1rem', color: '#fff', margin: '2rem 0 1rem 0' }}>System Health & Routing</h3>
