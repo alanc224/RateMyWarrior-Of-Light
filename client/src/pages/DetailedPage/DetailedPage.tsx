@@ -370,66 +370,62 @@ const DetailedPage = () => {
                 </div>
             </div>
             {reviewToDelete && (
-        <div className="custom-modal-overlay">
-            <div className="custom-modal-card">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to permanently delete your review?</p>
-                <div className="modal-actions">
-                    <button 
-                        className="modal-btn cancel" 
-                        onClick={() => setReviewToDelete(null)}
-                    >
-                        Cancel
-                    </button>
-                    <button 
-                        className="modal-btn confirm-delete" 
-                        disabled={isDeleting}
-                        onClick={async () => {
-                            setIsDeleting(true);
-                            await handleDeleteReview(reviewToDelete!);
-                            setIsDeleting(false);
-                            setReviewToDelete(null); 
-                        }}
-                    >
-                        {isDeleting ? "Deleting..." : "Yes, Delete"}
-                    </button>
-                </div>
-            </div>
-            {reviewToReport && (
-            <div className="custom-modal-overlay">
-                <div className="custom-modal-card">
-                    <h3>Report Review</h3>
-                    <p>Please select a reason for reporting:</p>
-                    
-                    <select 
-                        value={reportReason} 
-                        onChange={(e) => setReportReason(e.target.value)}
-                        className="report-reason-select"
-                    >
-                        <option value="" disabled>Select a reason...</option>
-                        <option value="Offensive Language">Offensive Language</option>
-                        <option value="Spam or Advertising">Spam or Advertising</option>
-                        <option value="Off Topic">Off Topic</option>
-                        <option value="Harassment">Harassment</option>
-                        <option value="Inaccurate Information">Inaccurate Information</option>
-                        <option value="Other">Other</option>
-                    </select>
-
-                    <div className="modal-actions">
-                        <button className="modal-btn cancel" onClick={() => setReviewToReport(null)}>Cancel</button>
-                        <button 
-                            className="modal-btn confirm-delete" 
-                            disabled={!reportReason}
-                            onClick={handleReportReview}
-                        >
-                            Submit Report
-                        </button>
+                <div className="custom-modal-overlay">
+                    <div className="custom-modal-card">
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to permanently delete your review?</p>
+                        <div className="modal-actions">
+                            <button className="modal-btn cancel" onClick={() => setReviewToDelete(null)}>Cancel</button>
+                            <button 
+                                className="modal-btn confirm-delete" 
+                                disabled={isDeleting}
+                                onClick={async () => {
+                                    setIsDeleting(true);
+                                    await handleDeleteReview(reviewToDelete!);
+                                    setIsDeleting(false);
+                                    setReviewToDelete(null); 
+                                }}
+                            >
+                                {isDeleting ? "Deleting..." : "Yes, Delete"}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        )}
-        </div>
-    )}
+            )}
+
+            {reviewToReport && (
+                <div className="custom-modal-overlay">
+                    <div className="custom-modal-card">
+                        <h3>Report Review</h3>
+                        <p>Please select a reason for reporting:</p>
+                        
+                        <select 
+                            value={reportReason} 
+                            onChange={(e) => setReportReason(e.target.value)}
+                            className="report-reason-select"
+                        >
+                            <option value="" disabled>Select a reason...</option>
+                            <option value="Offensive Language">Offensive Language</option>
+                            <option value="Spam or Advertising">Spam or Advertising</option>
+                            <option value="Off Topic">Off Topic</option>
+                            <option value="Harassment">Harassment</option>
+                            <option value="Inaccurate Information">Inaccurate Information</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <div className="modal-actions">
+                            <button className="modal-btn cancel" onClick={() => setReviewToReport(null)}>Cancel</button>
+                            <button 
+                                className="modal-btn confirm-delete" 
+                                disabled={!reportReason}
+                                onClick={handleReportReview}
+                            >
+                                Submit Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
