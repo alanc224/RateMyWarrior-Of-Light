@@ -35,6 +35,8 @@ const DetailedPage = () => {
     const [visibleCount, setVisibleCount] = useState(3);
     const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [reviewToReport, setReviewToReport] = useState<string | null>(null);
+    const [reportReason, setReportReason] = useState("");
 
     useEffect(() => {
         if (character) {
@@ -249,6 +251,32 @@ const DetailedPage = () => {
         }
     }; 
 
+    const handleReportReview = async () => {
+        if (!reviewToReport) return;
+        try {
+            const token = await getToken({ template: 'api-template' });
+            const res = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reports`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify({ 
+                    reviewId: reviewToReport,
+                    reason: reportReason || "No reason provided" 
+                })
+            });
+
+            if (res.ok) alert("Report submitted for review.");
+            else alert("Failed to submit report.");
+        } catch (err) {
+            console.error("Report failure:", err);
+        } finally {
+            setReviewToReport(null);
+            setReportReason("");
+        }
+    };
+
     return (
         <>
             <Header />
@@ -322,6 +350,7 @@ const DetailedPage = () => {
                                 contentType={e.contentType} 
                                 isOwner={e.isOwner} 
                                 onDelete={() => setReviewToDelete(e._id || e.id)}
+                                onReport={() => setReviewToReport(e._id || e.id)}
                                 onEdit={() => navigate(`/rating/${id}`, { 
                                     state: { 
                                         character: character, 
@@ -366,6 +395,39 @@ const DetailedPage = () => {
                     </button>
                 </div>
             </div>
+            {reviewToReport && (
+            <div className="custom-modal-overlay">
+                <div className="custom-modal-card">
+                    <h3>Report Review</h3>
+                    <p>Please select a reason for reporting:</p>
+                    
+                    <select 
+                        value={reportReason} 
+                        onChange={(e) => setReportReason(e.target.value)}
+                        className="report-reason-select"
+                    >
+                        <option value="" disabled>Select a reason...</option>
+                        <option value="Offensive Language">Offensive Language</option>
+                        <option value="Spam or Advertising">Spam or Advertising</option>
+                        <option value="Off Topic">Off Topic</option>
+                        <option value="Harassment">Harassment</option>
+                        <option value="Inaccurate Information">Inaccurate Information</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <div className="modal-actions">
+                        <button className="modal-btn cancel" onClick={() => setReviewToReport(null)}>Cancel</button>
+                        <button 
+                            className="modal-btn confirm-delete" 
+                            disabled={!reportReason}
+                            onClick={handleReportReview}
+                        >
+                            Submit Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         </div>
     )}
         </>

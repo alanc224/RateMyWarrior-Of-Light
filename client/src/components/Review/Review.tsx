@@ -5,13 +5,14 @@ interface ReviewProps {
     comment: string,
     date: string,
     playAgain: boolean,
-    recommend: boolean
-    contentType: string;
-    isOwner: boolean;
-    onDelete: () => void;
-    onEdit: () => void;
+    recommend: boolean,
+    contentType: string,
+    isOwner: boolean,
+    onDelete: () => void,
+    onEdit: () => void,
+    onReport: () => void,
 }
-const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwner, onDelete, onEdit} : ReviewProps) => {
+const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwner, onDelete, onEdit, onReport} : ReviewProps) => {
     // let rating = 5;
     const getBGColor = (rating : number) => {
         if (rating == 1 || rating == 2){
@@ -55,7 +56,7 @@ const Review = ({rating, comment, date, playAgain, recommend, contentType, isOwn
                         </button>
                     </>
                 ) : (
-                    <button onClick={() => alert("this does nothing")} className="review-action-btn report">
+                    <button onClick={onReport} className="review-action-btn report">
                         Report
                     </button>
                 )}

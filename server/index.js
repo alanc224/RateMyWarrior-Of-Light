@@ -15,6 +15,7 @@ const playerRoutes = require('./Routes/playerRoutes');
 const modRoutes = require('./Routes/modRoutes');
 const adminRoutes = require('./Routes/adminRoutes');
 const StatsModel = require('./Models/Stats');
+const Report = require('./Models/Report');
 
 
 const corsOptions = {
@@ -114,6 +115,21 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
         const status = error.response ? error.response.status : 500;
         const message = error.response ? error.response.data : 'An Error Occured with ffxivapi';
         res.status(status).json({ error: message });
+    }
+});
+
+app.post('/api/reports', async (req, res) => {
+    try {
+        const { reviewId, reason } = req.body;
+        const newReport = new Report({
+            reviewId,
+            reason,
+            timestamp: new Date()
+        });
+        await newReport.save();
+        res.status(201).json({ message: "Report submitted" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to submit report" });
     }
 });
 
