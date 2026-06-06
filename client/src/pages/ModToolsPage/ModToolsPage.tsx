@@ -48,7 +48,6 @@ export default function ModToolsPage() {
 
             if (usersRes.ok) {
                 const data = await usersRes.json();
-                console.log("Users received from API:", data); 
                 setUsers(data);
                 
             } else {
@@ -159,6 +158,8 @@ export default function ModToolsPage() {
     }
   };
 
+  console.log("Current state of users array:", users);
+
   return (
     <div className="page-content">
       <h2>Moderation Action Center</h2>
@@ -169,7 +170,7 @@ export default function ModToolsPage() {
           Pending Reports ({reports.length})
         </button>
         <button className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-          User Account Directory ({users.length})
+          User Account Directory ({users ? users.length : 0})
         </button>
       </div>
 
