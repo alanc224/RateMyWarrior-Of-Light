@@ -253,6 +253,7 @@ const DetailedPage = () => {
 
     const handleReportReview = async () => {
         if (!reviewToReport) return;
+        const reviewData = reviews.find(r => (r._id || r.id) === reviewToReport);
         try {
             const token = await getToken({ template: 'api-template' });
             const res = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reports`, {
@@ -263,7 +264,10 @@ const DetailedPage = () => {
                 },
                 body: JSON.stringify({ 
                     reviewId: reviewToReport,
-                    reason: reportReason || "No reason provided" 
+                    reason: reportReason || "No reason provided" ,
+                    characterName: character.characterName || character.name,
+                    server: character.serverName || character.server,
+                    reviewContent: reviewData?.comment || ""
                 })
             });
 

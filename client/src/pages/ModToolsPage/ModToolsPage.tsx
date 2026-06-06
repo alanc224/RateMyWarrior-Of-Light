@@ -7,6 +7,7 @@ interface Report {
   server: string;
   reason: string;
   reviewId: string;
+  reviewContent: string;
 }
 
 interface UserAccount {
@@ -184,34 +185,39 @@ export default function ModToolsPage() {
                     <tr>
                       <th>Target Character</th>
                       <th>Server</th>
+                      <th>Review</th>
                       <th>Reason</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reports.map((report) => (
-                      <tr key={report._id}>
+                        <tr key={report._id}>
                         <td><strong>{report.character_name}</strong></td>
                         <td><span className="review-world-tag">{report.server}</span></td>
+                        {/* New Column: Display the content here */}
+                        <td style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {report.reviewContent}
+                        </td>
                         <td>{report.reason}</td>
                         <td>
-                          <button 
+                            <button 
                             className="btn-mod approve" 
                             onClick={() => handleReportAction(report._id, 'keep', report.reviewId)}
                             style={{ backgroundColor: '#2f855a', color: '#fff', marginRight: '0.5rem' }}
-                          >
+                            >
                             Keep
-                          </button>
-                          <button 
+                            </button>
+                            <button 
                             className="btn-mod delete"
                             onClick={() => handleReportAction(report._id, 'delete', report.reviewId)}
-                          >
+                            >
                             Delete Review
-                          </button>
+                            </button>
                         </td>
-                      </tr>
+                        </tr>
                     ))}
-                  </tbody>
+                    </tbody>
                 </table>
               )}
             </div>

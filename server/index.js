@@ -120,10 +120,13 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
 
 app.post('/api/reports', async (req, res) => {
     try {
-        const { reviewId, reason } = req.body;
+        const { reviewId, reason, characterName, server, reviewContent } = req.body;
         const newReport = new Report({
             reviewId,
             reason,
+            characterName,
+            server,
+            reviewContent,
             timestamp: new Date()
         });
         await newReport.save();
