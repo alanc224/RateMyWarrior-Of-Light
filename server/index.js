@@ -29,6 +29,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use(express.json());
 app.use(clerkMiddleware());
 
@@ -36,8 +37,6 @@ app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
-
-app.use('/api/webhooks/clerk', clerkWebhookRoute);
 app.use('/api/players', playerRoutes);
 app.use('/api/reviews', reviewRoute);
 app.use('/api/mod', requireAuth(), modRoutes);
