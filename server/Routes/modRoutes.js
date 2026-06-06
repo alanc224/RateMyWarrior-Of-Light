@@ -47,7 +47,7 @@ router.get('/users', [requireAuth(), requireModOrAdmin], async (req, res) => {
         res.status(500).json({ error: "Failed to fetch users." });
     }
 });
-router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
+router.patch('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
     const { currentStatus } = req.body;
     const requesterRole = req.userRole; 
@@ -77,7 +77,7 @@ router.post('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async (
     }
 });
 
-router.post('/users/:id/change-role', [requireAuth(), requireModOrAdmin], async (req, res) => {
+router.patch('/users/:id/change-role', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
     const { newRole } = req.body;
     const requesterRole = req.userRole;
