@@ -197,7 +197,6 @@ export default function ModToolsPage() {
                         <tr key={report._id}>
                         <td><strong>{report.characterName}</strong></td>
                         <td><span className="review-world-tag">{report.server}</span></td>
-                        {/* New Column: Display the content here */}
                         <td style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {report.reviewContent}
                         </td>
