@@ -49,7 +49,6 @@ router.get('/stats',bypassClerkMiddleware, async (req, res) => {
             characterLookups: stats.totalLookups,
             totalReviews: reviews,
             apiGateStatus: await checkApiHealth(),
-            externalApiRemaining: 0,
             cacheHitRate: ((stats.cacheHits / totalRequests) * 100).toFixed(1),
             openReports: reports
         });

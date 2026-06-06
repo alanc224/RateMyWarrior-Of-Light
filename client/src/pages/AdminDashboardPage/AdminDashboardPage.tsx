@@ -96,10 +96,6 @@ export default function AdminDashboardPage() {
           <h3 className={`status-${stats.apiGateStatus.toLowerCase()}`}>{stats.apiGateStatus}</h3>
         </div>
         <div className="stat-card">
-          <span>External API Pool (Left)</span>
-          <h3>{stats.externalApiRemaining} hits</h3>
-        </div>
-        <div className="stat-card">
           <span>Lookup Cache Hit Rate</span>
           <h3>{stats.cacheHitRate}%</h3>
         </div>
