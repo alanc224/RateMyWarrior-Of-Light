@@ -186,7 +186,8 @@ app.post('/api/reports', async (req, res) => {
             characterName: originalReview.character_name,
             server: originalReview.server,
             reviewContent: originalReview.comment,
-            reviewOwnerUsername: reviewOwnerUsername,
+            reviewOwnerUsername: reviewOwnerUsername,   
+            reporterUserId: reporterUserId,
             reporterUsername: reporterUsername, 
             timestamp: new Date()
         });
@@ -195,6 +196,11 @@ app.post('/api/reports', async (req, res) => {
         res.status(201).json({ message: "Report submitted successfully." });
 
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ 
+                error: "You have already submitted a report for this review." 
+            });
+        }
         console.error("CRITICAL: Report Submission Failed ->", error); 
         res.status(500).json({ error: "Internal server error processing report." });
     }
