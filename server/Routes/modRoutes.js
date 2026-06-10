@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { requireAuth, clerkClient } = require('@clerk/express');
+const { requireAuth, clerkClient, getAuth  } = require('@clerk/express');
 const ReportModel = require('../Models/Report');
 const ReviewModel = require('../Models/reviews');
 const BlockedEmail = require('../Models/BlockedEmail');
