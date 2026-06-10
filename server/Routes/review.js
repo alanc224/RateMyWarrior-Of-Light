@@ -253,12 +253,17 @@ router.get('/user', async (req, res) => {
     }
 });
 
-router.patch('/:reviewId/vote', requireAuth(), async (req, res) => {
+router.patch('/:reviewId/vote', async (req, res) => {
     const { reviewId } = req.params;
     const { voteType } = req.body; 
-    const userId = req.auth.userId;
 
     try {
+        const userId = getUserIdFromHeaders(req);
+        
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized. You must be signed in to vote." });
+        }
+
         let updateQuery = {};
 
         if (voteType === 'up') {
@@ -277,7 +282,7 @@ router.patch('/:reviewId/vote', requireAuth(), async (req, res) => {
             };
         }
 
-        const updatedReview = await Review.findByIdAndUpdate(
+        const updatedReview = await ReviewModel.findByIdAndUpdate(
             reviewId, 
             updateQuery, 
             { new: true } 
@@ -289,13 +294,13 @@ router.patch('/:reviewId/vote', requireAuth(), async (req, res) => {
 
         res.status(200).json({ 
             message: "Vote updated successfully",
-            upvotes: updatedReview.upvotedBy.length,
-            downvotes: updatedReview.downvotedBy.length
+            upvotes: Array.isArray(updatedReview.upvotedBy) ? updatedReview.upvotedBy.length : 0,
+            downvotes: Array.isArray(updatedReview.downvotedBy) ? updatedReview.downvotedBy.length : 0
         });
 
     } catch (error) {
         console.error("Backend voting error:", error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: "Internal server error during voting execution", error: error.message });
     }
 });
 
