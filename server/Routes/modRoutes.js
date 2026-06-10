@@ -7,12 +7,7 @@ const BlockedEmail = require('../Models/BlockedEmail');
 
 const requireModOrAdmin = (req, res, next) => {
     const auth = getAuth(req);
-    
-    console.log("Full Auth Object via getAuth:", JSON.stringify(auth, null, 2));
-
-    const role = auth.sessionClaims?.role;
-    console.log("Detected Role via getAuth:", role);
-    
+    const role = auth.sessionClaims?.role;    
     if (role !== 'mod' && role !== 'admin') {
         return res.status(403).json({ error: "Access Denied: Role not found or insufficient." });
     }

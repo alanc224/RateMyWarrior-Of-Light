@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log("CLERK_SECRET_KEY in process.env:", process.env.CLERK_SECRET_KEY ? "EXISTS" : "MISSING");
 const express = require('express');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
@@ -31,10 +30,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use((req, res, next) => {
-    console.log("Headers received:", req.headers.authorization); 
-    next();
-});
 app.use(clerkMiddleware());
 
 app.get('/health', (req, res) => {
