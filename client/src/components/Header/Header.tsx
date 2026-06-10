@@ -46,13 +46,11 @@ const Header = () => {
     );
   }
 
-
-
   return (
     <div className="header">
       <img className="header-img" src={Logo} onClick={() => navigate('/')} alt="Logo" style={{ cursor: 'pointer' }} />
 
-      <div className="header-search-container">
+      <div className="header-search-container desktop-only">
         <input 
           className="header-input" 
           placeholder="Character name..." 
@@ -67,6 +65,10 @@ const Header = () => {
 
         <button className="header-search-btn" onClick={handleSearch} disabled={isSearchDisabled}>Search</button>
       </div>
+
+      <button className="header-mobile-trigger-btn" onClick={() => setIsMobileSearchActive(true)}>
+        🔍 Search
+      </button>
     
       <SignedOut>
         <div className="header-buttons-container">
@@ -88,13 +90,13 @@ const Header = () => {
       <SignedIn>
         <div className="header-buttons-container">
             <Link to="/profile" className="header-account-btns header-account-outline">
-            My Profile
+              My Profile
             </Link>
             <button className="header-account-btns" onClick={() => signOut().then(() => navigate('/'))}>
-            Log Out
+              Log Out
             </button>
         </div>
-        </SignedIn>
+      </SignedIn>
     </div>
   );
 };
