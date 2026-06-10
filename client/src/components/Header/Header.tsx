@@ -20,11 +20,33 @@ const Header = () => {
     }
   };
 
-  if (isMobileSearchActive) {
-    return (
-      <div className="header mobile-search-mode">
+  return (
+    <div className={`header ${isMobileSearchActive ? 'mobile-search-mode' : ''}`}>
+      
+      <img className="header-img" src={Logo} onClick={() => navigate('/')} alt="Logo" style={{ cursor: 'pointer' }} />
+
+      {!isMobileSearchActive ? (
+        <>
+          <div className="header-search-container desktop-only">
+            <input 
+              className="header-input" 
+              placeholder="Character name..." 
+              value={searchName} 
+              onChange={(e) => setSearchName(e.target.value)}
+            />
+            <WorldSelector 
+              value={searchWorld} 
+              onChange={(world) => setSearchWorld(world)} 
+            />
+            <button className="header-search-btn" onClick={handleSearch} disabled={isSearchDisabled}>Search</button>
+          </div>
+
+          <button className="header-mobile-trigger-btn" onClick={() => setIsMobileSearchActive(true)}>
+            🔍
+          </button>
+        </>
+      ) : (
         <div className="mobile-search-wrapper">
-          
           <div className="mobile-search-top-row">
             <WorldSelector 
               value={searchWorld} 
@@ -47,63 +69,39 @@ const Header = () => {
               Search
             </button>
           </div>
-
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="header">
-      <img className="header-img" src={Logo} onClick={() => navigate('/')} alt="Logo" style={{ cursor: 'pointer' }} />
-
-      <div className="header-search-container desktop-only">
-        <input 
-          className="header-input" 
-          placeholder="Character name..." 
-          value={searchName} 
-          onChange={(e) => setSearchName(e.target.value)}
-        />
+      )}
     
-        <WorldSelector 
-          value={searchWorld} 
-          onChange={(world) => setSearchWorld(world)} 
-        />
-
-        <button className="header-search-btn" onClick={handleSearch} disabled={isSearchDisabled}>Search</button>
-      </div>
-
-      <button className="header-mobile-trigger-btn" onClick={() => setIsMobileSearchActive(true)}>
-        🔍 Search
-      </button>
-    
-      <SignedOut>
-        <div className="header-buttons-container">
-          <button 
-            className="header-account-btns header-account-outline" 
-            onClick={() => openSignUp()}
-          >
-            Sign Up
-          </button>
-          <button 
-            className="header-account-btns" 
-            onClick={() => openSignIn()}
-          >
-            Log In
-          </button>
-        </div>
-      </SignedOut>
-      
-      <SignedIn>
-        <div className="header-buttons-container">
-            <Link to="/profile" className="header-account-btns header-account-outline">
-              My Profile
-            </Link>
-            <button className="header-account-btns" onClick={() => signOut().then(() => navigate('/'))}>
-              Log Out
+      <div className="header-buttons-wrapper">
+        <SignedOut>
+          <div className="header-buttons-container">
+            <button 
+              className="header-account-btns header-account-outline" 
+              onClick={() => openSignUp()}
+            >
+              Sign Up
             </button>
-        </div>
-      </SignedIn>
+            <button 
+              className="header-account-btns" 
+              onClick={() => openSignIn()}
+            >
+              Log In
+            </button>
+          </div>
+        </SignedOut>
+        
+        <SignedIn>
+          <div className="header-buttons-container">
+              <Link to="/profile" className="header-account-btns header-account-outline">
+                My Profile
+              </Link>
+              <button className="header-account-btns" onClick={() => signOut().then(() => navigate('/'))}>
+                Log Out
+              </button>
+          </div>
+        </SignedIn>
+      </div>
+
     </div>
   );
 };

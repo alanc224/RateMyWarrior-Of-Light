@@ -165,13 +165,14 @@
         flex-direction: row; 
         justify-content: space-between;
         align-items: center;
-        padding: 0 1rem;
-        gap: 1rem;
+        padding: 0 0.75rem;
+        gap: 0.5rem; 
     }
 
     .header.mobile-search-mode {
         height: auto !important;
-        padding: 0.85rem 1rem !important;
+        flex-wrap: wrap !important;
+        padding: 0.75rem 1rem !important;
     }
 
     .desktop-only {
@@ -183,18 +184,23 @@
         background: #0f3460;
         border: 1px solid #e94560;
         color: #ffffff;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         font-size: 0.9rem;
-        font-weight: 600;
         cursor: pointer;
+        flex-shrink: 0 !important; 
     }
 
+    /* Active Stacked Search Block Specs */
     .mobile-search-wrapper {
         display: flex;
         flex-direction: column;
         width: 100%;
-        gap: 0.75rem;
+        gap: 0.5rem;
+        order: 4;
+        margin-top: 0.5rem;
+        border-top: 1px solid rgba(15, 52, 96, 0.4);
+        padding-top: 0.5rem;
     }
 
     .mobile-search-top-row,
@@ -207,7 +213,7 @@
 
     .mobile-search-top-row .world-selector {
         flex: 1 !important;
-        min-width: 0 !important; /* Disables desktop 150px layout restrictions */
+        min-width: 0 !important;
         max-width: none !important;
     }
 
@@ -221,7 +227,7 @@
         background: none;
         border: none;
         color: #a0aec0;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         cursor: pointer;
         padding: 0 0.25rem;
     }
@@ -230,31 +236,38 @@
         flex: 1 !important;
         max-width: none !important;
         width: auto !important;
-        padding: 0.6rem 1rem !important;
-        border-radius: 0.5rem;
+        padding: 0.55rem 0.85rem !important;
     }
 
     .mobile-search-bottom-row .header-search-btn {
         flex: 0 0 auto !important;
-        padding: 0.6rem 1.2rem !important;
-        font-size: 0.9rem !important;
+        padding: 0.55rem 1.2rem !important;
+    }
+
+
+    .header-buttons-wrapper {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0 !important; 
     }
 
     .header-buttons-container {
-        margin-left: 0 !important;
+        margin-left: auto !important;
         width: auto !important;
         display: flex !important;
-        justify-content: flex-end !important;
-        gap: 0.5rem !important;
+        gap: 0.35rem !important; 
+        flex-shrink: 0 !important;
     }
 
     .header-account-btns {
-        font-size: 0.85rem !important;
-        padding: 0.4rem 0.8rem !important;
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.6rem !important; 
         white-space: nowrap !important;
-    }
+        flex-shrink: 0 !important;
+      }
 
     .header-img {
-        height: 35px !important;
+        height: 28px !important;
+        flex-shrink: 0 !important;
     }
 }
