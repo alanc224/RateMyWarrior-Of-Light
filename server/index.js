@@ -58,7 +58,7 @@ app.delete('/api/reviews/:id', requireAdmin, async (req, res) => {
 
 const searchLimiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 20,
+    limit: 45,
     message: { error: "Too many search requests, please try again later." }
 });
 
