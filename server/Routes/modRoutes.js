@@ -4,6 +4,7 @@ const { requireAuth, clerkClient, getAuth  } = require('@clerk/express');
 const ReportModel = require('../Models/Report');
 const ReviewModel = require('../Models/reviews');
 const BlockedEmail = require('../Models/BlockedEmail');
+const crypto = require('crypto');
 
 const requireModOrAdmin = (req, res, next) => {
     const auth = getAuth(req);
@@ -50,12 +51,12 @@ router.patch('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async 
             return res.status(403).json({ error: "Hierarchy Violation: Moderators cannot ban other staff members." });
         }
 
-        if (currentStatus === 'active') {
+        if (!targetUser.banned) {
             await clerkClient.users.banUser(id);
-            res.json({ message: "User successfully banned." });
+            res.json({ message: "User successfully banned.", status: "banned" });
         } else {
             await clerkClient.users.unbanUser(id);
-            res.json({ message: "User successfully unbanned." });
+            res.json({ message: "User successfully unbanned.", status: "active" });
         }
     } catch (error) {
         console.error('Error modifying ban status:', error.message);
