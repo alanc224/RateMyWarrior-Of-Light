@@ -97,7 +97,6 @@ router.get('/:characterId/reviews', async (req, res) => {
                 let secretCombination = "";
                 
                 if (userId) {
-                    const cleanDocCharacterId = String(review.character_id).trim();
                     const secretCombination = `${userId}_${cleanDocCharacterId}_${SALT}`;
                     currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
                 }
@@ -105,6 +104,18 @@ router.get('/:characterId/reviews', async (req, res) => {
                 const storedHash = String(review.hash_user).trim();
                 const currentHash = currentUserHash ? String(currentUserHash).trim() : null;
                 const isMatch = currentHash ? (storedHash === currentHash) : false;
+
+                const upvotesCount = Array.isArray(review.upvotedBy) ? review.upvotedBy.length : 0;
+                const downvotesCount = Array.isArray(review.downvotedBy) ? review.downvotedBy.length : 0;
+                
+                let userVote = null;
+                if (userId) {
+                    if (Array.isArray(review.upvotedBy) && review.upvotedBy.includes(userId)) {
+                        userVote = 'up';
+                    } else if (Array.isArray(review.downvotedBy) && review.downvotedBy.includes(userId)) {
+                        userVote = 'down';
+                    }
+                }
 
                 return {
                     id: review._id.toString(),
@@ -117,7 +128,10 @@ router.get('/:characterId/reviews', async (req, res) => {
                     playAgain: review.playAgain, 
                     recommend: review.recommend,
                     contentType: review.contentType,
-                    isOwner: isMatch
+                    isOwner: isMatch,
+                    upvotes: upvotesCount,
+                    downvotes: downvotesCount,
+                    userVote: userVote
                 };
             });
             res.json({ reviews: formattedReviews });
@@ -236,6 +250,52 @@ router.get('/user', async (req, res) => {
     } catch (error) {
         console.error('Error pulling user ledger data:', error.message);
         res.status(500).json({ error: "Failed to collect account review logs." });
+    }
+});
+
+router.patch('/:reviewId/vote', requireAuth(), async (req, res) => {
+    const { reviewId } = req.params;
+    const { voteType } = req.body; 
+    const userId = req.auth.userId;
+
+    try {
+        let updateQuery = {};
+
+        if (voteType === 'up') {
+            updateQuery = {
+                $addToSet: { upvotedBy: userId },
+                $pull: { downvotedBy: userId }
+            };
+        } else if (voteType === 'down') {
+            updateQuery = {
+                $addToSet: { downvotedBy: userId },
+                $pull: { upvotedBy: userId }
+            };
+        } else {
+            updateQuery = {
+                $pull: { upvotedBy: userId, downvotedBy: userId }
+            };
+        }
+
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewId, 
+            updateQuery, 
+            { new: true } 
+        );
+
+        if (!updatedReview) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+
+        res.status(200).json({ 
+            message: "Vote updated successfully",
+            upvotes: updatedReview.upvotedBy.length,
+            downvotes: updatedReview.downvotedBy.length
+        });
+
+    } catch (error) {
+        console.error("Backend voting error:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 

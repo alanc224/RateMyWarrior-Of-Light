@@ -1,5 +1,6 @@
+import { useAuth } from '@clerk/clerk-react'; 
 import { useState } from "react";
-import "./Review.css"
+import "./Review.css";
 
 interface ReviewProps {
     reviewId: string;
@@ -19,11 +20,17 @@ interface ReviewProps {
 }
 const Review = ({reviewId,rating, comment, date, playAgain, recommend, contentType, isOwner, onDelete, onEdit, onReport,initialUpvotes = 0, initialDownvotes = 0,initialUserVote = null} : ReviewProps) => {
     // let rating = 5;
+    const { getToken, isSignedIn } = useAuth();
     const [userVote, setUserVote] = useState<"up" | "down" | null>(initialUserVote);
     const [upvotes, setUpvotes] = useState(initialUpvotes);
     const [downvotes, setDownvotes] = useState(initialDownvotes);
 
     const handleVote = async (type: "up" | "down") => {
+        if (!isSignedIn) {
+            alert("You must be signed in to vote on reviews!");
+            return;
+        }
+
         let newVote: "up" | "down" | null = type;
 
         if (userVote === type) {
@@ -39,18 +46,20 @@ const Review = ({reviewId,rating, comment, date, playAgain, recommend, contentTy
         setUserVote(newVote);
 
         try {
-            const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${reviewId}/vote`, { 
+            const token = await getToken({ template: 'api-template' });
+
+            const response = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reviews/${reviewId}/vote`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` 
                 },
-                body: JSON.stringify({ voteType: newVote }),
+                body: JSON.stringify({ voteType: newVote }), 
             });
 
             if (!response.ok) {
                 throw new Error("Failed to sync vote with server");
             }
-
         } catch (error) {
             console.error("Voting error:", error);
         }
