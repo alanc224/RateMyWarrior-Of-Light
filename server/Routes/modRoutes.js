@@ -66,11 +66,17 @@ router.patch('/users/:id/toggle-ban', [requireAuth(), requireModOrAdmin], async 
 
 router.patch('/users/:id/change-role', [requireAuth(), requireModOrAdmin], async (req, res) => {
     const { id } = req.params;
-    const { newRole } = req.body;
+    const newRole = req.body.newRole || req.body.role;
     const requesterRole = req.userRole;
 
     if (requesterRole !== 'admin') {
         return res.status(403).json({ error: "Unauthorized: Only administrators can adjust user groups." });
+    }
+
+    if (!newRole || typeof newRole !== 'string') {
+        return res.status(400).json({ 
+            error: "Bad Request: Missing or invalid 'newRole' or 'role' property in request body." 
+        });
     }
 
     try {
@@ -79,9 +85,11 @@ router.patch('/users/:id/change-role', [requireAuth(), requireModOrAdmin], async
         if (targetUser.banned) {
             return res.status(400).json({ error: "Action Denied: You cannot adjust the privileges of a banned account. Unban them first." });
         }
+
         await clerkClient.users.updateUserMetadata(id, {
-            publicMetadata: { role: newRole }
+            publicMetadata: { role: newRole.toLowerCase().trim() }
         });
+
         res.json({ message: `Role successfully set to ${newRole}.` });
     } catch (error) {
         console.error('Error changing user role:', error.message);
