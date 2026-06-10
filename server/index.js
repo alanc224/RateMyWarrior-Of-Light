@@ -142,19 +142,28 @@ app.post('/api/reports', async (req, res) => {
         if (!reviewId || !reason) {
             return res.status(400).json({ error: "Missing required fields: reviewId and reason." });
         }
-
         const reporterUserId = req.auth?.userId || getUserIdFromHeaders(req); 
-        
         if (!reporterUserId) {
             return res.status(401).json({ error: 'Unauthorized: Could not verify user identity.' });
         }
 
         const reporterUser = await clerkClient.users.getUser(reporterUserId);
-        const reporterUsername = reporterUser.username || "Anonymous Reporter";
+        const reporterUsername = reporterUser.username || reporterUser.primaryEmailAddress?.emailAddress || "Anonymous Reporter";
 
         const originalReview = await ReviewModel.findById(reviewId);
         if (!originalReview) {
             return res.status(404).json({ error: "Review not found." });
+        }
+
+        let reviewOwnerUsername = `Hash: ${originalReview.global_user_hash}`; 
+
+        if (originalReview.user_id) {
+            try {
+                const ownerUser = await clerkClient.users.getUser(originalReview.user_id);
+                reviewOwnerUsername = ownerUser.username || ownerUser.primaryEmailAddress?.emailAddress || "Anonymous Reviewer";
+            } catch (clerkErr) {
+                console.error("Failed to look up review author in Clerk:", clerkErr.message);
+            }
         }
 
         const newReport = new Report({
@@ -163,7 +172,7 @@ app.post('/api/reports', async (req, res) => {
             characterName: originalReview.character_name,
             server: originalReview.server,
             reviewContent: originalReview.comment,
-            reviewOwnerUsername: `Hash: ${originalReview.global_user_hash}`, 
+            reviewOwnerUsername: reviewOwnerUsername,
             reporterUsername: reporterUsername, 
             timestamp: new Date()
         });

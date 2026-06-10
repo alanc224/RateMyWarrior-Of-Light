@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const reviewSchema = new Schema({
     hash_user: { type: String, required: true, unique: true },
     global_user_hash: { type: String, required: true, index: true },
+    user_id: { type: String },
     character_id: { type: String, required: true }, 
     character_name: { type: String, required: true }, 
     server: { type: String, required: true },   

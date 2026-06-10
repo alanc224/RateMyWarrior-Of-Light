@@ -53,6 +53,7 @@ const submitReview = async (req, res) => {
         const newReview = new ReviewModel({
             hash_user: hashedUser,
             global_user_hash: globalHashedUser,
+            user_id: authenticatedUserId,
             character_id: cleanCharacterId,
             character_name: characterName,
             server: server,
