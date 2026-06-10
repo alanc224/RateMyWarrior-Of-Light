@@ -119,6 +119,12 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
 app.post('/api/reports', async (req, res) => {
     try {
         const { reviewId, reason, characterName, server, reviewContent } = req.body;
+        if (!reviewId || !reason) {
+            return res.status(400).json({ 
+                error: "Bad Request: 'reviewId' and 'reason' fields are required." 
+            });
+        }
+
         const newReport = new Report({
             reviewId,
             reason,
@@ -127,10 +133,16 @@ app.post('/api/reports', async (req, res) => {
             reviewContent,
             timestamp: new Date()
         });
+
         await newReport.save();
         res.status(201).json({ message: "Report submitted" });
     } catch (error) {
-        res.status(500).json({ error: "Failed to submit report" });
+        console.error("CRITICAL: Report Submission Failed ->", error); 
+    
+        res.status(500).json({ 
+            error: "Failed to submit report.", 
+            details: error.message 
+        });
     }
 });
 
