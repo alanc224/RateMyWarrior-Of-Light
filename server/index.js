@@ -30,6 +30,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log("Headers received:", req.headers.authorization); 
+    next();
+});
 app.use(clerkMiddleware());
 
 app.get('/health', (req, res) => {
