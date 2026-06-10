@@ -23,24 +23,31 @@ const Header = () => {
   if (isMobileSearchActive) {
     return (
       <div className="header mobile-search-mode">
-        <div className="header-search-container mobile-full-width">
-          <WorldSelector 
-            value={searchWorld} 
-            onChange={(world) => setSearchWorld(world)} 
-          />
-          <input 
-            className="header-input" 
-            placeholder="Character name..." 
-            value={searchName} 
-            onChange={(e) => setSearchName(e.target.value)}
-            autoFocus
-          />
-          <button className="header-search-btn" onClick={handleSearch} disabled={isSearchDisabled}>
-            Search
-          </button>
-          <button className="header-close-search-btn" onClick={() => setIsMobileSearchActive(false)}>
-            ✕
-          </button>
+        <div className="mobile-search-wrapper">
+          
+          <div className="mobile-search-top-row">
+            <WorldSelector 
+              value={searchWorld} 
+              onChange={(world) => setSearchWorld(world)} 
+            />
+            <button className="header-close-search-btn" onClick={() => setIsMobileSearchActive(false)}>
+              ✕
+            </button>
+          </div>
+          
+          <div className="mobile-search-bottom-row">
+            <input 
+              className="header-input" 
+              placeholder="Character name..." 
+              value={searchName} 
+              onChange={(e) => setSearchName(e.target.value)}
+              autoFocus
+            />
+            <button className="header-search-btn" onClick={handleSearch} disabled={isSearchDisabled}>
+              Search
+            </button>
+          </div>
+
         </div>
       </div>
     );
