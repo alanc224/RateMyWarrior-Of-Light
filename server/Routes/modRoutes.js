@@ -6,16 +6,17 @@ const ReviewModel = require('../Models/reviews');
 const BlockedEmail = require('../Models/BlockedEmail');
 
 const requireModOrAdmin = (req, res, next) => {
-    console.log("Full req.auth object:", JSON.stringify(req.auth, null, 2));
-    const claims = req.auth?.sessionClaims;
-    console.log("Extracted claims:", claims);
+    const auth = getAuth(req);
+    
+    console.log("Full Auth Object via getAuth:", JSON.stringify(auth, null, 2));
 
-    const role = claims?.role;
-    console.log("Detected Role:", role);
+    const role = auth.sessionClaims?.role;
+    console.log("Detected Role via getAuth:", role);
     
     if (role !== 'mod' && role !== 'admin') {
         return res.status(403).json({ error: "Access Denied: Role not found or insufficient." });
     }
+    
     req.userRole = role;
     next();
 };
