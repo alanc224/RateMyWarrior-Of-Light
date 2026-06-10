@@ -7,12 +7,36 @@ const ReportModel = require('../Models/Report');
 const ReviewModel = require('../Models/reviews');
 const StatsModel = require('../Models/Stats');
 
+let cachedStats = null;
+let lastFetchTime = 0;
+const STATS_CACHE_DURATION = 60000;
+
+let cachedApiStatus = 'ONLINE';
+let lastHealthCheckTime = 0;
+const HEALTH_CACHE_DURATION = 600000; 
+
 const checkApiHealth = async () => {
+    const now = Date.now();
+        if (now - lastHealthCheckTime < HEALTH_CACHE_DURATION) {
+        return cachedApiStatus;
+    }
+
     try {
-        const response = await axios.get(process.env.EXTERNAL_API_PROXY);
-        return response.status === 200 ? 'ONLINE' : 'DEGRADED';
+        lastHealthCheckTime = now;
+        const response = await axios.get(process.env.EXTERNAL_API_PROXY, { timeout: 3000 });
+        
+        cachedApiStatus = response.status === 200 ? 'ONLINE' : 'DEGRADED';
+        return cachedApiStatus;
     } catch (e) {
-        return 'OFFLINE';
+        console.error(`Proxy Health Check Status: ${e.response?.status || e.message}`);
+        
+        if (e.response?.status === 429) {
+            cachedApiStatus = 'RATE_LIMITED'; 
+            return cachedApiStatus;
+        }
+        
+        cachedApiStatus = 'OFFLINE';
+        return cachedApiStatus;
     }
 };
 

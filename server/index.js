@@ -28,6 +28,10 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'] 
 };
 
+if (!global.proxyHealth) {
+    global.proxyHealth = { status: 'ONLINE', lastChecked: new Date() };
+}
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
@@ -105,6 +109,8 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
             }
         });
 
+        global.proxyHealth = { status: 'ONLINE', lastChecked: new Date() };
+
         searchCache.set(cacheKey, response.data);
         incrementStats(false);
         return res.json(response.data);
@@ -113,6 +119,14 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
         console.error('Error fetching from ffxivapi:', error.message);
         const status = error.response ? error.response.status : 500;
         const message = error.response ? error.response.data : 'An Error Occured with ffxivapi';
+        if (status === 429) {
+            global.proxyHealth = { status: 'RATE_LIMITED', lastChecked: new Date() };
+        } else if (!error.response) {
+            global.proxyHealth = { status: 'OFFLINE', lastChecked: new Date() };
+        } else {
+            global.proxyHealth = { status: 'DEGRADED', lastChecked: new Date() };
+        }
+
         res.status(status).json({ error: message });
     }
 });
