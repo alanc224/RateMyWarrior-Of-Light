@@ -193,6 +193,73 @@
     margin-bottom: 5px; 
 }
 
+.review-footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06); 
+}
+
+.review-vote-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vote-btn:not(:disabled):hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vote-btn svg {
+    transition: transform 0.15s ease;
+}
+
+.vote-btn:not(:disabled):active svg {
+    transform: scale(0.85);
+}
+
+.vote-count {
+    font-weight: 600;
+}
+
+.vote-btn.upvote.active {
+    color: #4ade80; 
+    background-color: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.25);
+}
+
+.vote-btn.downvote.active {
+    color: #f87171; 
+    background-color: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.25);
+}
+
+.review-actions-container {
+    display: flex;
+    gap: 8px;
+    margin: 0; 
+}
+
 /*mobile stuff*/
 @media screen and (max-width: 650px) {
     .review-container {

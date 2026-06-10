@@ -255,17 +255,27 @@ router.get('/user', async (req, res) => {
 
 router.patch('/:reviewId/vote', async (req, res) => {
     const { reviewId } = req.params;
-    const { voteType } = req.body; 
+    const { voteType } = req.body;
 
     try {
         const userId = getUserIdFromHeaders(req);
-        
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized. You must be signed in to vote." });
         }
 
-        let updateQuery = {};
+        const review = await ReviewModel.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
 
+        const cleanDocCharacterId = String(review.character_id).trim();
+        const secretCombination = `${userId}_${cleanDocCharacterId}_${SALT}`;
+        const currentUserHash = crypto.createHash('sha256').update(secretCombination).digest('hex');
+
+        if (String(review.hash_user).trim() === currentUserHash.trim()) {
+            return res.status(403).json({ message: "You cannot vote on your own review." });
+        }
+        let updateQuery = {};
         if (voteType === 'up') {
             updateQuery = {
                 $addToSet: { upvotedBy: userId },
@@ -287,10 +297,6 @@ router.patch('/:reviewId/vote', async (req, res) => {
             updateQuery, 
             { new: true } 
         );
-
-        if (!updatedReview) {
-            return res.status(404).json({ message: "Review not found" });
-        }
 
         res.status(200).json({ 
             message: "Vote updated successfully",
