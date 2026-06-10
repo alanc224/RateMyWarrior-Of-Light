@@ -187,8 +187,8 @@ export default function ModToolsPage() {
                 <table className="mod-table">
                   <thead>
                     <tr>
-                      <th>Target Character</th>
                       <th>Server</th>
+                      <th>Player</th>
                       <th>Review</th>
                       <th>Reason</th>
                       <th>Actions</th>
