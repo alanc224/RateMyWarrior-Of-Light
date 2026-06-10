@@ -140,7 +140,7 @@ const Review = ({
                             disabled={isOwner}
                         >
                             <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill={userVote === "down" ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm12-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h3" />
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm12-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3" />
                             </svg>
                             <span className="vote-count">{downvotes}</span>
                         </button>
