@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log("CLERK_SECRET_KEY in process.env:", process.env.CLERK_SECRET_KEY ? "EXISTS" : "MISSING");
 const express = require('express');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
