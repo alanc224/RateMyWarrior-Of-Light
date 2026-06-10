@@ -113,58 +113,59 @@ const Review = ({
                     <span>Recommend: <strong>{recommend ? "Yes" : "No"}</strong></span>
                 </div>
 
-                <br />
                 <p className="review-description">{comment}</p>
 
-                <div className="review-vote-container">
-                    <button 
-                        className={`vote-btn upvote ${userVote === "up" ? "active" : ""}`}
-                        onClick={() => handleVote("up")}
-                        aria-label="Upvote"
-                        style={isOwner ? { opacity: 0.25, cursor: 'not-allowed' } : {}}
-                        title={isOwner ? "You cannot vote on your own review" : ""}
-                        disabled={isOwner}
-                    >
-                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill={userVote === "up" ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
-                        </svg>
-                        <span className="vote-count">{upvotes}</span>
-                    </button>
+                <div className="review-footer-row">
+                    <div className="review-vote-container">
+                        <button 
+                            className={`vote-btn upvote ${userVote === "up" ? "active" : ""}`}
+                            onClick={() => handleVote("up")}
+                            aria-label="Upvote"
+                            style={isOwner ? { opacity: 0.25, cursor: 'not-allowed' } : {}}
+                            title={isOwner ? "You cannot vote on your own review" : ""}
+                            disabled={isOwner}
+                        >
+                            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill={userVote === "up" ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                            </svg>
+                            <span className="vote-count">{upvotes}</span>
+                        </button>
 
-                    <button 
-                        className={`vote-btn downvote ${userVote === "down" ? "active" : ""}`}
-                        onClick={() => handleVote("down")}
-                        aria-label="Downvote"
-                        style={isOwner ? { opacity: 0.25, cursor: 'not-allowed' } : {}}
-                        title={isOwner ? "You cannot vote on your own review" : ""}
-                        disabled={isOwner}
-                    >
-                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill={userVote === "down" ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm12-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h3" />
-                        </svg>
-                        <span className="vote-count">{downvotes}</span>
-                    </button>
+                        <button 
+                            className={`vote-btn downvote ${userVote === "down" ? "active" : ""}`}
+                            onClick={() => handleVote("down")}
+                            aria-label="Downvote"
+                            style={isOwner ? { opacity: 0.25, cursor: 'not-allowed' } : {}}
+                            title={isOwner ? "You cannot vote on your own review" : ""}
+                            disabled={isOwner}
+                        >
+                            <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" strokeWidth="2.5" fill={userVote === "down" ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm12-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h3" />
+                            </svg>
+                            <span className="vote-count">{downvotes}</span>
+                        </button>
+                    </div>
+
+                    <div className="review-actions-container">
+                        {isOwner ? (
+                            <>
+                                <button onClick={onEdit} className="review-action-btn edit">
+                                    Edit
+                                </button>
+                                <button onClick={onDelete} className="review-action-btn delete">
+                                    Delete
+                                </button>
+                            </>
+                        ) : (
+                            <button onClick={onReport} className="review-action-btn report">
+                                Report
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
             
             <div className="review-date">{date}</div>
-
-            <div className="review-actions-container">
-                {isOwner ? (
-                    <>
-                        <button onClick={onEdit} className="review-action-btn edit">
-                            Edit
-                        </button>
-                        <button onClick={onDelete} className="review-action-btn delete">
-                            Delete
-                        </button>
-                    </>
-                ) : (
-                    <button onClick={onReport} className="review-action-btn report">
-                        Report
-                    </button>
-                )}
-            </div>
         </div>
     );
 };
