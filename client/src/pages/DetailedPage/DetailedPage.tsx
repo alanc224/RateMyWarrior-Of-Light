@@ -20,6 +20,9 @@ interface ReviewItem {
     recommend: boolean;
     contentType: string;
     isOwner: boolean;
+    upvotes?: number;
+    downvotes?: number;
+    userVote?: 'up' | 'down' | null;
 }
 
 const DetailedPage = () => {
@@ -102,7 +105,10 @@ const DetailedPage = () => {
                         playAgain: r.playAgain,
                         recommend: r.recommend,
                         contentType: r.contentType || "Other",
-                        isOwner: r.isOwner
+                        isOwner: r.isOwner,
+                        upvotes: r.upvotes || 0,
+                        downvotes: r.downvotes || 0,
+                        userVote: r.userVote || null,
                     }))
                 );
                 /*
@@ -347,6 +353,7 @@ const DetailedPage = () => {
                         return (
                             <Review 
                                 key={e.id} 
+                                reviewId={e._id || e.id}
                                 rating={e.rating} 
                                 comment={e.comment} 
                                 date={e.date} 
@@ -354,6 +361,9 @@ const DetailedPage = () => {
                                 recommend={e.recommend} 
                                 contentType={e.contentType} 
                                 isOwner={e.isOwner} 
+                                initialUpvotes={e.upvotes} 
+                                initialDownvotes={e.downvotes}
+                                initialUserVote={e.userVote}
                                 onDelete={() => setReviewToDelete(e._id || e.id)}
                                 onReport={() => setReviewToReport(e._id || e.id)}
                                 onEdit={() => navigate(`/rating/${id}`, { 
