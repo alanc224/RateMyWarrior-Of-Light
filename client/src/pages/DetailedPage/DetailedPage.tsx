@@ -8,7 +8,7 @@ import favicon1 from '../../assets/favicon1.png';
 import iconImg from '../../assets/icon.webp';
 import lodestone from '../../assets/lodestone.png';
 import { allWorlds } from '../../data/worlds'; 
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 interface ReviewItem {
     id: string;
@@ -27,6 +27,7 @@ const DetailedPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { isSignedIn, getToken, isLoaded } = useAuth();
+    const { user } = useUser();
     const [character, setCharacter] = useState(location.state || null);
     const [loading, setLoading] = useState(!location.state);
     // const [ratings, setRatings] = useState([0, 0, 0, 0, 0]);
@@ -91,6 +92,7 @@ const DetailedPage = () => {
                 setReviews(
                     data.reviews.map((r: any) => ({
                         id: r.id,
+                        _id: r._id || r.id,
                         rating: r.rating,
                         comment: r.comment,
                         date: r.date ? new Date(r.date).toLocaleDateString("en-US", {
@@ -253,7 +255,7 @@ const DetailedPage = () => {
 
     const handleReportReview = async () => {
         if (!reviewToReport) return;
-        const reviewData = reviews.find(r => (r._id || r.id) === reviewToReport);
+        
         try {
             const token = await getToken({ template: 'api-template' });
             const res = await fetch(`https://ratemywarrioroflight-api.onrender.com/api/reports`, {
@@ -264,15 +266,15 @@ const DetailedPage = () => {
                 },
                 body: JSON.stringify({ 
                     reviewId: reviewToReport,
-                    reason: reportReason || "No reason provided" ,
-                    characterName: character.characterName || character.name,
-                    server: character.serverName || character.server,
-                    reviewContent: reviewData?.comment || ""
+                    reason: reportReason || "No reason provided"
                 })
             });
 
-            if (res.ok) alert("Report submitted for review.");
-            else alert("Failed to submit report.");
+            if (res.ok) {
+                alert("Report submitted for review.");
+            } else {
+                alert("Failed to submit report.");
+            }
         } catch (err) {
             console.error("Report failure:", err);
         } finally {

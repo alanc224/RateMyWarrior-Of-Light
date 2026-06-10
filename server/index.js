@@ -7,7 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
 app.set('trust proxy', 1);
-const { clerkMiddleware, requireAuth } = require('@clerk/express');
+const { clerkMiddleware, requireAuth, clerkClient } = require('@clerk/express');
 const clerkWebhookRoute = require('./Routes/clerkWebhook');
 const reviewRoute = require('./Routes/review');
 const mongoURI = process.env.MONGO_URI;
@@ -16,6 +16,7 @@ const modRoutes = require('./Routes/modRoutes');
 const adminRoutes = require('./Routes/adminRoutes');
 const StatsModel = require('./Models/Stats');
 const Report = require('./Models/Report');
+const ReviewModel = require('./Models/reviews');
 
 
 const corsOptions = {
@@ -116,33 +117,43 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
     }
 });
 
-app.post('/api/reports', async (req, res) => {
+app.post('/api/reports', requireAuth(), async (req, res) => {
     try {
-        const { reviewId, reason, characterName, server, reviewContent } = req.body;
+        const { reviewId, reason } = req.body;
+
         if (!reviewId || !reason) {
-            return res.status(400).json({ 
-                error: "Bad Request: 'reviewId' and 'reason' fields are required." 
-            });
+            return res.status(400).json({ error: "Missing required fields: reviewId and reason." });
         }
+
+
+        const originalReview = await ReviewModel.findById(reviewId);
+        if (!originalReview) {
+            return res.status(404).json({ error: "Review not found." });
+        }
+
+
+        const reporterUserId = req.auth.userId; 
+        const reporterUser = await clerkClient.users.getUser(reporterUserId);
+        const reporterUsername = reporterUser.username || "Anonymous Reporter";
+
 
         const newReport = new Report({
             reviewId,
             reason,
-            characterName,
-            server,
-            reviewContent,
+            characterName: originalReview.character_name,
+            server: originalReview.server,
+            reviewContent: originalReview.comment,
+            reviewOwnerUsername: `Hash: ${originalReview.global_user_hash}`, 
+            reporterUsername: reporterUsername,
             timestamp: new Date()
         });
 
         await newReport.save();
-        res.status(201).json({ message: "Report submitted" });
+        res.status(201).json({ message: "Report submitted successfully." });
+
     } catch (error) {
         console.error("CRITICAL: Report Submission Failed ->", error); 
-    
-        res.status(500).json({ 
-            error: "Failed to submit report.", 
-            details: error.message 
-        });
+        res.status(500).json({ error: "Internal server error processing report." });
     }
 });
 
