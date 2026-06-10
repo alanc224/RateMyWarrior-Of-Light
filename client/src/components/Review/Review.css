@@ -207,13 +207,14 @@
     display: flex;
     gap: 8px;
     align-items: center;
+    margin-top: 16px;
 }
 
 .vote-btn {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 5px 11px;
     font-family: inherit;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
@@ -231,7 +232,7 @@
 }
 
 .vote-btn svg {
-    transition: transform 0.15s ease;
+    transition: transform 0.12s ease;
 }
 
 .vote-btn:not(:disabled):active svg {
@@ -253,7 +254,6 @@
     background-color: rgba(248, 113, 113, 0.08);
     border-color: rgba(248, 113, 113, 0.25);
 }
-
 .review-actions-container {
     display: flex;
     gap: 8px;
