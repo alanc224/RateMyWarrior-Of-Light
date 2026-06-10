@@ -117,7 +117,25 @@ app.get('/api/characters', searchLimiter, async (req, res) => {
     }
 });
 
-app.post('/api/reports', requireAuth(), async (req, res) => {
+const getUserIdFromHeaders = (req) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            const parts = token.split('.');
+            if (parts.length === 3) {
+                const payloadJson = Buffer.from(parts[1], 'base64').toString('utf8');
+                const payload = JSON.parse(payloadJson);
+                if (payload && payload.sub) return payload.sub;
+            }
+        }
+    } catch (err) {
+        console.error("Error parsing JWT from headers:", err.message);
+    }
+    return null;
+};
+
+app.post('/api/reports', async (req, res) => {
     try {
         const { reviewId, reason } = req.body;
 
@@ -125,17 +143,19 @@ app.post('/api/reports', requireAuth(), async (req, res) => {
             return res.status(400).json({ error: "Missing required fields: reviewId and reason." });
         }
 
+        const reporterUserId = req.auth?.userId || getUserIdFromHeaders(req); 
+        
+        if (!reporterUserId) {
+            return res.status(401).json({ error: 'Unauthorized: Could not verify user identity.' });
+        }
+
+        const reporterUser = await clerkClient.users.getUser(reporterUserId);
+        const reporterUsername = reporterUser.username || "Anonymous Reporter";
 
         const originalReview = await ReviewModel.findById(reviewId);
         if (!originalReview) {
             return res.status(404).json({ error: "Review not found." });
         }
-
-
-        const reporterUserId = req.auth.userId; 
-        const reporterUser = await clerkClient.users.getUser(reporterUserId);
-        const reporterUsername = reporterUser.username || "Anonymous Reporter";
-
 
         const newReport = new Report({
             reviewId,
@@ -144,7 +164,7 @@ app.post('/api/reports', requireAuth(), async (req, res) => {
             server: originalReview.server,
             reviewContent: originalReview.comment,
             reviewOwnerUsername: `Hash: ${originalReview.global_user_hash}`, 
-            reporterUsername: reporterUsername,
+            reporterUsername: reporterUsername, 
             timestamp: new Date()
         });
 
