@@ -3,31 +3,15 @@ const router = express.Router();
 const { requireAuth, clerkClient } = require('@clerk/express');
 const ReportModel = require('../Models/Report');
 const ReviewModel = require('../Models/reviews');
+const BlockedEmail = require('../Models/BlockedEmail');
 
 const requireModOrAdmin = (req, res, next) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: "Missing or invalid token." });
-        }
-        
-        const token = authHeader.split(' ')[1];
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
-        
-        const role = decodedPayload.role;
-        
-        if (role !== 'mod' && role !== 'admin') {
-            return res.status(403).json({ error: "Access Denied. Moderation credentials required." });
-        }
-        
-        req.userRole = role; 
-        next();
-
-    } catch (error) {
-        console.error("Token decoding error:", error);
-        return res.status(500).json({ error: "Server error processing token." });
+    const role = req.auth?.sessionClaims?.metadata?.role || req.auth?.sessionClaims?.role;
+    if (role !== 'mod' && role !== 'admin') {
+        return res.status(403).json({ error: "Access Denied." });
     }
+    req.userRole = role;
+    next();
 };
 
 router.get('/users', [requireAuth(), requireModOrAdmin], async (req, res) => {
